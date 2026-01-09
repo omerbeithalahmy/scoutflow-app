@@ -30,18 +30,20 @@ CREATE TABLE games (
 );
 
 
---- Player_Game_Stats Table ---
-CREATE TABLE player_game_stats (
+--- Player_Season_Stats Table ---
+CREATE TABLE player_season_stats (
   id SERIAL PRIMARY KEY,
   player_id INTEGER REFERENCES players(id),
-  game_id INTEGER REFERENCES games(id),
-  minutes FLOAT,
-  points INTEGER,
-  assists INTEGER,
-  rebounds INTEGER,
-  steals INTEGER,
-  blocks INTEGER,
-  turnovers INTEGER
+  season TEXT NOT NULL,
+  games_played INTEGER,
+  avg_minutes FLOAT,
+  avg_points FLOAT,
+  avg_assists FLOAT,
+  avg_rebounds FLOAT,
+  avg_steals FLOAT,
+  avg_blocks FLOAT,
+  avg_turnovers FLOAT,
+  UNIQUE(player_id, season)
 );
 
 
