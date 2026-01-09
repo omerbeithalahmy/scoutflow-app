@@ -1,0 +1,66 @@
+--- Teams Table ---
+CREATE TABLE teams (
+  id SERIAL PRIMARY KEY,
+  nba_id INTEGER UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  abbreviation TEXT,
+  city TEXT
+);
+
+
+--- Players Table ---
+CREATE TABLE players (
+  id SERIAL PRIMARY KEY,
+  nba_id INTEGER UNIQUE NOT NULL,
+  full_name TEXT NOT NULL,
+  position TEXT,
+  team_id INTEGER REFERENCES teams(id),
+  is_active BOOLEAN
+);
+
+
+--- Games Table ---
+CREATE TABLE games (
+  id SERIAL PRIMARY KEY,
+  nba_game_id TEXT UNIQUE NOT NULL,
+  game_date DATE NOT NULL,
+  season TEXT NOT NULL,
+  home_team_id INTEGER REFERENCES teams(id),
+  away_team_id INTEGER REFERENCES teams(id)
+);
+
+
+--- Player_Game_Stats Table ---
+CREATE TABLE player_game_stats (
+  id SERIAL PRIMARY KEY,
+  player_id INTEGER REFERENCES players(id),
+  game_id INTEGER REFERENCES games(id),
+  minutes FLOAT,
+  points INTEGER,
+  assists INTEGER,
+  rebounds INTEGER,
+  steals INTEGER,
+  blocks INTEGER,
+  turnovers INTEGER
+);
+
+
+--- Users Table ---
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+
+--- User_Followed_Player Table ---
+CREATE TABLE user_followed_players (
+  user_id INTEGER REFERENCES users(id),
+  player_id INTEGER REFERENCES players(id),
+  followed_at TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY (user_id, player_id)
+);
+
+
