@@ -13,7 +13,8 @@ def insert_games(season="2025-26"):
     try:
         # Connect to the PostgreSQL database
         conn = psycopg2.connect(
-            host="localhost",
+            host=os.getenv("POSTGRES_HOST", "db"),
+            port=int(os.getenv("POSTGRES_PORT", 5432)),
             database=os.getenv("POSTGRES_DB"),
             user=os.getenv("POSTGRES_USER"),
             password=os.getenv("POSTGRES_PASSWORD")

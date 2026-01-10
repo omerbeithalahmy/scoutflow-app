@@ -21,7 +21,8 @@ def insert_player_season_stats():
     try:
         # --- התחברות ל-DB ---
         conn = psycopg2.connect(
-            host="localhost",
+            host=os.getenv("POSTGRES_HOST", "db"),
+            port=int(os.getenv("POSTGRES_PORT", 5432)),
             database=os.getenv("POSTGRES_DB"),
             user=os.getenv("POSTGRES_USER"),
             password=os.getenv("POSTGRES_PASSWORD")

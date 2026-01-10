@@ -1,2 +1,5 @@
+# משתמשים ב‑Postgres בסיסי
 FROM postgres:16
-COPY init/init.sql /docker-entrypoint-initdb.d/
+
+# מעתיקים את ה‑init.sql שייצור את הטבלאות הריקות
+COPY ./init/init.sql /docker-entrypoint-initdb.d/
