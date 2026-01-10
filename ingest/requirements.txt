@@ -1,0 +1,4 @@
+psycopg2-binary
+pandas
+nba_api
+python-dotenv
