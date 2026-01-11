@@ -24,3 +24,12 @@ class TeamOut(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class PlayerOut(BaseModel):
+    id: int
+    full_name: str
+    position: Optional[str] = None
+    team_id: int
+    is_active: bool
+
+    model_config = {"from_attributes": True}

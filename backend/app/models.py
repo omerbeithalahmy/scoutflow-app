@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP
+from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .db.base import Base  # יחסית נכון למבנה הקבצים שלך
@@ -34,3 +34,19 @@ class Team(Base):
     name = Column(String, nullable=False)
     abbreviation = Column(String, nullable=True)
     city = Column(String, nullable=True)
+
+    players = relationship("Player", back_populates="team", cascade="all, delete-orphan")
+
+
+
+class Player(Base):
+    __tablename__ = "players"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nba_id = Column(Integer, unique=True, nullable=False)
+    full_name = Column(String, nullable=False)
+    position = Column(String)
+    team_id = Column(Integer, ForeignKey("teams.id"))
+    is_active = Column(Boolean, default=True)
+
+    team = relationship("Team", back_populates="players")

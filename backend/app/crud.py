@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from .models import User
 from .models import Team
+from .models import Player
 
 def create_user(db: Session, username: str, email: str, password_hash: str):
     """
@@ -27,4 +28,7 @@ def get_teams(db: Session, limit: int = 30):
     מחזיר רשימת קבוצות, מוגבל ל-30 ברירת מחדל
     """
     return db.query(Team).limit(limit).all()
+
+def get_players_by_team(db: Session, team_id: int):
+    return db.query(Player).filter(Player.team_id == team_id).all()
 
