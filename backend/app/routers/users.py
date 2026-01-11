@@ -1,17 +1,23 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from .. import crud, schemas
-from ..dependencies import get_db  # פונקציה שמחזירה Session
 
-router = APIRouter()
+from app import crud, schemas
+from app.dependencies import get_db
 
-@router.post("/users/", response_model=schemas.UserOut)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    hashed_password = hash_password(user.password)  # פונקציה שמחזירה hash
-    db_user = crud.create_user(db, user.username, user.email, hashed_password)
-    return db_user
+router = APIRouter(
+    prefix="/users",
+    tags=["users"]
+)
 
-# דוגמה לפונקציית hash בסיסית (אפשר להחליף ל-bcrypt)
-def hash_password(password: str) -> str:
-    import hashlib
-    return hashlib.sha256(password.encode()).hexdigest()
+@router.post("/", response_model=schemas.UserOut)
+def create_user(
+    user: schemas.UserCreate,
+    db: Session = Depends(get_db)
+):
+    created_user = crud.create_user(
+        db=db,
+        username=user.username,
+        email=user.email,
+        hashed_password=user.password  # כרגע בלי hashing
+    )
+    return created_user
