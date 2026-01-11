@@ -23,3 +23,14 @@ class UserFollowedPlayer(Base):
     followed_at = Column(TIMESTAMP, server_default=func.now())
 
     user = relationship("User", back_populates="followed_players")
+
+
+
+class Team(Base):
+    __tablename__ = "teams"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nba_id = Column(Integer, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+    abbreviation = Column(String, nullable=True)
+    city = Column(String, nullable=True)
