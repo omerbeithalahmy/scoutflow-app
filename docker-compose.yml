@@ -18,5 +18,17 @@ services:
       db:
         condition: service_healthy
     env_file:
-      - ./.env
+      - ./backend/.env
     restart: "no"
+
+  backend:
+    build: ./backend
+    container_name: scoutflow-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
