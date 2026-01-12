@@ -96,3 +96,24 @@ def remove_followed_player(db: Session, user_id: int, player_id: int):
     return True
 
 
+def get_player_by_full_name(db: Session, full_name: str):
+    player = (
+        db.query(Player)
+        .filter(Player.full_name == full_name)
+        .first()
+    )
+
+    if not player:
+        return None
+
+    stats = (
+        db.query(PlayerSeasonStats)
+        .filter(PlayerSeasonStats.player_id == player.id)
+        .order_by(PlayerSeasonStats.season.desc())
+        .all()
+    )
+
+    player.season_stats = stats or []
+    return player
+
+
