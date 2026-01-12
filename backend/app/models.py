@@ -19,10 +19,12 @@ class UserFollowedPlayer(Base):
     __tablename__ = "user_followed_players"
 
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    player_id = Column(Integer, primary_key=True)
+    player_id = Column(Integer, ForeignKey("players.id"), primary_key=True)  # ← הוספנו ForeignKey
     followed_at = Column(TIMESTAMP, server_default=func.now())
 
     user = relationship("User", back_populates="followed_players")
+    player = relationship("Player")  # עכשיו join עובד
+
 
 
 
@@ -50,6 +52,8 @@ class Player(Base):
     is_active = Column(Boolean, default=True)
 
     team = relationship("Team", back_populates="players")
+    followers = relationship("UserFollowedPlayer", back_populates="player")
+
 
 
 class PlayerSeasonStats(Base):

@@ -3,6 +3,8 @@ from .models import User
 from .models import Team
 from .models import Player
 from .models import PlayerSeasonStats
+from .models import UserFollowedPlayer
+
 
 def create_user(db: Session, username: str, email: str, password_hash: str):
     """
@@ -53,5 +55,44 @@ def get_player_with_stats(db: Session, player_id: int):
     # גם אם אין סטטיסטיקות – מחזירים שחקן
     player.season_stats = stats or []
     return player
+
+
+def get_followed_players(db: Session, user_id: int):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return None  # יוזר לא קיים
+
+    followed = (
+        db.query(UserFollowedPlayer)
+        .filter(UserFollowedPlayer.user_id == user_id)
+        .all()
+    )
+
+    # מחזיר רשימת שחקנים
+    players_list = []
+    for fp in followed:
+        player = fp.player  # באמצעות relationship
+        # מחזיר season_stats ריק (ניתן לשנות לסטטיסטיקות אמיתיות אם רוצים)
+        player.season_stats = getattr(player, "season_stats", [])
+        players_list.append(player)
+
+    return players_list
+
+
+def remove_followed_player(db: Session, user_id: int, player_id: int):
+    # מוצאים את הרשומה
+    followed = (
+        db.query(UserFollowedPlayer)
+        .filter(UserFollowedPlayer.user_id == user_id,
+                UserFollowedPlayer.player_id == player_id)
+        .first()
+    )
+
+    if not followed:
+        return None  # לא נמצא השחקן במעקב
+
+    db.delete(followed)
+    db.commit()
+    return True
 
 
