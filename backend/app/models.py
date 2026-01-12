@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, Boolean, Float
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .db.base import Base  # יחסית נכון למבנה הקבצים שלך
@@ -50,3 +50,23 @@ class Player(Base):
     is_active = Column(Boolean, default=True)
 
     team = relationship("Team", back_populates="players")
+
+
+class PlayerSeasonStats(Base):
+    __tablename__ = "player_season_stats"
+
+    id = Column(Integer, primary_key=True, index=True)
+    player_id = Column(Integer, ForeignKey("players.id"), nullable=False)
+    season = Column(String, nullable=False)
+
+    games_played = Column(Integer)
+    avg_minutes = Column(Float)
+    avg_points = Column(Float)
+    avg_assists = Column(Float)
+    avg_rebounds = Column(Float)
+    avg_steals = Column(Float)
+    avg_blocks = Column(Float)
+    avg_turnovers = Column(Float)
+
+    player = relationship("Player", backref="season_stats")
+

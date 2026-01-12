@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from .models import User
 from .models import Team
 from .models import Player
+from .models import PlayerSeasonStats
 
 def create_user(db: Session, username: str, email: str, password_hash: str):
     """
@@ -31,4 +32,26 @@ def get_teams(db: Session, limit: int = 30):
 
 def get_players_by_team(db: Session, team_id: int):
     return db.query(Player).filter(Player.team_id == team_id).all()
+
+def get_player_with_stats(db: Session, player_id: int):
+    player = (
+        db.query(Player)
+        .filter(Player.id == player_id)
+        .first()
+    )
+
+    if not player:
+        return None
+
+    stats = (
+        db.query(PlayerSeasonStats)
+        .filter(PlayerSeasonStats.player_id == player_id)
+        .order_by(PlayerSeasonStats.season.desc())
+        .all()
+    )
+
+    # גם אם אין סטטיסטיקות – מחזירים שחקן
+    player.season_stats = stats or []
+    return player
+
 
