@@ -6,6 +6,8 @@ services:
       - "5432:5432"
     env_file:
       - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
       interval: 2s
@@ -32,3 +34,6 @@ services:
       db:
         condition: service_healthy
     restart: always
+
+volumes:
+  postgres_data:
