@@ -8,6 +8,10 @@ class UserCreate(BaseModel):
     email: str
     password: str
 
+class UserLogin(BaseModel):
+    username: str  # יכול להיות username או email
+    password: str
+
 
 class UserOut(BaseModel):
     id: int

@@ -4,7 +4,7 @@ from typing import List
 
 from app import crud, schemas
 from app.dependencies import get_db
-from app.security import hash_password  # ← Argon2 hashing
+from app.security import hash_password, verify_password  # ← Argon2 hashing
 
 router = APIRouter(
     prefix="/users",
@@ -26,6 +26,21 @@ def create_user(
         password_hash=hashed_pw  # ← כאן השם שונה כדי להתאים ל-crud.py
     )
     return created_user
+
+@router.post("/login")
+def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
+    # חפש משתמש לפי email בלבד
+    db_user = db.query(crud.User).filter(crud.User.email == user.username).first()
+
+    if not db_user:
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+
+    if not verify_password(user.password, db_user.password_hash):
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+
+    return {"id": db_user.id, "username": db_user.username, "email": db_user.email}
+
+
 
 @router.get("/{user_id}/followed-players", response_model=List[schemas.PlayerDetailsOut])
 def get_user_followed_players(user_id: int, db: Session = Depends(get_db)):
