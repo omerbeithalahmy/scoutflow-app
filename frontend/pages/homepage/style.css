@@ -1,0 +1,194 @@
+:root {
+    --nba-red: #C9301E;
+    --nba-black: #0F0F0F;
+    --gray-bg: #F8F9FA;
+    --border-color: #EEEEEE;
+    --text-muted: #666;
+}
+
+body.light-bg {
+    background-color: white;
+    color: var(--nba-black);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Navbar */
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.red-text { color: var(--nba-red); }
+
+.nav-link {
+    text-decoration: none;
+    color: var(--nba-black);
+    font-weight: 600;
+    margin: 0 15px;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.nav-link.active {
+    background: #F0F0F0;
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+.user-badge {
+    background: #F0F0F0;
+    padding: 8px 20px;
+    font-weight: 700;
+    font-size: 13px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Header Section */
+.page-header {
+    text-align: center;
+    padding: 60px 0 40px;
+}
+
+.season-label {
+    letter-spacing: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.main-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 80px;
+    letter-spacing: -2px;
+}
+
+.search-bar {
+    max-width: 600px;
+    margin: 30px auto 0;
+    position: relative;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 18px 20px 18px 50px;
+    background: #F5F5F5;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+/* Grid & Cards */
+.teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 20px;
+    padding: 40px;
+}
+
+.team-card {
+    border: 1px solid var(--border-color);
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.team-card:hover {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transform: translateY(-2px);
+}
+
+.team-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.team-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.team-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.city {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.meta {
+    margin-top: 5px;
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+}
+
+.abbr {
+    background: #F0F0F0;
+    padding: 2px 6px;
+    font-weight: 700;
+}
+
+.arrow-icon {
+    color: #CCC;
+    font-size: 20px;
+}
+
+/* Tabs */
+.filter-tabs {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.filter-tab {
+    background: none;
+    border: none;
+    padding: 15px 30px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+}
+
+.filter-tab.active {
+    color: black;
+}
+
+.filter-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: black;
+}
