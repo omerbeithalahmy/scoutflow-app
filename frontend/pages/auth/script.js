@@ -1,9 +1,13 @@
-/* ---------- SLIDER ---------- */
+console.log("auth script loaded");
+
+/* ================================
+   AUTH SLIDER
+================================ */
 const slider = document.querySelector('.auth-slider');
 
-document.querySelectorAll('.switch').forEach(el => {
-  el.addEventListener('click', () => {
-    if (el.dataset.target === 'signup') {
+document.querySelectorAll('.switch').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.target === 'signup') {
       slider.classList.add('show-signup');
     } else {
       slider.classList.remove('show-signup');
@@ -11,52 +15,74 @@ document.querySelectorAll('.switch').forEach(el => {
   });
 });
 
-/* ---------- PASSWORD TOGGLE ---------- */
+/* ================================
+   PASSWORD TOGGLE (FIXED)
+================================ */
 document.querySelectorAll('.toggle-password').forEach(icon => {
   icon.addEventListener('click', () => {
     const input = icon.previousElementSibling;
-    input.type = input.type === 'password' ? 'text' : 'password';
+    const isPassword = input.type === 'password';
+
+    input.type = isPassword ? 'text' : 'password';
     icon.classList.toggle('fa-eye');
     icon.classList.toggle('fa-eye-slash');
   });
 });
 
-/* ---------- LOGIN ---------- */
+/* ================================
+   LOGIN
+================================ */
 const loginForm = document.getElementById('nbaLoginForm');
 
-loginForm.addEventListener('submit', async e => {
+loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const email = loginForm.querySelector('input[type="email"]').value;
-  const password = loginForm.querySelector('input[type="password"]').value;
+  const email = loginForm.querySelector('input[type="email"]').value.trim();
+  const password = loginForm.querySelector('input[type="password"]').value.trim();
+
+  console.log("LOGIN:", email, password);
 
   try {
     const res = await fetch('http://localhost:8000/users/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: email, password })
+      body: JSON.stringify({
+        username: email,
+        password: password
+      })
     });
 
-    if (!res.ok) throw new Error('Login failed');
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text);
+    }
 
     const user = await res.json();
-    alert(`Welcome back, ${user.username}!`);
-    window.location.href = '../home/index.html';
+    console.log("SUCCESS:", user);
+
+    window.location.href = '../homepage/index.html';
 
   } catch (err) {
-    alert(err.message);
+    console.error(err);
+    alert('Login failed');
   }
 });
 
-/* ---------- SIGNUP ---------- */
+/* ================================
+   SIGNUP
+================================ */
 const signupForm = document.getElementById('nbaSignupForm');
 
-signupForm.addEventListener('submit', async e => {
+signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const username = signupForm.querySelector('input[type="text"]').value;
-  const email = signupForm.querySelector('input[type="email"]').value;
-  const password = signupForm.querySelector('input[type="password"]').value;
+  const inputs = signupForm.querySelectorAll('input');
+
+  const username = inputs[0].value.trim();
+  const email = inputs[1].value.trim();
+  const password = inputs[2].value.trim();
+
+  console.log("SIGNUP:", username, email);
 
   try {
     const res = await fetch('http://localhost:8000/users/', {
@@ -65,12 +91,16 @@ signupForm.addEventListener('submit', async e => {
       body: JSON.stringify({ username, email, password })
     });
 
-    if (!res.ok) throw new Error('Signup failed');
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text);
+    }
 
-    alert('Account created! Please sign in.');
+    alert("Account created – please sign in");
     slider.classList.remove('show-signup');
 
   } catch (err) {
-    alert(err.message);
+    console.error(err);
+    alert("Signup failed");
   }
 });
