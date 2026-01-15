@@ -1,0 +1,282 @@
+:root {
+    --nba-red: #C9301E;
+    --nba-black: #0F0F0F;
+    --gray-bg: #F5F5F5;
+    --text-muted: #888;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.split-container {
+    display: flex;
+    height: 100%;
+}
+
+/* Left Panel Styling */
+.left-panel {
+    flex: 1;
+    background-color: var(--nba-black);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    color: white;
+}
+
+.brand-content {
+    text-align: center;
+    z-index: 2;
+}
+
+.nba-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 140px;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.scout-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 110px;
+    line-height: 0.8;
+    color: var(--nba-red);
+    margin-top: -10px;
+}
+
+.tagline {
+    margin-top: 40px;
+    letter-spacing: 2px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Decorative Background Elements */
+.circle {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.circle-top {
+    width: 400px;
+    height: 400px;
+    top: -100px;
+    right: -100px;
+}
+
+.circle-bottom {
+    width: 500px;
+    height: 500px;
+    bottom: -150px;
+    left: -150px;
+}
+
+.red-dot {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: var(--nba-red);
+    border-radius: 50%;
+    top: 25%;
+    left: 25%;
+}
+
+/* Right Panel Styling */
+.right-panel {
+    flex: 1;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    padding: 60px;
+    justify-content: center;
+    align-items: center;
+}
+
+.tabs {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 50px;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding-bottom: 15px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #999;
+    cursor: pointer;
+}
+
+.tab.active {
+    color: black;
+    border-bottom: 2px solid black;
+}
+
+.form-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.welcome-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 36px;
+    letter-spacing: 1px;
+}
+
+.instruction {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.input-container {
+    margin-bottom: 25px;
+}
+
+.input-container label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.input-field {
+    display: flex;
+    align-items: center;
+    background-color: var(--gray-bg);
+    padding: 15px;
+    border-radius: 2px;
+}
+
+.input-field i {
+    color: #666;
+    margin-right: 15px;
+    font-size: 18px;
+}
+
+.input-field input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+}
+
+.toggle-password {
+    margin-right: 0 !important;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.sign-in-btn {
+    width: 100%;
+    background-color: var(--nba-black);
+    color: white;
+    padding: 20px;
+    border: none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.footer-links {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.footer-links p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.join-link {
+    color: black;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.demo-text {
+    font-style: italic;
+    opacity: 0.7;
+}
+/* 🔒 AUTH SLIDER FIX – SAFE */
+
+/* 🔒 AUTH SLIDER SYMMETRIC TRANSITION */
+
+.auth-viewport {
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.auth-slider {
+  display: flex;
+  width: 200%;
+  transition: transform 0.6s ease;
+  will-change: transform;
+}
+
+/* כל סקשן חצי רוחב */
+.auth-section {
+  width: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  will-change: opacity;
+}
+
+/* Login מתחיל פעיל */
+.auth-slider > .auth-section:first-child {
+  opacity: 1;
+}
+
+/* Sign Up מתחיל לא פעיל */
+.auth-slider > .auth-section:last-child {
+  opacity: 0;
+}
+
+/* מעבר ל-Sign Up */
+.auth-slider.show-signup {
+  transform: translateX(-50%);
+}
+.auth-slider.show-signup > .auth-section:first-child {
+  opacity: 0;
+}
+.auth-slider.show-signup > .auth-section:last-child {
+  opacity: 1;
+}
+
+/* חזרה ל-Login */
+.auth-slider:not(.show-signup) > .auth-section:first-child {
+  opacity: 1;
+}
+.auth-slider:not(.show-signup) > .auth-section:last-child {
+  opacity: 0;
+}
+
+/* קורסור להחלפה */
+.switch {
+  cursor: pointer;
+}
+

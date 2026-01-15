@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScoutFlow Auth</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="split-container">
+
+    <!-- LEFT PANEL – untouched -->
+    <div class="left-panel">
+      <div class="circle circle-top"></div>
+      <div class="circle circle-bottom"></div>
+      <div class="red-dot"></div>
+
+      <div class="brand-content">
+        <h1 class="nba-text">Scout</h1>
+        <h1 class="scout-text">Flow</h1>
+        <p class="tagline">DISCOVER. ANALYZE. DOMINATE.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+      <!-- 🔒 VIEWPORT (חדש – זה הפיקס) -->
+      <div class="auth-viewport">
+
+        <div class="auth-slider">
+
+          <!-- LOGIN -->
+          <section class="auth-section">
+            <div class="tabs">
+              <div class="tab active">SIGN IN</div>
+              <div class="tab switch" data-target="signup">JOIN US</div>
+            </div>
+
+            <div class="form-wrapper">
+              <h2 class="welcome-title">WELCOME BACK</h2>
+              <p class="instruction">Enter your credentials to access your account</p>
+
+              <form id="nbaLoginForm">
+                <div class="input-container">
+                  <label>EMAIL ADDRESS</label>
+                  <div class="input-field">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" required />
+                  </div>
+                </div>
+
+                <div class="input-container">
+                  <label>PASSWORD</label>
+                  <div class="input-field">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" required />
+                    <i class="fa-regular fa-eye toggle-password"></i>
+                  </div>
+                </div>
+
+                <button type="submit" class="sign-in-btn">
+                  SIGN IN <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </form>
+            </div>
+          </section>
+
+          <!-- SIGNUP -->
+          <section class="auth-section">
+            <div class="tabs">
+              <div class="tab switch" data-target="login">SIGN IN</div>
+              <div class="tab active">JOIN US</div>
+            </div>
+
+            <div class="form-wrapper">
+              <h2 class="welcome-title">CREATE AN ACCOUNT</h2>
+              <p class="instruction">Join the scouting network today</p>
+
+              <form id="nbaSignupForm">
+                <div class="input-container">
+                  <label>FULL NAME</label>
+                  <div class="input-field">
+                    <i class="fa-regular fa-user"></i>
+                    <input type="text" required />
+                  </div>
+                </div>
+
+                <div class="input-container">
+                  <label>EMAIL ADDRESS</label>
+                  <div class="input-field">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" required />
+                  </div>
+                </div>
+
+                <div class="input-container">
+                  <label>PASSWORD</label>
+                  <div class="input-field">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" required />
+                    <i class="fa-regular fa-eye toggle-password"></i>
+                  </div>
+                </div>
+
+                <button type="submit" class="sign-in-btn">
+                  CREATE ACCOUNT <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </form>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
