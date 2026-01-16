@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Team Roster - ScoutFlow</title>
-  <link rel="stylesheet" href="../../pages/homepage/style.css"> <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boston Celtics - ScoutFlow MVP</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body class="light-bg">
+<body>
 
   <nav class="main-nav">
     <div class="nav-left">
-      <span class="logo-text">Scout<span class="red-text">Flow</span></span>
+      <span class="logo-text">NBA <span class="red-text">SCOUT</span></span>
     </div>
     <div class="nav-center">
-      <a href="../homepage/index.html" class="nav-link">TEAMS</a>
-      <a href="#" class="nav-link">MY PLAYERS</a>
+      <a href="#" class="nav-link">TEAMS</a>
+      <a href="#" class="nav-link">ARCHIVE</a>
     </div>
     <div class="nav-right">
       <div class="user-badge">OMER24883</div>
@@ -28,32 +29,75 @@
       <i class="fa-solid fa-arrow-left"></i> BACK TO TEAMS
     </a>
 
-    <header class="team-header-section">
-      <div class="team-header-content">
-        <img id="teamLogo" src="" alt="" class="large-team-logo">
-        <div class="team-header-text">
-          <p id="teamMeta" class="team-meta-info">EASTERN CONFERENCE • ATLANTIC</p>
-          <h1 id="teamCity" class="team-city-name">BOSTON</h1>
-          <h1 id="teamName" class="team-brand-name">CELTICS</h1>
+    <header class="team-hero">
+      <div class="hero-content">
+        <img src="https://cdn.nba.com/logos/nba/1610612738/primary/L/logo.svg" alt="Celtics Logo" class="team-hero-logo">
+        <div class="hero-text">
+          <p class="hero-meta">EASTERN CONFERENCE • ATLANTIC</p>
+          <h1 class="hero-city">BOSTON</h1>
+          <h1 class="hero-brand" style="color: #007A33;">CELTICS</h1>
         </div>
       </div>
     </header>
 
-    <section class="roster-section">
-      <div class="roster-header">
-        <i class="fa-solid fa-users"></i>
-        <h2>ROSTER <span id="playerCount" class="count">(0 PLAYERS)</span></h2>
-      </div>
+   <section class="roster-container">
+  <div class="roster-title-bar">
+    <i class="fa-solid fa-users-group"></i>
+    <h2>ROSTER <span class="count-badge"></span></h2>
+  </div>
 
-      <div id="rosterContainer">
-         <div class="position-group">
-            <h3 class="position-title">POINT GUARDS</h3>
-            <div class="players-grid" id="pos-PG"></div>
-         </div>
+  <div id="dynamicRoster"></div> 
+</section>
+
+      <div class="pos-group">
+        <h3 class="position-group-title">POINT GUARDS</h3>
+        <div class="players-grid">
+          
+          <div class="player-card">
+            <div class="card-left">
+              <div class="player-num-box">#60</div>
+              <div class="player-info-text">
+                <span class="p-pos">PG</span>
+                <span class="p-name">JAYSON TATUM</span>
+                <span class="p-phys">7'5" | 236 lbs</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="stat-item"><span class="stat-val">27.7</span><span class="stat-lbl">PPG</span></div>
+              <div class="stat-item"><span class="stat-val">1.6</span><span class="stat-lbl">RPG</span></div>
+              <div class="stat-item"><span class="stat-val">4.7</span><span class="stat-lbl">APG</span></div>
+              <div class="card-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="player-card">
+            <div class="card-left">
+              <div class="player-num-box">#10</div>
+              <div class="player-info-text">
+                <span class="p-pos">PG</span>
+                <span class="p-name">KAWHI LEONARD</span>
+                <span class="p-phys">7'9" | 214 lbs</span>
+              </div>
+            </div>
+            <div class="card-right">
+              <div class="stat-item"><span class="stat-val">22.2</span><span class="stat-val">8.6</span><span class="stat-val">8.6</span>
+                </div>
+              <div class="stat-item"><span class="stat-val">22.2</span><span class="stat-lbl">PPG</span></div>
+              <div class="stat-item"><span class="stat-val">8.6</span><span class="stat-lbl">RPG</span></div>
+              <div class="stat-item"><span class="stat-val">8.6</span><span class="stat-lbl">APG</span></div>
+              <div class="card-icons">
+                <i class="fa-regular fa-heart"></i>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
   </main>
-
-  <script src="script.js"></script>
 </body>
 </html>

@@ -85,13 +85,14 @@ function renderTeams(teams) {
     grids.east.classList.add('active');
 }
 
-// מעבר לדף רוסטר של קבוצה
+// 4. מעבר לדף רוסטר של קבוצה - התיקון כאן
 function handleTeamClick(id) {
-    console.log("Team selected ID:", id);
-    // window.location.href = `team-roster.html?id=${id}`;
+    console.log("Navigating to team ID:", id);
+    // מעביר לעמוד הקבוצה שנמצא בתיקייה המקבילה ושולח את ה-ID כפרמטר
+    window.location.href = `../teams/index.html?id=${id}`;
 }
 
-// 4. ניהול הטאבים (Slider)
+// 5. ניהול הטאבים (Slider)
 document.querySelectorAll('.filter-tab').forEach(tab => {
     tab.addEventListener('click', () => {
         document.querySelector('.filter-tab.active').classList.remove('active');
@@ -106,36 +107,32 @@ document.querySelectorAll('.filter-tab').forEach(tab => {
     });
 });
 
-// 5. חיפוש שחקן (בלחיצה על Enter) - לא פוגע בכרטיסי הקבוצות
+// 6. חיפוש שחקן (בלחיצה על Enter)
 const searchInput = document.getElementById('teamSearch');
 
-searchInput.addEventListener('keypress', async (e) => {
-    if (e.key === 'Enter') {
-        const query = e.target.value.trim();
-        if (!query) return;
+if (searchInput) {
+    searchInput.addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter') {
+            const query = e.target.value.trim();
+            if (!query) return;
 
-        console.log("Searching for player:", query);
-        
-        try {
-            // קריאה ל-Backend (נשתמש בחיפוש לפי שם מלא שקיים לך ב-crud.py)
-            const response = await fetch(`http://localhost:8000/players/search?full_name=${encodeURIComponent(query)}`);
-            
-            if (response.ok) {
-                const player = await response.json();
-                if (player && player.id) {
-                    // מעבר לדף השחקן שנמצא
-                    window.location.href = `player-details.html?id=${player.id}`;
-                } else {
-                    alert("Player not found in our database");
+            try {
+                const response = await fetch(`http://localhost:8000/players/search?full_name=${encodeURIComponent(query)}`);
+                
+                if (response.ok) {
+                    const player = await response.json();
+                    if (player && player.id) {
+                        window.location.href = `player-details.html?id=${player.id}`;
+                    } else {
+                        alert("Player not found");
+                    }
                 }
-            } else {
-                alert("Could not find player. Try full name (e.g. LeBron James)");
+            } catch (error) {
+                console.error("Search error:", error);
             }
-        } catch (error) {
-            console.error("Search error:", error);
         }
-    }
-});
+    });
+}
 
-// הפעלה
+// הפעלה ראשונית
 fetchTeamsFromDB();
