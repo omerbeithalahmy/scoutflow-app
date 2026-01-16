@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Roster - ScoutFlow</title>
+  <link rel="stylesheet" href="../../pages/homepage/style.css"> <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="light-bg">
+
+  <nav class="main-nav">
+    <div class="nav-left">
+      <span class="logo-text">Scout<span class="red-text">Flow</span></span>
+    </div>
+    <div class="nav-center">
+      <a href="../homepage/index.html" class="nav-link">TEAMS</a>
+      <a href="#" class="nav-link">MY PLAYERS</a>
+    </div>
+    <div class="nav-right">
+      <div class="user-badge">OMER24883</div>
+      <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <a href="../homepage/index.html" class="back-link">
+      <i class="fa-solid fa-arrow-left"></i> BACK TO TEAMS
+    </a>
+
+    <header class="team-header-section">
+      <div class="team-header-content">
+        <img id="teamLogo" src="" alt="" class="large-team-logo">
+        <div class="team-header-text">
+          <p id="teamMeta" class="team-meta-info">EASTERN CONFERENCE • ATLANTIC</p>
+          <h1 id="teamCity" class="team-city-name">BOSTON</h1>
+          <h1 id="teamName" class="team-brand-name">CELTICS</h1>
+        </div>
+      </div>
+    </header>
+
+    <section class="roster-section">
+      <div class="roster-header">
+        <i class="fa-solid fa-users"></i>
+        <h2>ROSTER <span id="playerCount" class="count">(0 PLAYERS)</span></h2>
+      </div>
+
+      <div id="rosterContainer">
+         <div class="position-group">
+            <h3 class="position-title">POINT GUARDS</h3>
+            <div class="players-grid" id="pos-PG"></div>
+         </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

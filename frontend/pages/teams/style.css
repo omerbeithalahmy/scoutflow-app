@@ -1,0 +1,136 @@
+/* עמוד קבוצה - התאמה מלאה לתמונה */
+.back-link {
+    display: inline-block;
+    margin: 30px 40px;
+    text-decoration: none;
+    color: black;
+    font-weight: 700;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.back-link i { margin-right: 8px; }
+
+.team-header-section {
+    padding: 20px 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.team-header-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.large-team-logo {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+.team-meta-info {
+    letter-spacing: 2px;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.team-city-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 45px;
+    line-height: 0.9;
+    color: #333;
+}
+
+.team-brand-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 90px;
+    line-height: 0.8;
+    color: #1d428a; /* צבע דינמי אפשרי בהמשך */
+    margin-top: -5px;
+}
+
+/* Roster Section */
+.roster-section { padding: 40px; }
+
+.roster-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.roster-header h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 24px;
+}
+
+.roster-header .count { color: #888; margin-left: 10px; }
+
+/* Player Cards (כמו בתמונה השנייה) */
+.position-title {
+    font-size: 14px;
+    color: #888;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin: 40px 0 20px;
+    text-transform: uppercase;
+}
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 20px;
+}
+
+.player-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #eee;
+    background: #fff;
+    position: relative;
+    transition: 0.3s;
+}
+
+.player-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.player-main-info { display: flex; align-items: center; gap: 20px; }
+
+.player-number {
+    font-family: 'Oswald', sans-serif;
+    font-size: 40px;
+    background: #111;
+    color: white;
+    padding: 10px 15px;
+    min-width: 70px;
+    text-align: center;
+}
+
+.player-bio .pos { font-size: 11px; color: #888; display: block; }
+.player-bio .name { font-family: 'Oswald', sans-serif; font-size: 22px; text-transform: uppercase; }
+.player-bio .phys { font-size: 12px; color: #aaa; }
+
+.player-stats {
+    display: flex;
+    gap: 15px;
+    text-align: center;
+}
+
+.stat-box .val { font-family: 'Oswald', sans-serif; font-size: 20px; display: block; }
+.stat-box .lbl { font-size: 10px; color: #888; }
+
+.player-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 15px;
+}
+
+.player-actions i { color: #ccc; cursor: pointer; }
+.player-actions i:hover { color: var(--nba-red); }
