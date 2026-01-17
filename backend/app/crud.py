@@ -58,6 +58,9 @@ def get_player_with_stats(db: Session, player_id: int):
 
     if not player:
         return None
+    
+    player.team_name = player.team.name
+    player.team_abbreviation = player.team.abbreviation
 
     stats = (
         db.query(PlayerSeasonStats)

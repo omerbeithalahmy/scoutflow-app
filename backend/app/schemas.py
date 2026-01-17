@@ -27,10 +27,15 @@ class TeamOut(BaseModel):
 
 # 3. Stats (חייב להופיע לפני PlayerOut!)
 class PlayerSeasonStatsOut(BaseModel):
+    season: str
+    games_played: Optional[int] = 0
+    avg_minutes: Optional[float] = 0.0
     avg_points: Optional[float] = 0.0
     avg_assists: Optional[float] = 0.0
     avg_rebounds: Optional[float] = 0.0
-    # אם תרצה להוסיף עוד נתונים מה-DB בעתיד, תוסיף אותם כאן
+    avg_steals: Optional[float] = 0.0
+    avg_blocks: Optional[float] = 0.0
+    avg_turnovers: Optional[float] = 0.0
     model_config = {"from_attributes": True}
 
 # 4. Players
@@ -49,8 +54,8 @@ class PlayerOut(BaseModel):
 class PlayerDetailsOut(BaseModel):
     id: int
     full_name: str
-    position: Optional[str] = None
     team_id: int
-    is_active: bool
+    team_name: Optional[str] = None # הוספנו כדי שנדע לאן לחזור
+    team_abbreviation: Optional[str] = None # הוספנו עבור הצבעים
     season_stats: List[PlayerSeasonStatsOut] = Field(default_factory=list)
     model_config = {"from_attributes": True}
