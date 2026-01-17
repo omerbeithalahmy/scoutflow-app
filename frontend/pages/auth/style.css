@@ -199,6 +199,17 @@ body {
     margin-top: 10px;
 }
 
+.sign-in-btn:hover {
+    background-color: #222; /* קצת יותר בהיר מהשחור המוחלט */
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.sign-in-btn:active {
+    transform: translateY(0);
+    opacity: 0.8;
+}
+
 .footer-links {
     text-align: center;
     margin-top: 30px;
@@ -280,3 +291,43 @@ body {
   cursor: pointer;
 }
 
+/* --- TOAST SYSTEM --- */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: var(--nba-black);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 300px;
+    border-left: 4px solid var(--nba-red); /* הטאץ' של המותג */
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.error {
+    border-left-color: #ff4d4d;
+}
+
+.toast i {
+    font-size: 18px;
+    color: var(--nba-red);
+}

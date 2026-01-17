@@ -1,11 +1,30 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, field_validator
 from typing import Optional, List
+import re
 
 # 1. Users
 class UserCreate(BaseModel):
-    username: str
-    email: str
-    password: str
+    username: str = Field(..., min_length=2, description="Full Name")
+    email: EmailStr
+    password: str = Field(..., min_length=8)
+
+    @field_validator('password')
+    @classmethod
+    def password_complexity(cls, v: str) -> str:
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('Password must contain at least one uppercase letter')
+        if not re.search(r'[0-9]', v):
+            raise ValueError('Password must contain at least one digit')
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', v):
+            raise ValueError('Password must contain at least one special character')
+        return v
+
+    @field_validator('username')
+    @classmethod
+    def name_must_be_full(cls, v: str) -> str:
+        if len(v.strip().split()) < 2:
+            raise ValueError('Please enter both first and last name')
+        return v
 
 class UserLogin(BaseModel):
     username: str

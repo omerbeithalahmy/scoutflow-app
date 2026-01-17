@@ -1,29 +1,61 @@
-console.log("auth script loaded");
+/* ================================
+   TOAST NOTIFICATION SYSTEM
+================================ */
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+    const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+    
+    toast.innerHTML = `<i class="fa-solid ${icon}"></i><span>${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
 
 /* ================================
-   AUTH SLIDER
+   VALIDATION LOGIC
+================================ */
+function validateAuthData(name, email, pass) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // לפחות אות גדולה, מספר, תו מיוחד ומינימום 8 תווים
+    const passRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+
+    if (name !== null && name.trim().split(/\s+/).length < 2) {
+        showToast("Enter full name (First & Last)", "error");
+        return false;
+    }
+    if (!emailRegex.test(email)) {
+        showToast("Invalid email format", "error");
+        return false;
+    }
+    if (pass !== null && !passRegex.test(pass)) {
+        showToast("Password too weak (Need Uppercase, Number & Symbol)", "error");
+        return false;
+    }
+    return true;
+}
+
+/* ================================
+   AUTH SLIDER & TOGGLE
 ================================ */
 const slider = document.querySelector('.auth-slider');
-
 document.querySelectorAll('.switch').forEach(btn => {
   btn.addEventListener('click', () => {
-    if (btn.dataset.target === 'signup') {
-      slider.classList.add('show-signup');
-    } else {
-      slider.classList.remove('show-signup');
-    }
+    btn.dataset.target === 'signup' ? slider.classList.add('show-signup') : slider.classList.remove('show-signup');
   });
 });
 
-/* ================================
-   PASSWORD TOGGLE (FIXED)
-================================ */
 document.querySelectorAll('.toggle-password').forEach(icon => {
   icon.addEventListener('click', () => {
     const input = icon.previousElementSibling;
-    const isPassword = input.type === 'password';
-
-    input.type = isPassword ? 'text' : 'password';
+    input.type = input.type === 'password' ? 'text' : 'password';
     icon.classList.toggle('fa-eye');
     icon.classList.toggle('fa-eye-slash');
   });
@@ -33,74 +65,80 @@ document.querySelectorAll('.toggle-password').forEach(icon => {
    LOGIN
 ================================ */
 const loginForm = document.getElementById('nbaLoginForm');
+if (loginForm) {
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = loginForm.querySelector('input[type="email"]').value.trim();
+    const password = loginForm.querySelector('input[type="password"]').value.trim();
 
-loginForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
+    if (!validateAuthData(null, email, null)) return;
 
-  const email = loginForm.querySelector('input[type="email"]').value.trim();
-  const password = loginForm.querySelector('input[type="password"]').value.trim();
+    try {
+      const res = await fetch('http://localhost:8000/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: email, password: password })
+      });
 
-  console.log("LOGIN:", email, password);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Invalid credentials');
 
-  try {
-    const res = await fetch('http://localhost:8000/users/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: email,
-        password: password
-      })
-    });
+      const displayName = data.username || "Scouter";
+      showToast(`Welcome back, ${displayName}!`);
+      
+      localStorage.setItem('userName', displayName);
+      localStorage.setItem('userId', data.id);
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text);
+      setTimeout(() => { window.location.href = '../homepage/index.html'; }, 1000);
+    } catch (err) {
+      showToast(err.message, "error");
     }
-
-    const user = await res.json();
-    console.log("SUCCESS:", user);
-
-    window.location.href = '../homepage/index.html';
-
-  } catch (err) {
-    console.error(err);
-    alert('Login failed');
-  }
-});
+  });
+}
 
 /* ================================
-   SIGNUP
+   SIGNUP (זה מה שהיה חסר!)
 ================================ */
 const signupForm = document.getElementById('nbaSignupForm');
+if (signupForm) {
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const inputs = signupForm.querySelectorAll('input');
+    const username = inputs[0].value.trim(); // Full Name
+    const email = inputs[1].value.trim();
+    const password = inputs[2].value.trim();
 
-signupForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
+    // בדיקת תקינות לפני שליחה
+    if (!validateAuthData(username, email, password)) return;
 
-  const inputs = signupForm.querySelectorAll('input');
+    try {
+      const res = await fetch('http://localhost:8000/users/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
 
-  const username = inputs[0].value.trim();
-  const email = inputs[1].value.trim();
-  const password = inputs[2].value.trim();
+      const data = await res.json();
 
-  console.log("SIGNUP:", username, email);
+      if (!res.ok) {
+        // ניקוי הודעת השגיאה מ-Pydantic (מסיר את ה-"Value error, ")
+        let errorMsg = "Signup failed";
+        if (data.detail && Array.isArray(data.detail)) {
+            errorMsg = data.detail[0].msg.replace("Value error, ", "");
+        } else if (data.detail) {
+            errorMsg = data.detail;
+        }
+        throw new Error(errorMsg);
+      }
 
-  try {
-    const res = await fetch('http://localhost:8000/users/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, email, password })
-    });
+      showToast("Account created! Now you can sign in.");
+      
+      // החלקה חזרה לטופס לוגין
+      setTimeout(() => { slider.classList.remove('show-signup'); }, 1500);
 
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text);
+    } catch (err) {
+      console.error("Signup Error:", err);
+      showToast(err.message, "error");
     }
-
-    alert("Account created – please sign in");
-    slider.classList.remove('show-signup');
-
-  } catch (err) {
-    console.error(err);
-    alert("Signup failed");
-  }
-});
+  });
+}
