@@ -1,4 +1,8 @@
-// 1. מיפוי נתונים משלימים (כדי לא לגעת ב-DB)
+/* ================================
+   NBA TEAMS DASHBOARD - script.js
+================================ */
+
+// 1. מיפוי נתונים משלימים (לוגואים וקונפרנסים)
 const teamExtraData = {
     "ATL": { conf: "east", div: "Southeast", nbaId: 1610612737 },
     "BOS": { conf: "east", div: "Atlantic", nbaId: 1610612738 },
@@ -38,7 +42,7 @@ const grids = {
     west: document.getElementById('grid-west')
 };
 
-// 2. פונקציה למשיכת הנתונים מה-API של FastAPI
+// 2. פונקציה למשיכת הקבוצות מה-DB
 async function fetchTeamsFromDB() {
     try {
         const response = await fetch('http://localhost:8000/teams/'); 
@@ -49,8 +53,9 @@ async function fetchTeamsFromDB() {
     }
 }
 
-// 3. פונקציית רינדור
+// 3. רינדור כרטיסי קבוצות
 function renderTeams(teams) {
+    if (!grids.east || !grids.west) return;
     grids.east.innerHTML = '';
     grids.west.innerHTML = '';
 
@@ -72,65 +77,110 @@ function renderTeams(teams) {
                     </div>
                 </div>
                 <i class="fa-solid fa-arrow-right-long arrow-icon"></i>
-            </div>
-        `;
-
-        if (extra.conf === 'east') {
-            grids.east.innerHTML += cardHTML;
-        } else {
-            grids.west.innerHTML += cardHTML;
-        }
+            </div>`;
+        if (extra.conf === 'east') grids.east.innerHTML += cardHTML;
+        else grids.west.innerHTML += cardHTML;
     });
-
     grids.east.classList.add('active');
 }
 
-// 4. מעבר לדף רוסטר של קבוצה - התיקון כאן
+// 4. ניווט לעמוד קבוצה
 function handleTeamClick(id) {
-    console.log("Navigating to team ID:", id);
-    // מעביר לעמוד הקבוצה שנמצא בתיקייה המקבילה ושולח את ה-ID כפרמטר
     window.location.href = `../teams/index.html?id=${id}`;
 }
 
-// 5. ניהול הטאבים (Slider)
+// 5. ניהול הטאבים (מזרח/מערב)
 document.querySelectorAll('.filter-tab').forEach(tab => {
     tab.addEventListener('click', () => {
         document.querySelector('.filter-tab.active').classList.remove('active');
         tab.classList.add('active');
-
         const offset = tab.dataset.index * 50; 
         slider.style.transform = `translateX(-${offset}%)`;
-
         document.querySelectorAll('.teams-grid').forEach(g => g.classList.remove('active'));
-        const filter = tab.dataset.filter;
-        grids[filter].classList.add('active');
+        grids[tab.dataset.filter].classList.add('active');
     });
 });
 
-// 6. חיפוש שחקן (בלחיצה על Enter)
+// 6. מערכת חימוש חכמה (Autocomplete)
 const searchInput = document.getElementById('teamSearch');
+const suggestionsBox = document.getElementById('searchSuggestions');
+let debounceTimer;
 
 if (searchInput) {
+    // מאזין ל-Enter (בחירת התוצאה הראשונה)
     searchInput.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter') {
-            const query = e.target.value.trim();
-            if (!query) return;
-
+            const query = searchInput.value.trim();
+            if (query.length < 2) return;
             try {
-                const response = await fetch(`http://localhost:8000/players/search?full_name=${encodeURIComponent(query)}`);
-                
-                if (response.ok) {
-                    const player = await response.json();
-                    if (player && player.id) {
-                        window.location.href = `player-details.html?id=${player.id}`;
-                    } else {
-                        alert("Player not found");
-                    }
+                const response = await fetch(`http://localhost:8000/players/suggestions?q=${encodeURIComponent(query)}`);
+                const players = await response.json();
+                if (players && players.length > 0) {
+                    window.location.href = `../player/index.html?id=${players[0].id}`;
                 }
-            } catch (error) {
-                console.error("Search error:", error);
-            }
+            } catch (err) { console.error("Enter search error:", err); }
         }
+    });
+
+    // מאזין להקלדה
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        clearTimeout(debounceTimer);
+        
+        if (query.length < 2) {
+            if (suggestionsBox) suggestionsBox.classList.add('card-hidden');
+            return;
+        }
+
+        debounceTimer = setTimeout(async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/players/suggestions?q=${encodeURIComponent(query)}`);
+                if (response.ok) {
+                    const players = await response.json();
+                    renderSuggestions(players);
+                }
+            } catch (error) { console.error("Search error:", error); }
+        }, 250);
+    });
+
+    // סגירת רשימה בלחיצה בחוץ
+    document.addEventListener('click', (e) => {
+        if (suggestionsBox && !searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.classList.add('card-hidden');
+        }
+    });
+}
+
+// פונקציית רינדור ההצעות (ללא N/A וללא Position)
+function renderSuggestions(players) {
+    if (!suggestionsBox) return;
+    suggestionsBox.innerHTML = '';
+    
+    if (!players || !Array.isArray(players) || players.length === 0) {
+        suggestionsBox.classList.add('card-hidden');
+        return;
+    }
+
+    suggestionsBox.classList.remove('card-hidden');
+    players.forEach(player => {
+        const ppg = (player.ppg !== undefined) ? player.ppg : '0.0';
+        const team = player.team_abbr || "NBA";
+
+        const div = document.createElement('div');
+        div.className = 'suggestion-item';
+        div.innerHTML = `
+            <div class="player-circle-abbr">${team}</div>
+            <div class="suggestion-info">
+                <span class="suggestion-name">${player.full_name}</span>
+                <span class="suggestion-team">${team}</span>
+            </div>
+            <div class="suggestion-stats">${ppg} PPG</div>
+        `;
+
+        div.onclick = () => {
+            window.location.href = `../player/index.html?id=${player.id}`;
+        };
+        suggestionsBox.appendChild(div);
     });
 }
 

@@ -32,6 +32,33 @@ def get_teams(db: Session, limit: int = 30):
     """
     return db.query(Team).limit(limit).all()
 
+def search_players_suggestions(db: Session, query: str, limit: int = 5):
+    # שליפת השחקנים
+    players = (
+        db.query(Player)
+        .filter(Player.full_name.ilike(f"%{query}%"))
+        .limit(limit)
+        .all()
+    )
+    
+    for player in players:
+        # הצמדת הסטטיסטיקה האחרונה
+        stats = (
+            db.query(PlayerSeasonStats)
+            .filter(PlayerSeasonStats.player_id == player.id)
+            .order_by(PlayerSeasonStats.season.desc())
+            .first()
+        )
+        player.latest_stats = stats
+        
+        # וידוא שיש לו את אובייקט הקבוצה (כדי למנוע שגיאות ב-Frontend)
+        if not hasattr(player, 'team') or player.team is None:
+            player.team_abbreviation = "NBA"
+        else:
+            player.team_abbreviation = player.team.abbreviation
+
+    return players
+
 def get_players_by_team(db: Session, team_id: int):
     # מושכים את כל השחקנים של הקבוצה
     players = db.query(Player).filter(Player.team_id == team_id).all()

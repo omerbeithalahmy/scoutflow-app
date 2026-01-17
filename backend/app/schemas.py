@@ -62,7 +62,7 @@ class PlayerOut(BaseModel):
     id: int
     full_name: str
     position: Optional[str] = None
-    team_id: int
+    team_id: Optional[int] = True
     is_active: bool
     # עכשיו פייתון כבר מכיר את PlayerSeasonStatsOut
     latest_stats: Optional[PlayerSeasonStatsOut] = None 

@@ -19,7 +19,7 @@
       <a href="#" class="nav-link">MY PLAYERS</a>
     </div>
     <div class="nav-right">
-      <div class="user-badge">OMER24883</div>
+      <div id="userNameDisplay" class="user-badge">GUEST</div>
       <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
     </div>
   </nav>
@@ -32,7 +32,8 @@
       
       <div class="search-bar">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="teamSearch" placeholder="Search for a player to explore their profile...">
+        <input type="text" id="teamSearch" placeholder="Search for a player to explore their profile..." autocomplete="off">
+        <div id="searchSuggestions" class="suggestions-dropdown card-hidden"></div>
       </div>
     </header>
 
