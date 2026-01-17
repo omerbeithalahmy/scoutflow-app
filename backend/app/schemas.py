@@ -1,65 +1,51 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 
-# ===== Users =====
-
+# 1. Users
 class UserCreate(BaseModel):
     username: str
     email: str
     password: str
 
 class UserLogin(BaseModel):
-    username: str  # יכול להיות username או email
+    username: str
     password: str
-
 
 class UserOut(BaseModel):
     id: int
     username: str
     email: str
-
     model_config = {"from_attributes": True}
 
-
-# ===== Teams =====
-
+# 2. Teams
 class TeamOut(BaseModel):
     id: int
     name: str
     abbreviation: Optional[str] = None
     city: Optional[str] = None
-
     model_config = {"from_attributes": True}
 
+# 3. Stats (חייב להופיע לפני PlayerOut!)
+class PlayerSeasonStatsOut(BaseModel):
+    avg_points: Optional[float] = 0.0
+    avg_assists: Optional[float] = 0.0
+    avg_rebounds: Optional[float] = 0.0
+    # אם תרצה להוסיף עוד נתונים מה-DB בעתיד, תוסיף אותם כאן
+    model_config = {"from_attributes": True}
 
-# ===== Players (basic) =====
-
+# 4. Players
 class PlayerOut(BaseModel):
     id: int
     full_name: str
     position: Optional[str] = None
     team_id: int
     is_active: bool
+    # עכשיו פייתון כבר מכיר את PlayerSeasonStatsOut
+    latest_stats: Optional[PlayerSeasonStatsOut] = None 
 
     model_config = {"from_attributes": True}
 
-
-# ===== Player Details =====
-
-class PlayerSeasonStatsOut(BaseModel):
-    season: str
-    games_played: Optional[int] = None
-    avg_minutes: Optional[float] = None
-    avg_points: Optional[float] = None
-    avg_assists: Optional[float] = None
-    avg_rebounds: Optional[float] = None
-    avg_steals: Optional[float] = None
-    avg_blocks: Optional[float] = None
-    avg_turnovers: Optional[float] = None
-
-    model_config = {"from_attributes": True}
-
-
+# 5. Details (עבור עמוד שחקן ספציפי אם תרצה היסטוריה מלאה)
 class PlayerDetailsOut(BaseModel):
     id: int
     full_name: str
@@ -67,5 +53,4 @@ class PlayerDetailsOut(BaseModel):
     team_id: int
     is_active: bool
     season_stats: List[PlayerSeasonStatsOut] = Field(default_factory=list)
-
     model_config = {"from_attributes": True}

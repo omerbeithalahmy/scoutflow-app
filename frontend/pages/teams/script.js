@@ -7,7 +7,7 @@ const teamExtraData = {
     "CHI": { conf: "EAST", div: "Central", nbaId: 1610612741, color: "#CE1141" },
     "DAL": { conf: "WEST", div: "Southwest", nbaId: 1610612742, color: "#00538C" },
     "DEN": { conf: "WEST", div: "Northwest", nbaId: 1610612743, color: "#0E2240" },
-    "GSW": { conf: "WEST", div: "Pacific", nbaId: 1610612744, color: "#1D428A" },
+    "GSW": { conf: "WEST", div: "Southwest", nbaId: 1610612744, color: "#1D428A" },
     "HOU": { conf: "WEST", div: "Southwest", nbaId: 1610612745, color: "#CE1141" },
     "LAC": { conf: "WEST", div: "Pacific", nbaId: 1610612746, color: "#C8102E" },
     "LAL": { conf: "WEST", div: "Pacific", nbaId: 1610612747, color: "#552583" },
@@ -36,87 +36,99 @@ async function initDynamicPage() {
     const urlParams = new URLSearchParams(window.location.search);
     const teamId = urlParams.get('id');
 
-    console.log("מנסה לטעון את קבוצה מספר:", teamId);
-
-    if (!teamId) {
-        alert("לא נמצא ID בכתובת ה-URL");
-        return;
-    }
+    if (!teamId) return;
 
     try {
-        // קריאה ראשונה: פרטי קבוצה
         const teamRes = await fetch(`http://localhost:8000/teams/${teamId}`);
-        if (!teamRes.ok) throw new Error(`שגיאה בטעינת קבוצה: ${teamRes.status}`);
         const team = await teamRes.json();
         
-        // עדכון כותרות
         updateUIHeader(team);
 
-        // קריאה שנייה: שחקנים
         const playersRes = await fetch(`http://localhost:8000/teams/${teamId}/players`);
-        if (!playersRes.ok) throw new Error(`שגיאה בטעינת שחקנים: ${playersRes.status}`);
         const players = await playersRes.json();
 
-        // הצגת שחקנים
         renderPlayers(players);
-
     } catch (err) {
-        console.error("שגיאה קריטית:", err);
-        document.getElementById('teamMeta').innerText = "ERROR LOADING DATA";
+        console.error("Error:", err);
     }
 }
 
 function updateUIHeader(team) {
     const extra = teamExtraData[team.abbreviation] || { nbaId: 0, color: "#111", conf: "NBA", div: "N/A" };
     
-    // לוגו
+    // הגדרת צבע הקבוצה הדינמי
+    document.documentElement.style.setProperty('--team-color', extra.color);
+
+    // עדכון הלוגו
     const logoImg = document.getElementById('teamLogo');
-    if (logoImg) {
+    if (logoImg && extra.nbaId !== 0) {
         logoImg.src = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
-        logoImg.style.display = 'block';
+        logoImg.style.display = 'block'; // מוודא שהלוגו לא מוסתר
     }
 
-    // טקסטים
+    // עדכון טקסטים
     document.getElementById('teamCity').innerText = team.city.toUpperCase();
-    document.getElementById('teamName').innerText = team.name.toUpperCase();
-    document.getElementById('teamName').style.color = extra.color;
-    document.getElementById('teamMeta').innerText = `${extra.conf}ERN CONFERENCE • ${extra.div.toUpperCase()}`;
+    const nameEl = document.getElementById('teamName');
+    if (nameEl) {
+        nameEl.innerText = team.name.toUpperCase();
+        nameEl.style.color = extra.color;
+    }
+    
+    const metaEl = document.getElementById('teamMeta');
+    if (metaEl) {
+        metaEl.innerText = `${extra.conf}ERN CONFERENCE • ${extra.div.toUpperCase()}`;
+    }
 }
 
 function renderPlayers(players) {
     const container = document.getElementById('dynamicRoster');
     if (!container) return;
 
-    if (players.length === 0) {
-        container.innerHTML = "<h3>לא נמצאו שחקנים לקבוצה זו בבסיס הנתונים</h3>";
-        return;
-    }
-
     let html = '<div class="players-grid">';
     players.forEach(p => {
+        const nameParts = p.full_name.trim().split(/\s+/);
+        const initials = nameParts.length >= 2 
+            ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+            : nameParts[0][0].toUpperCase();
+
+        const stats = p.latest_stats;
+        const formatStat = (val) => (val === null || val === undefined || val === 0) ? "N/A" : val.toFixed(1);
+
         html += `
-            <div class="player-card">
+            <div class="player-card" onclick="navigateToPlayer(${p.id})">
               <div class="card-left">
-                <div class="player-num-box">#--</div>
+                <div class="player-num-box">${initials}</div>
                 <div class="player-info-text">
-                  <span class="p-pos">${p.position || 'N/A'}</span>
-                  <span class="p-name">${p.full_name.toUpperCase()}</span>
-                  <span class="p-phys">NBA PLAYER</span>
+                  <span class="p-pos">NBA PLAYER</span>
+                  <h3 class="p-name">${p.full_name.toUpperCase()}</h3>
+                  <span class="p-phys">2025-26 SEASON</span>
                 </div>
               </div>
               <div class="card-right">
-                <div class="stat-item"><span class="stat-val">--</span><span class="stat-lbl">PPG</span></div>
+                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_points)}</span><span class="stat-lbl">PPG</span></div>
+                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_rebounds)}</span><span class="stat-lbl">RPG</span></div>
+                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_assists)}</span><span class="stat-lbl">APG</span></div>
                 <div class="card-icons">
-                  <i class="fa-regular fa-heart"></i>
+                  <i class="fa-regular fa-heart" onclick="handleFollow(event, ${p.id})"></i>
                   <i class="fa-solid fa-arrow-right"></i>
                 </div>
               </div>
             </div>`;
     });
     html += '</div>';
-    
     container.innerHTML = html;
-    document.getElementById('rosterCount').innerText = `(${players.length} PLAYERS)`;
+    
+    const rosterCountEl = document.getElementById('rosterCount');
+    if (rosterCountEl) rosterCountEl.innerText = `(${players.length} PLAYERS)`;
+}
+
+function navigateToPlayer(playerId) {
+    window.location.href = `../player/index.html?id=${playerId}`;
+}
+
+function handleFollow(event, playerId) {
+    event.stopPropagation();
+    console.log("Following player:", playerId);
 }
 
 initDynamicPage();

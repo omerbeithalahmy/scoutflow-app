@@ -33,7 +33,21 @@ def get_teams(db: Session, limit: int = 30):
     return db.query(Team).limit(limit).all()
 
 def get_players_by_team(db: Session, team_id: int):
-    return db.query(Player).filter(Player.team_id == team_id).all()
+    # מושכים את כל השחקנים של הקבוצה
+    players = db.query(Player).filter(Player.team_id == team_id).all()
+    
+    for player in players:
+        # לכל שחקן, מושכים את הסטטיסטיקה של העונה האחרונה
+        stats = (
+            db.query(PlayerSeasonStats)
+            .filter(PlayerSeasonStats.player_id == player.id)
+            .order_by(PlayerSeasonStats.season.desc())
+            .first()
+        )
+        # אנחנו מצמידים את הסטטיסטיקה לאובייקט השחקן
+        player.latest_stats = stats
+    
+    return players
 
 def get_player_with_stats(db: Session, player_id: int):
     player = (
