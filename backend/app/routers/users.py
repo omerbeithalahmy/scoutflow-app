@@ -19,13 +19,24 @@ def create_user(
     # hash לסיסמה לפני הוספה למסד הנתונים
     hashed_pw = hash_password(user.password)
 
-    created_user = crud.create_user(
-        db=db,
-        username=user.username,
-        email=user.email,
-        password_hash=hashed_pw  # ← כאן השם שונה כדי להתאים ל-crud.py
-    )
-    return created_user
+    try:
+        created_user = crud.create_user(
+            db=db,
+            username=user.username,
+            email=user.email,
+            password_hash=hashed_pw  # ← כאן השם שונה כדי להתאים ל-crud.py
+        )
+        return created_user
+    except Exception as e:
+        # Check if it's an integrity error (duplicate entry)
+        # sqlalchemy IntegirtyError usually wraps psycopg2 errors
+        error_str = str(e).lower()
+        if "integrityerror" in error_str or "unique constraint" in error_str:
+            raise HTTPException(
+                status_code=400, 
+                detail="Username or email already registered"
+            )
+        raise e
 
 @router.post("/login")
 def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
