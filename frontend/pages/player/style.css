@@ -10,67 +10,167 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; background-color: #fff; color: var(--nba-black); }
 
-/* Navbar */
+/* --- Navbar (Synchronized with Team Page) --- */
 .main-nav { 
-    display: flex; justify-content: space-between; align-items: center; 
-    padding: 12px 40px; border-bottom: 1px solid var(--border-light); 
-    background: #fff; position: sticky; top: 0; z-index: 1000;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 12px 40px; 
+    border-bottom: 1px solid var(--border-light); 
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
+
 .logo-text { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; }
 .red-text { color: var(--nba-red); }
+
 .nav-center { display: flex; align-items: center; }
+
 .nav-link { 
-    text-decoration: none; color: var(--nba-black); font-weight: 700; 
-    margin: 0 10px; font-size: 13px; text-transform: uppercase; 
-    letter-spacing: 1px; padding: 8px 16px; transition: all 0.2s ease; 
+    text-decoration: none; 
+    color: var(--nba-black); 
+    font-weight: 700; /* מתוקן מ-700 ל-600 */
+    margin: 0 10px; 
+    font-size: 13px; 
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    transition: all 0.2s ease; 
 }
+
 .nav-link:hover { color: var(--nba-red); }
 
-.user-wrapper {
-    display: flex; align-items: center; gap: 15px; background: #F5F5F5;
-    padding: 6px 16px; border-radius: 50px; border: 1px solid var(--border-light);
+.nav-link.active { 
+    background: #F0F0F0; 
+    border-radius: 4px; 
 }
 
-/* Player Hero */
+/* User Wrapper (Synchronized) */
+.user-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #F5F5F5;
+    padding: 6px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--border-light);
+}
+
+.user-badge {
+    color: var(--nba-black);
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px; /* מתוקן לסנכרון */
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--nba-black);
+    display: flex;
+    align-items: center;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover { color: var(--nba-red); transform: scale(1.1); }
+
+/* --- Player Content & Hero --- */
 .page-content { padding: 0 0 60px; }
+
 .back-link { 
-    display: inline-flex; align-items: center; gap: 8px; margin: 30px 40px; 
-    text-decoration: none; color: var(--nba-black); font-weight: 700; 
-    font-size: 12px; text-transform: uppercase; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 8px; 
+    margin: 30px 40px; 
+    text-decoration: none; 
+    color: var(--nba-black); 
+    font-weight: 700; 
+    font-size: 12px; 
+    text-transform: uppercase; 
 }
 
 .player-hero { 
-    padding: 0 40px 40px; border-bottom: 1px solid var(--border-light); 
-    display: flex; justify-content: space-between; align-items: flex-end; 
+    padding: 0 40px 40px; 
+    border-bottom: 1px solid var(--border-light); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
 }
+
 .hero-left { display: flex; align-items: center; gap: 40px; }
 
-.player-logo-container { width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; }
-.player-team-logo { max-width: 100%; max-height: 100%; object-fit: contain; }
+.player-logo-container { 
+    width: 160px; 
+    height: 160px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.player-team-logo { 
+    max-width: 100%; 
+    max-height: 100%; 
+    object-fit: contain; 
+}
 
 .player-title { display: flex; flex-direction: column; text-align: left; }
 .p-meta-top { color: var(--muted-gray); letter-spacing: 2px; font-size: 13px; margin-bottom: 5px; text-transform: uppercase; }
 .p-first-name { font-family: 'Oswald', sans-serif; font-size: 55px; line-height: 0.9; color: #333; text-transform: uppercase; }
 .p-last-name { 
-    font-family: 'Oswald', sans-serif; font-size: 85px; line-height: 0.8; 
-    margin-top: 10px; /* הריווח שביקשת */
-    color: var(--team-color); text-transform: uppercase; 
+    font-family: 'Oswald', sans-serif; 
+    font-size: 85px; 
+    line-height: 0.8; 
+    margin-top: 10px; 
+    color: var(--team-color); 
+    text-transform: uppercase; 
 }
 
 .follow-btn {
-    background: #111; color: #fff; border: none; padding: 14px 30px; 
-    font-weight: 700; font-size: 13px; cursor: pointer; 
-    display: flex; align-items: center; gap: 10px; transition: background 0.2s;
+    background: #111; 
+    color: #fff; 
+    border: none; 
+    padding: 14px 30px; 
+    font-weight: 700; 
+    font-size: 13px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    transition: background 0.2s;
 }
 .follow-btn:hover { background: var(--team-color); }
 
-/* Stats */
+/* --- Stats Section --- */
 .stats-section { padding: 40px; }
 .section-title { 
-    font-family: 'Oswald', sans-serif; font-size: 24px; margin-bottom: 30px; 
-    border-bottom: 1px solid #000; padding-bottom: 10px; width: fit-content; text-transform: uppercase; 
+    font-family: 'Oswald', sans-serif; 
+    font-size: 24px; 
+    margin-bottom: 30px; 
+    border-bottom: 1px solid #000; 
+    padding-bottom: 10px; 
+    width: fit-content; 
+    text-transform: uppercase; 
 }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-.stat-card { background-color: var(--bg-gray); padding: 20px; border-radius: 4px; display: flex; flex-direction: column; }
+
+.stats-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+    gap: 15px; 
+}
+
+.stat-card { 
+    background-color: var(--bg-gray); 
+    padding: 20px; 
+    border-radius: 4px; 
+    display: flex; 
+    flex-direction: column; 
+}
+
 .stat-label { font-size: 11px; color: var(--muted-gray); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
 .stat-value { font-family: 'Oswald', sans-serif; font-size: 32px; color: #111; }
