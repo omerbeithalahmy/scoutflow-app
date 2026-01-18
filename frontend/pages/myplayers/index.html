@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive - My Players | ScoutFlow</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="main-nav">
+        <div class="nav-left">
+            <span class="logo-text">Scout<span class="red-text">Flow</span></span>
+        </div>
+
+        <div class="nav-center">
+            <a href="../homepage/index.html" class="nav-link">TEAMS</a>
+            <a href="../myplayers/index.html" class="nav-link active">MY PLAYERS</a>
+        </div>
+
+        <div class="nav-right">
+            <div class="user-wrapper">
+                <span id="userNameDisplay" class="user-badge">GUEST</span>
+                <button class="logout-btn" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <!-- Archive Header -->
+        <header class="archive-header">
+            <div class="header-icon-wrapper">
+                <i class="fa-solid fa-heart"></i>
+            </div>
+            <div class="header-text">
+                <span class="header-subtitle">YOUR WATCHLIST</span>
+                <h1 class="header-title">MY PLAYERS</h1>
+                <span class="player-count" id="playerCount">0 PLAYERS FOLLOWED</span>
+            </div>
+        </header>
+
+        <!-- Empty State (shown when no players followed) -->
+        <div class="empty-state" id="emptyState">
+            <i class="fa-solid fa-inbox empty-icon"></i>
+            <h2 class="empty-title">NO PLAYERS FOLLOWED</h2>
+            <p class="empty-subtitle">Start following players to add them to your archive. Click the<br>heart icon on
+                any player card to follow them.</p>
+        </div>
+
+        <!-- Watchlist Container -->
+        <div class="watchlist-container" id="watchlistContainer" style="display: none;">
+            <!-- Player rows will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

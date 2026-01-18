@@ -1,67 +1,81 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, field_validator
 from typing import Optional, List
+import re
 
-# ===== Users =====
-
+# 1. Users
 class UserCreate(BaseModel):
-    username: str
-    email: str
-    password: str
+    username: str = Field(..., min_length=2, description="Full Name")
+    email: EmailStr
+    password: str = Field(..., min_length=8)
 
+    @field_validator('password')
+    @classmethod
+    def password_complexity(cls, v: str) -> str:
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('Password must contain at least one uppercase letter')
+        if not re.search(r'[0-9]', v):
+            raise ValueError('Password must contain at least one digit')
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', v):
+            raise ValueError('Password must contain at least one special character')
+        return v
+
+    @field_validator('username')
+    @classmethod
+    def name_must_be_full(cls, v: str) -> str:
+        if len(v.strip().split()) < 2:
+            raise ValueError('Please enter both first and last name')
+        return v
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
 class UserOut(BaseModel):
     id: int
     username: str
     email: str
-
     model_config = {"from_attributes": True}
 
-
-# ===== Teams =====
-
+# 2. Teams
 class TeamOut(BaseModel):
     id: int
     name: str
     abbreviation: Optional[str] = None
     city: Optional[str] = None
-
     model_config = {"from_attributes": True}
 
+# 3. Stats (חייב להופיע לפני PlayerOut!)
+class PlayerSeasonStatsOut(BaseModel):
+    season: str
+    games_played: Optional[int] = 0
+    avg_minutes: Optional[float] = 0.0
+    avg_points: Optional[float] = 0.0
+    avg_assists: Optional[float] = 0.0
+    avg_rebounds: Optional[float] = 0.0
+    avg_steals: Optional[float] = 0.0
+    avg_blocks: Optional[float] = 0.0
+    avg_turnovers: Optional[float] = 0.0
+    model_config = {"from_attributes": True}
 
-# ===== Players (basic) =====
-
+# 4. Players
 class PlayerOut(BaseModel):
     id: int
     full_name: str
     position: Optional[str] = None
-    team_id: int
+    team_id: Optional[int] = True
     is_active: bool
+    # עכשיו פייתון כבר מכיר את PlayerSeasonStatsOut
+    latest_stats: Optional[PlayerSeasonStatsOut] = None 
 
     model_config = {"from_attributes": True}
 
-
-# ===== Player Details =====
-
-class PlayerSeasonStatsOut(BaseModel):
-    season: str
-    games_played: Optional[int] = None
-    avg_minutes: Optional[float] = None
-    avg_points: Optional[float] = None
-    avg_assists: Optional[float] = None
-    avg_rebounds: Optional[float] = None
-    avg_steals: Optional[float] = None
-    avg_blocks: Optional[float] = None
-    avg_turnovers: Optional[float] = None
-
-    model_config = {"from_attributes": True}
-
-
+# 5. Details (עבור עמוד שחקן ספציפי אם תרצה היסטוריה מלאה)
 class PlayerDetailsOut(BaseModel):
     id: int
     full_name: str
-    position: Optional[str] = None
     team_id: int
-    is_active: bool
+    team_name: Optional[str] = None # הוספנו כדי שנדע לאן לחזור
+    team_abbreviation: Optional[str] = None # הוספנו עבור הצבעים
     season_stats: List[PlayerSeasonStatsOut] = Field(default_factory=list)
-
+    latest_stats: Optional[PlayerSeasonStatsOut] = None  # Latest season stats
     model_config = {"from_attributes": True}

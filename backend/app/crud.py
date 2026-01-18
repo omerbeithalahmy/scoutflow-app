@@ -32,8 +32,49 @@ def get_teams(db: Session, limit: int = 30):
     """
     return db.query(Team).limit(limit).all()
 
+def search_players_suggestions(db: Session, query: str, limit: int = 5):
+    # שליפת השחקנים
+    players = (
+        db.query(Player)
+        .filter(Player.full_name.ilike(f"%{query}%"))
+        .limit(limit)
+        .all()
+    )
+    
+    for player in players:
+        # הצמדת הסטטיסטיקה האחרונה
+        stats = (
+            db.query(PlayerSeasonStats)
+            .filter(PlayerSeasonStats.player_id == player.id)
+            .order_by(PlayerSeasonStats.season.desc())
+            .first()
+        )
+        player.latest_stats = stats
+        
+        # וידוא שיש לו את אובייקט הקבוצה (כדי למנוע שגיאות ב-Frontend)
+        if not hasattr(player, 'team') or player.team is None:
+            player.team_abbreviation = "NBA"
+        else:
+            player.team_abbreviation = player.team.abbreviation
+
+    return players
+
 def get_players_by_team(db: Session, team_id: int):
-    return db.query(Player).filter(Player.team_id == team_id).all()
+    # מושכים את כל השחקנים של הקבוצה
+    players = db.query(Player).filter(Player.team_id == team_id).all()
+    
+    for player in players:
+        # לכל שחקן, מושכים את הסטטיסטיקה של העונה האחרונה
+        stats = (
+            db.query(PlayerSeasonStats)
+            .filter(PlayerSeasonStats.player_id == player.id)
+            .order_by(PlayerSeasonStats.season.desc())
+            .first()
+        )
+        # אנחנו מצמידים את הסטטיסטיקה לאובייקט השחקן
+        player.latest_stats = stats
+    
+    return players
 
 def get_player_with_stats(db: Session, player_id: int):
     player = (
@@ -44,6 +85,9 @@ def get_player_with_stats(db: Session, player_id: int):
 
     if not player:
         return None
+    
+    player.team_name = player.team.name
+    player.team_abbreviation = player.team.abbreviation
 
     stats = (
         db.query(PlayerSeasonStats)
@@ -58,9 +102,12 @@ def get_player_with_stats(db: Session, player_id: int):
 
 
 def get_followed_players(db: Session, user_id: int):
+    """
+    Returns list of players followed by user with their latest season stats
+    """
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        return None  # יוזר לא קיים
+        return None  # User doesn't exist
 
     followed = (
         db.query(UserFollowedPlayer)
@@ -68,15 +115,69 @@ def get_followed_players(db: Session, user_id: int):
         .all()
     )
 
-    # מחזיר רשימת שחקנים
     players_list = []
     for fp in followed:
-        player = fp.player  # באמצעות relationship
-        # מחזיר season_stats ריק (ניתן לשנות לסטטיסטיקות אמיתיות אם רוצים)
-        player.season_stats = getattr(player, "season_stats", [])
+        player = fp.player
+        
+        # Get latest season stats
+        latest_stats = (
+            db.query(PlayerSeasonStats)
+            .filter(PlayerSeasonStats.player_id == player.id)
+            .order_by(PlayerSeasonStats.season.desc())
+            .first()
+        )
+        
+        # Attach stats and team info
+        player.latest_stats = latest_stats
+        if player.team:
+            player.team_name = player.team.name
+            player.team_abbreviation = player.team.abbreviation
+        
         players_list.append(player)
 
     return players_list
+
+
+def follow_player(db: Session, user_id: int, player_id: int):
+    """
+    Creates a follow relationship between user and player
+    Returns the created relationship or None if already exists
+    """
+    # Check if already following
+    existing = (
+        db.query(UserFollowedPlayer)
+        .filter(UserFollowedPlayer.user_id == user_id,
+                UserFollowedPlayer.player_id == player_id)
+        .first()
+    )
+    
+    if existing:
+        return None  # Already following
+    
+    # Create new follow relationship
+    new_follow = UserFollowedPlayer(
+        user_id=user_id,
+        player_id=player_id
+    )
+    db.add(new_follow)
+    db.commit()
+    db.refresh(new_follow)
+    return new_follow
+
+
+def check_follow_status(db: Session, user_id: int, player_id: int):
+    """
+    Checks if user is following a specific player
+    Returns True if following, False otherwise
+    """
+    followed = (
+        db.query(UserFollowedPlayer)
+        .filter(UserFollowedPlayer.user_id == user_id,
+                UserFollowedPlayer.player_id == player_id)
+        .first()
+    )
+    return followed is not None
+
 
 
 def remove_followed_player(db: Session, user_id: int, player_id: int):

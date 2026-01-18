@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Roster - ScoutFlow</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Inter:wght@400;500;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+
+  <nav class="main-nav">
+    <div class="nav-left">
+      <span class="logo-text">Scout<span class="red-text">Flow</span></span>
+    </div>
+
+    <div class="nav-center">
+      <a href="../homepage/index.html" class="nav-link">TEAMS</a>
+      <a href="../myplayers/index.html" class="nav-link">MY PLAYERS</a>
+    </div>
+
+    <div class="nav-right">
+      <div class="user-wrapper">
+        <span id="userNameDisplay" class="user-badge">GUEST</span>
+        <button class="logout-btn" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <a href="../homepage/index.html" class="back-link">
+      <i class="fa-solid fa-arrow-left"></i> BACK TO TEAMS
+    </a>
+
+    <header class="team-hero">
+      <div class="hero-content">
+        <img src="" alt="" class="team-hero-logo" id="teamLogo" style="display:none;">
+        <div class="hero-text">
+          <p class="hero-meta" id="teamMeta">LOADING...</p>
+          <h1 class="hero-city" id="teamCity">NBA</h1>
+          <h1 class="hero-brand" id="teamName">TEAM</h1>
+        </div>
+      </div>
+    </header>
+
+    <section class="roster-container">
+      <div class="roster-title-bar">
+        <i class="fa-solid fa-users-group"></i>
+        <h2>ROSTER <span class="count-badge" id="rosterCount"></span></h2>
+      </div>
+
+      <div id="dynamicRoster">
+        <p style="padding: 20px; color: #888;">Fetching players...</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
