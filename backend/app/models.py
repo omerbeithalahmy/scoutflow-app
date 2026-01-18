@@ -56,6 +56,7 @@ class Player(Base):
 
 
 
+
 class PlayerSeasonStats(Base):
     __tablename__ = "player_season_stats"
 

@@ -46,9 +46,78 @@ async function initPlayerPage() {
         if (!res.ok) throw new Error("Player not found");
         const player = await res.json();
         renderPlayerPage(player);
+
+        // Check follow status and setup follow button
+        await setupFollowButton(playerId);
     } catch (err) {
         console.error(err);
         document.body.innerHTML = "<h1 style='color:black; text-align:center; padding-top:50px;'>Player Not Found</h1>";
+    }
+}
+
+async function setupFollowButton(playerId) {
+    const userId = localStorage.getItem('userId');
+    const followBtn = document.querySelector('.follow-btn');
+
+    if (!userId || !followBtn) {
+        return;
+    }
+
+    try {
+        // Check if user is following this player
+        const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}/status`);
+        if (res.ok) {
+            const data = await res.json();
+            updateFollowButtonState(followBtn, data.is_following);
+        }
+    } catch (err) {
+        console.error('Error checking follow status:', err);
+    }
+
+    // Add click handler
+    followBtn.onclick = () => toggleFollow(playerId, followBtn);
+}
+
+async function toggleFollow(playerId, button) {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        alert('Please log in to follow players');
+        return;
+    }
+
+    const isCurrentlyFollowing = button.classList.contains('following');
+
+    try {
+        if (isCurrentlyFollowing) {
+            // Unfollow
+            const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+                method: 'DELETE'
+            });
+            if (res.ok) {
+                updateFollowButtonState(button, false);
+            }
+        } else {
+            // Follow
+            const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+                method: 'POST'
+            });
+            if (res.ok) {
+                updateFollowButtonState(button, true);
+            }
+        }
+    } catch (err) {
+        console.error('Error toggling follow:', err);
+        alert('Failed to update follow status. Please try again.');
+    }
+}
+
+function updateFollowButtonState(button, isFollowing) {
+    if (isFollowing) {
+        button.classList.add('following');
+        button.innerHTML = '<i class="fa-solid fa-heart"></i> FOLLOWING';
+    } else {
+        button.classList.remove('following');
+        button.innerHTML = '<i class="fa-regular fa-heart"></i> FOLLOW';
     }
 }
 
@@ -59,7 +128,7 @@ function renderPlayerPage(p) {
     const nameParts = p.full_name.trim().split(/\s+/);
     document.getElementById('firstName').innerText = nameParts[0].toUpperCase();
     document.getElementById('lastName').innerText = nameParts.slice(1).join(" ").toUpperCase();
-    
+
     const logoImg = document.getElementById('playerTeamLogo');
     if (logoImg && extra.nbaId !== 0) {
         logoImg.src = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
@@ -67,7 +136,7 @@ function renderPlayerPage(p) {
     }
 
     document.getElementById('playerSubTitle').innerText = `${p.team_name.toUpperCase()} | NBA PLAYER`;
-    
+
     const backBtn = document.querySelector('.back-link');
     if (backBtn) {
         backBtn.innerHTML = `<i class="fa-solid fa-arrow-left"></i> BACK TO ${p.team_name.toUpperCase()}`;
@@ -75,11 +144,11 @@ function renderPlayerPage(p) {
     }
 
     if (p.season_stats && p.season_stats.length > 0) {
-        const s = p.season_stats[0]; 
+        const s = p.season_stats[0];
         const format = (v) => (v !== undefined && v !== null) ? v.toFixed(1) : "0.0";
 
         document.getElementById('gamesPlayed').innerText = `(${s.games_played || 0} GP)`;
-        
+
         // עדכון טקסט
         document.getElementById('val-ppg').innerText = format(s.avg_points);
         document.getElementById('val-rpg').innerText = format(s.avg_rebounds);
@@ -113,7 +182,7 @@ function initUserDisplay() {
     const userNameDisplay = document.getElementById('userNameDisplay');
     const storedName = localStorage.getItem('userName');
     if (storedName && userNameDisplay) userNameDisplay.textContent = storedName.toUpperCase();
-    
+
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
         logoutBtn.onclick = () => {

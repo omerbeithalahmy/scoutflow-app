@@ -45,6 +45,48 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     }
 
 
+@router.post("/{user_id}/followed-players/{player_id}")
+def follow_player_endpoint(
+    user_id: int,
+    player_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Follow a player
+    """
+    user = crud.get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if player exists
+    player = crud.get_player_with_stats(db, player_id)
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+    
+    result = crud.follow_player(db, user_id, player_id)
+    if result is None:
+        raise HTTPException(status_code=400, detail="Already following this player")
+    
+    return {"detail": "Player followed successfully"}
+
+
+@router.get("/{user_id}/followed-players/{player_id}/status")
+def check_follow_status_endpoint(
+    user_id: int,
+    player_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Check if user is following a specific player
+    """
+    user = crud.get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    is_following = crud.check_follow_status(db, user_id, player_id)
+    return {"is_following": is_following}
+
+
 @router.get("/{user_id}/followed-players", response_model=List[schemas.PlayerDetailsOut])
 def get_user_followed_players(user_id: int, db: Session = Depends(get_db)):
     players = crud.get_followed_players(db, user_id)
@@ -68,3 +110,4 @@ def delete_followed_player(
         raise HTTPException(status_code=404, detail="Player not followed by user")
 
     return {"detail": "Player removed from followed list"}
+

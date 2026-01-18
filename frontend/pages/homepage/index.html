@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ScoutFlow - NBA Teams</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500;700&display=swap"
+    rel="stylesheet">
 </head>
+
 <body class="light-bg">
 
   <nav class="main-nav">
@@ -16,14 +19,14 @@
     </div>
     <div class="nav-center">
       <a href="#" class="nav-link active">TEAMS</a>
-      <a href="#" class="nav-link">MY PLAYERS</a>
+      <a href="../myplayers/index.html" class="nav-link">MY PLAYERS</a>
     </div>
     <div class="nav-right">
       <div class="user-wrapper">
-          <span id="userNameDisplay" class="user-badge">GUEST</span>
-          <button class="logout-btn" title="Logout">
-              <i class="fa-solid fa-right-from-bracket"></i>
-          </button>
+        <span id="userNameDisplay" class="user-badge">GUEST</span>
+        <button class="logout-btn" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
       </div>
     </div>
   </nav>
@@ -33,10 +36,11 @@
       <p class="season-label">2025-26 SEASON</p>
       <h1 class="main-title">NBA TEAMS</h1>
       <p class="subtitle">Select a team to explore their roster</p>
-      
+
       <div class="search-bar">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="teamSearch" placeholder="Search for a player to explore their profile..." autocomplete="off">
+        <input type="text" id="teamSearch" placeholder="Search for a player to explore their profile..."
+          autocomplete="off">
         <div id="searchSuggestions" class="suggestions-dropdown card-hidden"></div>
       </div>
     </header>
@@ -56,4 +60,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>

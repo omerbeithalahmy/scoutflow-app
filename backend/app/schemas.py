@@ -77,4 +77,5 @@ class PlayerDetailsOut(BaseModel):
     team_name: Optional[str] = None # הוספנו כדי שנדע לאן לחזור
     team_abbreviation: Optional[str] = None # הוספנו עבור הצבעים
     season_stats: List[PlayerSeasonStatsOut] = Field(default_factory=list)
+    latest_stats: Optional[PlayerSeasonStatsOut] = None  # Latest season stats
     model_config = {"from_attributes": True}
