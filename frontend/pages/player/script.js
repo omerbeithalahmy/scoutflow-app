@@ -53,19 +53,13 @@ async function initPlayerPage() {
 }
 
 function renderPlayerPage(p) {
-    // שליפת הנתונים לפי קיצור הקבוצה (למשל "LAL")
     const extra = teamExtraData[p.team_abbreviation] || { nbaId: 0, color: "#111" };
     document.documentElement.style.setProperty('--team-color', extra.color);
 
-    // טיפול בשם
     const nameParts = p.full_name.trim().split(/\s+/);
-    const firstName = nameParts[0].toUpperCase();
-    const lastName = nameParts.slice(1).join(" ").toUpperCase();
-
-    document.getElementById('firstName').innerText = firstName;
-    document.getElementById('lastName').innerText = lastName;
+    document.getElementById('firstName').innerText = nameParts[0].toUpperCase();
+    document.getElementById('lastName').innerText = nameParts.slice(1).join(" ").toUpperCase();
     
-    // עדכון לוגו הקבוצה לפי ה-nbaId (כמו בעמוד קבוצה)
     const logoImg = document.getElementById('playerTeamLogo');
     if (logoImg && extra.nbaId !== 0) {
         logoImg.src = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
@@ -80,12 +74,13 @@ function renderPlayerPage(p) {
         backBtn.href = `../teams/index.html?id=${p.team_id}`;
     }
 
-    // סטטיסטיקות
     if (p.season_stats && p.season_stats.length > 0) {
         const s = p.season_stats[0]; 
         const format = (v) => (v !== undefined && v !== null) ? v.toFixed(1) : "0.0";
 
         document.getElementById('gamesPlayed').innerText = `(${s.games_played || 0} GP)`;
+        
+        // עדכון טקסט
         document.getElementById('val-ppg').innerText = format(s.avg_points);
         document.getElementById('val-rpg').innerText = format(s.avg_rebounds);
         document.getElementById('val-apg').innerText = format(s.avg_assists);
@@ -93,7 +88,25 @@ function renderPlayerPage(p) {
         document.getElementById('val-bpg').innerText = format(s.avg_blocks);
         document.getElementById('val-tov').innerText = format(s.avg_turnovers);
         document.getElementById('val-mpg').innerText = format(s.avg_minutes);
+
+        // עדכון גרף (גובה עמודות)
+        updateBar('bar-ppg', s.avg_points, 25);  // נקודות - מקסימום 35 בגרף
+        updateBar('bar-rpg', s.avg_rebounds, 10); // ריבאונד - מקסימום 15
+        updateBar('bar-apg', s.avg_assists, 18);  // אסיסטים - מקסימום 12
+        updateBar('bar-spg', s.avg_steals, 2);    // חטיפות - מקסימום 3
+        updateBar('bar-bpg', s.avg_blocks, 2);    // חסימות - מקסימום 3
+        updateBar('bar-tov', s.avg_turnovers, 3.5); // איבודים - מקסימום 5
+        updateBar('bar-mpg', s.avg_minutes, 38);  // דקות - מקסימום 48
     }
+}
+
+function updateBar(id, value, max) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const percentage = Math.min((value / max) * 100, 100);
+    setTimeout(() => {
+        el.style.height = percentage + '%';
+    }, 100);
 }
 
 function initUserDisplay() {

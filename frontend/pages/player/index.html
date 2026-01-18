@@ -52,37 +52,58 @@
 
         <section class="stats-section">
             <h2 class="section-title">
-                <i class="fa-solid fa-chart-simple"></i> SEASON AVERAGES <span id="gamesPlayed">(0 GP)</span>
+                <i class="fa-solid fa-chart-column"></i> SEASON AVERAGES <span id="gamesPlayed">(0 GP)</span>
             </h2>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-label">POINTS</span>
-                    <span class="stat-value" id="val-ppg">--</span>
+            <div class="stats-chart-container">
+                <div class="chart-column">
+                    <div class="bar-wrapper">
+                        <div class="bar" id="bar-ppg"></div>
+                        <span class="bar-value" id="val-ppg">--</span>
+                    </div>
+                    <span class="bar-label">PTS</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">REBOUNDS</span>
-                    <span class="stat-value" id="val-rpg">--</span>
+                <div class="chart-column">
+                    <div class="bar-wrapper">
+                        <div class="bar" id="bar-rpg"></div>
+                        <span class="bar-value" id="val-rpg">--</span>
+                    </div>
+                    <span class="bar-label">REB</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">ASSISTS</span>
-                    <span class="stat-value" id="val-apg">--</span>
+                <div class="chart-column">
+                    <div class="bar-wrapper">
+                        <div class="bar" id="bar-apg"></div>
+                        <span class="bar-value" id="val-apg">--</span>
+                    </div>
+                    <span class="bar-label">AST</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">STEALS</span>
-                    <span class="stat-value" id="val-spg">--</span>
+                <div class="chart-column">
+                    <div class="bar-wrapper">
+                        <div class="bar" id="bar-spg"></div>
+                        <span class="bar-value" id="val-spg">--</span>
+                    </div>
+                    <span class="bar-label">STL</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">BLOCKS</span>
-                    <span class="stat-value" id="val-bpg">--</span>
+                <div class="chart-column">
+                    <div class="bar-wrapper">
+                        <div class="bar" id="bar-bpg"></div>
+                        <span class="bar-value" id="val-bpg">--</span>
+                    </div>
+                    <span class="bar-label">BLK</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">TURNOVERS</span>
-                    <span class="stat-value" id="val-tov">--</span>
+                <div class="chart-column">
+                    <div class="bar-wrapper">
+                        <div class="bar" id="bar-tov"></div>
+                        <span class="bar-value" id="val-tov">--</span>
+                    </div>
+                    <span class="bar-label">TOV</span>
                 </div>
-                <div class="stat-card">
-                    <span class="stat-label">MINUTES</span>
-                    <span class="stat-value" id="val-mpg">--</span>
+                <div class="chart-column">
+                    <div class="bar-wrapper">
+                        <div class="bar" id="bar-mpg"></div>
+                        <span class="bar-value" id="val-mpg">--</span>
+                    </div>
+                    <span class="bar-label">MIN</span>
                 </div>
             </div>
         </section>
