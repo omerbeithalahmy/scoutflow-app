@@ -92,22 +92,24 @@ function handleTeamClick(id) {
 // 5. ניהול הטאבים (מזרח/מערב)
 document.querySelectorAll('.filter-tab').forEach(tab => {
     tab.addEventListener('click', () => {
-        document.querySelector('.filter-tab.active').classList.remove('active');
+        const activeTab = document.querySelector('.filter-tab.active');
+        if (activeTab) activeTab.classList.remove('active');
+        
         tab.classList.add('active');
         const offset = tab.dataset.index * 50; 
-        slider.style.transform = `translateX(-${offset}%)`;
+        if (slider) slider.style.transform = `translateX(-${offset}%)`;
+        
         document.querySelectorAll('.teams-grid').forEach(g => g.classList.remove('active'));
-        grids[tab.dataset.filter].classList.add('active');
+        if (grids[tab.dataset.filter]) grids[tab.dataset.filter].classList.add('active');
     });
 });
 
-// 6. מערכת חימוש חכמה (Autocomplete)
+// 6. מערכת חיפוש חכמה (Autocomplete)
 const searchInput = document.getElementById('teamSearch');
 const suggestionsBox = document.getElementById('searchSuggestions');
 let debounceTimer;
 
 if (searchInput) {
-    // מאזין ל-Enter (בחירת התוצאה הראשונה)
     searchInput.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter') {
             const query = searchInput.value.trim();
@@ -122,7 +124,6 @@ if (searchInput) {
         }
     });
 
-    // מאזין להקלדה
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.trim();
         clearTimeout(debounceTimer);
@@ -143,7 +144,6 @@ if (searchInput) {
         }, 250);
     });
 
-    // סגירת רשימה בלחיצה בחוץ
     document.addEventListener('click', (e) => {
         if (suggestionsBox && !searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
             suggestionsBox.classList.add('card-hidden');
@@ -151,7 +151,6 @@ if (searchInput) {
     });
 }
 
-// פונקציית רינדור ההצעות (ללא N/A וללא Position)
 function renderSuggestions(players) {
     if (!suggestionsBox) return;
     suggestionsBox.innerHTML = '';
@@ -184,5 +183,33 @@ function renderSuggestions(players) {
     });
 }
 
-// הפעלה ראשונית
-fetchTeamsFromDB();
+/* ================================
+   7. לוגיקת תצוגת משתמש (Auth Display)
+================================ */
+function initUserDisplay() {
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const logoutBtn = document.querySelector('.logout-btn');
+    
+    // שליפת השם שנשמר ב-Login
+    const storedName = localStorage.getItem('userName');
+
+    if (storedName && userNameDisplay) {
+        userNameDisplay.textContent = storedName.toUpperCase();
+    } else if (userNameDisplay) {
+        userNameDisplay.textContent = "GUEST";
+    }
+
+    // הגדרת כפתור ה-Logout
+    if (logoutBtn) {
+        logoutBtn.onclick = () => {
+            localStorage.clear(); // מוחק את ה-Token והשם
+            window.location.href = '../auth/index.html'; // מחזיר להתחברות
+        };
+    }
+}
+
+// הפעלה בטעינת הדף
+document.addEventListener('DOMContentLoaded', () => {
+    initUserDisplay();
+    fetchTeamsFromDB();
+});

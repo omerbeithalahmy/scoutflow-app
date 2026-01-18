@@ -10,16 +10,69 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; background-color: #fff; color: var(--nba-black); direction: ltr; }
 
-/* --- Navbar (זהה לחלוטין לעמוד הקבוצה) --- */
-.main-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; border-bottom: 1px solid var(--border-light); }
+/* --- Navbar המעודכן --- */
+.main-nav { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 12px 40px; 
+    border-bottom: 1px solid var(--border-light); 
+    background: #fff;
+}
+
 .logo-text { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; }
 .red-text { color: var(--nba-red); }
-.nav-link { text-decoration: none; color: var(--nba-black); font-weight: 600; margin: 0 15px; font-size: 13px; text-transform: uppercase; transition: color 0.2s; }
-.nav-link:hover { color: var(--nba-red); }
-.user-badge { background: #F5F5F5; padding: 8px 20px; font-weight: 700; font-size: 13px; border-radius: 4px; text-transform: uppercase; }
-.logout-btn { background: none; border: none; cursor: pointer; margin-left: 10px; font-size: 18px; color: var(--nba-black); }
 
-/* --- Player Header (בסגנון ה-Hero של הקבוצה אבל מותאם לשחקן) --- */
+.nav-links { display: flex; align-items: center; }
+.nav-link { 
+    text-decoration: none; 
+    color: var(--nba-black); 
+    font-weight: 600; 
+    margin: 0 15px; 
+    font-size: 13px; 
+    text-transform: uppercase; 
+    transition: color 0.2s; 
+}
+.nav-link:hover { color: var(--nba-red); }
+
+/* עיצוב אזור המשתמש בקפסולה */
+.user-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* מרווח בין השם לכפתור היציאה */
+    background: #F5F5F5;
+    padding: 6px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--border-light);
+}
+
+.user-badge {
+    color: var(--nba-black);
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--nba-black);
+    display: flex;
+    align-items: center;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    color: var(--nba-red);
+    transform: scale(1.1);
+}
+
+/* --- Player Header --- */
+.page-content { padding: 0 0 60px; }
 .back-link { display: inline-flex; align-items: center; gap: 8px; margin: 30px 40px; text-decoration: none; color: var(--nba-black); font-weight: 700; font-size: 12px; text-transform: uppercase; }
 
 .player-hero { padding: 0 40px 40px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: flex-end; }
@@ -39,7 +92,7 @@ body { font-family: 'Inter', sans-serif; background-color: #fff; color: var(--nb
     transition: background 0.3s ease;
 }
 
-.hero-text { display: flex; flex-direction: column; text-align: left; }
+.player-title { display: flex; flex-direction: column; text-align: left; }
 .p-meta-top { color: var(--muted-gray); letter-spacing: 2px; font-size: 13px; margin-bottom: 5px; text-transform: uppercase; }
 .p-first-name { font-family: 'Oswald', sans-serif; font-size: 55px; line-height: 0.9; color: #333; text-transform: uppercase; }
 .p-last-name { font-family: 'Oswald', sans-serif; font-size: 85px; line-height: 0.8; margin-top: 5px; color: var(--team-color); text-transform: uppercase; }
@@ -60,10 +113,9 @@ body { font-family: 'Inter', sans-serif; background-color: #fff; color: var(--nb
 }
 .follow-btn:hover { background: var(--team-color); }
 
-/* --- Stats Section (בסגנון ה-Roster Title Bar) --- */
-.stats-container { padding: 40px; }
-.section-title-bar { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; border-bottom: 1px solid #000; padding-bottom: 10px; width: fit-content; text-transform: uppercase; }
-.section-title-bar h2 { font-family: 'Oswald', sans-serif; font-size: 24px; }
+/* --- Stats Section --- */
+.stats-section { padding: 40px; }
+.section-title { font-family: 'Oswald', sans-serif; font-size: 24px; margin-bottom: 30px; border-bottom: 1px solid #000; padding-bottom: 10px; width: fit-content; text-transform: uppercase; }
 #gamesPlayed { color: var(--muted-gray); font-size: 18px; margin-left: 5px; }
 
 .stats-grid { 

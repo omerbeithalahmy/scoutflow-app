@@ -46,11 +46,13 @@ function validateAuthData(name, email, pass) {
    AUTH SLIDER & TOGGLE
 ================================ */
 const slider = document.querySelector('.auth-slider');
-document.querySelectorAll('.switch').forEach(btn => {
-  btn.addEventListener('click', () => {
-    btn.dataset.target === 'signup' ? slider.classList.add('show-signup') : slider.classList.remove('show-signup');
-  });
-});
+if (slider) {
+    document.querySelectorAll('.switch').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.dataset.target === 'signup' ? slider.classList.add('show-signup') : slider.classList.remove('show-signup');
+      });
+    });
+}
 
 document.querySelectorAll('.toggle-password').forEach(icon => {
   icon.addEventListener('click', () => {
@@ -62,7 +64,7 @@ document.querySelectorAll('.toggle-password').forEach(icon => {
 });
 
 /* ================================
-   LOGIN
+   LOGIN - UPDATED
 ================================ */
 const loginForm = document.getElementById('nbaLoginForm');
 if (loginForm) {
@@ -83,13 +85,19 @@ if (loginForm) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Invalid credentials');
 
-      const displayName = data.username || "Scouter";
-      showToast(`Welcome back, ${displayName}!`);
-      
-      localStorage.setItem('userName', displayName);
+      // שמירת נתונים ב-LocalStorage כדי להציג ב-Navbar
+      // data.username מכיל את השם המלא מה-DB (כפי שעדכנו ב-Backend)
+      localStorage.setItem('userName', data.username);
       localStorage.setItem('userId', data.id);
+      localStorage.setItem('userEmail', data.email);
 
-      setTimeout(() => { window.location.href = '../homepage/index.html'; }, 1000);
+      showToast(`Welcome back, ${data.username}!`);
+      
+      // העברה לדף הבית
+      setTimeout(() => { 
+        window.location.href = '../homepage/index.html'; 
+      }, 1000);
+
     } catch (err) {
       showToast(err.message, "error");
     }
@@ -97,7 +105,7 @@ if (loginForm) {
 }
 
 /* ================================
-   SIGNUP (זה מה שהיה חסר!)
+   SIGNUP
 ================================ */
 const signupForm = document.getElementById('nbaSignupForm');
 if (signupForm) {
@@ -108,7 +116,6 @@ if (signupForm) {
     const email = inputs[1].value.trim();
     const password = inputs[2].value.trim();
 
-    // בדיקת תקינות לפני שליחה
     if (!validateAuthData(username, email, password)) return;
 
     try {
@@ -121,7 +128,6 @@ if (signupForm) {
       const data = await res.json();
 
       if (!res.ok) {
-        // ניקוי הודעת השגיאה מ-Pydantic (מסיר את ה-"Value error, ")
         let errorMsg = "Signup failed";
         if (data.detail && Array.isArray(data.detail)) {
             errorMsg = data.detail[0].msg.replace("Value error, ", "");
@@ -134,7 +140,9 @@ if (signupForm) {
       showToast("Account created! Now you can sign in.");
       
       // החלקה חזרה לטופס לוגין
-      setTimeout(() => { slider.classList.remove('show-signup'); }, 1500);
+      setTimeout(() => { 
+          if(slider) slider.classList.remove('show-signup'); 
+      }, 1500);
 
     } catch (err) {
       console.error("Signup Error:", err);
@@ -142,3 +150,27 @@ if (signupForm) {
     }
   });
 }
+
+/* ================================
+   INITIALIZE USER DISPLAY
+   (פונקציה זו תרוץ בכל העמודים באתר)
+================================ */
+function initUserDisplay() {
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const logoutBtn = document.querySelector('.logout-btn');
+    const storedName = localStorage.getItem('userName');
+
+    if (storedName && userNameDisplay) {
+        userNameDisplay.textContent = storedName.toUpperCase();
+    }
+
+    if (logoutBtn) {
+        logoutBtn.onclick = () => {
+            localStorage.clear();
+            window.location.href = '../auth/index.html';
+        };
+    }
+}
+
+// קריאה לפונקציה כשהדף נטען
+document.addEventListener('DOMContentLoaded', initUserDisplay);

@@ -1,4 +1,8 @@
-// מיפוי נתונים משלימים ללוגו וצבעים (נשמר ב-Frontend)
+/* ================================
+   NBA TEAM DETAILS - script.js
+================================ */
+
+// 1. מיפוי נתונים משלימים ללוגו וצבעים (נשמר ב-Frontend)
 const teamExtraData = {
     "ATL": { conf: "EAST", div: "Southeast", nbaId: 1610612737, color: "#E03A3E" },
     "BOS": { conf: "EAST", div: "Atlantic", nbaId: 1610612738, color: "#007A33" },
@@ -32,7 +36,11 @@ const teamExtraData = {
     "WAS": { conf: "EAST", div: "Southeast", nbaId: 1610612764, color: "#002B5C" }
 };
 
+// 2. פונקציית האתחול המרכזית
 async function initDynamicPage() {
+    // בדיקה והצגת שם משתמש ב-Navbar מיד עם טעינת הדף
+    initUserDisplay();
+
     const urlParams = new URLSearchParams(window.location.search);
     const teamId = urlParams.get('id');
 
@@ -49,25 +57,25 @@ async function initDynamicPage() {
 
         renderPlayers(players);
     } catch (err) {
-        console.error("Error:", err);
+        console.error("Error fetching team data:", err);
     }
 }
 
+// 3. עדכון כותרת הדף וצבעי הקבוצה
 function updateUIHeader(team) {
     const extra = teamExtraData[team.abbreviation] || { nbaId: 0, color: "#111", conf: "NBA", div: "N/A" };
     
-    // הגדרת צבע הקבוצה הדינמי
     document.documentElement.style.setProperty('--team-color', extra.color);
 
-    // עדכון הלוגו
     const logoImg = document.getElementById('teamLogo');
     if (logoImg && extra.nbaId !== 0) {
         logoImg.src = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
-        logoImg.style.display = 'block'; // מוודא שהלוגו לא מוסתר
+        logoImg.style.display = 'block';
     }
 
-    // עדכון טקסטים
-    document.getElementById('teamCity').innerText = team.city.toUpperCase();
+    const cityEl = document.getElementById('teamCity');
+    if (cityEl) cityEl.innerText = team.city.toUpperCase();
+
     const nameEl = document.getElementById('teamName');
     if (nameEl) {
         nameEl.innerText = team.name.toUpperCase();
@@ -80,6 +88,7 @@ function updateUIHeader(team) {
     }
 }
 
+// 4. רינדור רשימת השחקנים
 function renderPlayers(players) {
     const container = document.getElementById('dynamicRoster');
     if (!container) return;
@@ -122,6 +131,7 @@ function renderPlayers(players) {
     if (rosterCountEl) rosterCountEl.innerText = `(${players.length} PLAYERS)`;
 }
 
+// 5. ניווט
 function navigateToPlayer(playerId) {
     window.location.href = `../player/index.html?id=${playerId}`;
 }
@@ -131,4 +141,31 @@ function handleFollow(event, playerId) {
     console.log("Following player:", playerId);
 }
 
-initDynamicPage();
+/* ================================
+   6. לוגיקת תצוגת משתמש (Auth Display)
+================================ */
+function initUserDisplay() {
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const logoutBtn = document.querySelector('.logout-btn');
+    
+    // שליפת השם המלא שנשמר ב-LocalStorage בזמן ה-Login
+    const storedName = localStorage.getItem('userName');
+
+    if (storedName && userNameDisplay) {
+        userNameDisplay.textContent = storedName.toUpperCase();
+    } else if (userNameDisplay) {
+        userNameDisplay.textContent = "GUEST";
+    }
+
+    // הגדרת כפתור ה-Logout (ניקוי זיכרון וחזרה לדף כניסה)
+    if (logoutBtn) {
+        logoutBtn.onclick = (e) => {
+            e.preventDefault();
+            localStorage.clear();
+            window.location.href = '../auth/index.html';
+        };
+    }
+}
+
+// הפעלה בטעינת הדף
+document.addEventListener('DOMContentLoaded', initDynamicPage);

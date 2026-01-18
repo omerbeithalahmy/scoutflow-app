@@ -9,13 +9,65 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; background-color: #fff; color: var(--nba-black); }
 
-/* Navbar & Hero (נשאר ללא שינוי...) */
-.main-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; border-bottom: 1px solid var(--border-light); }
+/* Navbar */
+.main-nav { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 12px 40px; 
+    border-bottom: 1px solid var(--border-light); 
+    background: #fff;
+}
+
 .logo-text { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; }
 .red-text { color: var(--nba-red); }
-.nav-link { text-decoration: none; color: var(--nba-black); font-weight: 600; margin: 0 15px; font-size: 13px; text-transform: uppercase; }
-.user-badge { background: #F5F5F5; padding: 8px 20px; font-weight: 700; font-size: 13px; border-radius: 4px; }
-.logout-btn { background: none; border: none; cursor: pointer; margin-left: 10px; }
+
+.nav-link { 
+    text-decoration: none; 
+    color: var(--nba-black); 
+    font-weight: 600; 
+    margin: 0 15px; 
+    font-size: 13px; 
+    text-transform: uppercase; 
+}
+
+/* עיצוב אזור המשתמש המעודכן - בדיוק כמו בעמוד הבית */
+.user-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #F5F5F5;
+    padding: 6px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--border-light);
+}
+
+.user-badge {
+    color: var(--nba-black);
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--nba-black);
+    display: flex;
+    align-items: center;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    color: var(--nba-red);
+    transform: scale(1.1);
+}
+
+/* Hero Section */
 .back-link { display: inline-flex; align-items: center; gap: 8px; margin: 30px 40px; text-decoration: none; color: var(--nba-black); font-weight: 700; font-size: 12px; text-transform: uppercase; }
 .team-hero { padding: 0 40px 40px; border-bottom: 1px solid var(--border-light); }
 .hero-content { display: flex; align-items: center; gap: 40px; }
@@ -50,7 +102,6 @@ body { font-family: 'Inter', sans-serif; background-color: #fff; color: var(--nb
     background-color: #fafafa;
 }
 
-/* התיקון כאן: שימוש בצבע הקבוצה הדינמי ב-Hover */
 .player-card:hover .player-num-box {
     background: var(--team-color) !important;
 }

@@ -1,3 +1,7 @@
+/* ================================
+   NBA PLAYER DETAILS - script.js
+================================ */
+
 const teamExtraData = {
     "ATL": { color: "#E03A3E" }, "BOS": { color: "#007A33" }, "CLE": { color: "#860038" },
     "NOP": { color: "#0C2340" }, "CHI": { color: "#CE1141" }, "DAL": { color: "#00538C" },
@@ -12,6 +16,9 @@ const teamExtraData = {
 };
 
 async function initPlayerPage() {
+    // 1. אתחול שם המשתמש ב-Navbar מיד עם טעינת הדף
+    initUserDisplay();
+
     const urlParams = new URLSearchParams(window.location.search);
     const playerId = urlParams.get('id');
 
@@ -44,31 +51,61 @@ function renderPlayerPage(p) {
     const initials = (firstName[0] + (lastName[0] || "")).toUpperCase();
 
     // 3. עדכון טקסטים ב-Header
-    document.getElementById('firstName').innerText = firstName;
-    document.getElementById('lastName').innerText = lastName;
-    document.getElementById('playerInitials').innerText = initials;
-    document.getElementById('playerSubTitle').innerText = `${p.team_name.toUpperCase()} | NBA PLAYER`;
+    if (document.getElementById('firstName')) document.getElementById('firstName').innerText = firstName;
+    if (document.getElementById('lastName')) document.getElementById('lastName').innerText = lastName;
+    if (document.getElementById('playerInitials')) document.getElementById('playerInitials').innerText = initials;
+    if (document.getElementById('playerSubTitle')) {
+        document.getElementById('playerSubTitle').innerText = `${p.team_name.toUpperCase()} | NBA PLAYER`;
+    }
     
     // כפתור חזרה דינמי
     const backBtn = document.querySelector('.back-link');
-    backBtn.innerHTML = `<i class="fa-solid fa-arrow-left"></i> BACK TO ${p.team_name.toUpperCase()}`;
-    backBtn.href = `../teams/index.html?id=${p.team_id}`;
+    if (backBtn) {
+        backBtn.innerHTML = `<i class="fa-solid fa-arrow-left"></i> BACK TO ${p.team_name.toUpperCase()}`;
+        backBtn.href = `../teams/index.html?id=${p.team_id}`;
+    }
 
-    // 4. סטטיסטיקות (לוקחים את העונה האחרונה מהמערך)
+    // 4. סטטיסטיקות
     if (p.season_stats && p.season_stats.length > 0) {
-        const s = p.season_stats[0]; // העונה הכי עדכנית (בגלל ה-order_by ב-Backend)
-        
-        const format = (v) => v !== undefined && v !== null ? v.toFixed(1) : "0.0";
+        const s = p.season_stats[0]; 
+        const format = (v) => (v !== undefined && v !== null) ? v.toFixed(1) : "0.0";
 
-        document.getElementById('gamesPlayed').innerText = `(${s.games_played || 0} GP)`;
-        document.getElementById('val-ppg').innerText = format(s.avg_points);
-        document.getElementById('val-rpg').innerText = format(s.avg_rebounds);
-        document.getElementById('val-apg').innerText = format(s.avg_assists);
-        document.getElementById('val-spg').innerText = format(s.avg_steals);
-        document.getElementById('val-bpg').innerText = format(s.avg_blocks);
-        document.getElementById('val-tov').innerText = format(s.avg_turnovers);
-        document.getElementById('val-mpg').innerText = format(s.avg_minutes);
+        if (document.getElementById('gamesPlayed')) document.getElementById('gamesPlayed').innerText = `(${s.games_played || 0} GP)`;
+        if (document.getElementById('val-ppg')) document.getElementById('val-ppg').innerText = format(s.avg_points);
+        if (document.getElementById('val-rpg')) document.getElementById('val-rpg').innerText = format(s.avg_rebounds);
+        if (document.getElementById('val-apg')) document.getElementById('val-apg').innerText = format(s.avg_assists);
+        if (document.getElementById('val-spg')) document.getElementById('val-spg').innerText = format(s.avg_steals);
+        if (document.getElementById('val-bpg')) document.getElementById('val-bpg').innerText = format(s.avg_blocks);
+        if (document.getElementById('val-tov')) document.getElementById('val-tov').innerText = format(s.avg_turnovers);
+        if (document.getElementById('val-mpg')) document.getElementById('val-mpg').innerText = format(s.avg_minutes);
     }
 }
 
-initPlayerPage();
+/* ================================
+   לוגיקת תצוגת משתמש (Auth Display)
+================================ */
+function initUserDisplay() {
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const logoutBtn = document.querySelector('.logout-btn');
+    
+    // שליפת השם המלא מה-LocalStorage
+    const storedName = localStorage.getItem('userName');
+
+    if (storedName && userNameDisplay) {
+        userNameDisplay.textContent = storedName.toUpperCase();
+    } else if (userNameDisplay) {
+        userNameDisplay.textContent = "GUEST";
+    }
+
+    // הגדרת כפתור היציאה
+    if (logoutBtn) {
+        logoutBtn.onclick = (e) => {
+            e.preventDefault(); // מונע התנהגות לינק רגילה
+            localStorage.clear();
+            window.location.href = '../auth/index.html';
+        };
+    }
+}
+
+// הפעלה בטעינת הדף
+document.addEventListener('DOMContentLoaded', initPlayerPage);

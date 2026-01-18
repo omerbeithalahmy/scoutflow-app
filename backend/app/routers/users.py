@@ -29,7 +29,6 @@ def create_user(
 
 @router.post("/login")
 def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
-    # חפש משתמש לפי email בלבד
     db_user = db.query(crud.User).filter(crud.User.email == user.username).first()
 
     if not db_user:
@@ -38,8 +37,12 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     if not verify_password(user.password, db_user.password_hash):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
-    return {"id": db_user.id, "username": db_user.username, "email": db_user.email}
-
+    # כאן הוספנו את ה-username המקורי (השם המלא מה-DB)
+    return {
+        "id": db_user.id, 
+        "username": db_user.username, # זה השם המלא (למשל "Sherif Cooper")
+        "email": db_user.email
+    }
 
 
 @router.get("/{user_id}/followed-players", response_model=List[schemas.PlayerDetailsOut])

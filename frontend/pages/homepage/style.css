@@ -20,13 +20,18 @@ body.light-bg {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 40px;
+    padding: 12px 40px;
     border-bottom: 1px solid var(--border-color);
     background: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .logo-text { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; }
 .red-text { color: var(--nba-red); }
+
+.nav-center { display: flex; align-items: center; }
 
 .nav-link {
     text-decoration: none;
@@ -38,8 +43,42 @@ body.light-bg {
 }
 
 .nav-link.active { background: #F0F0F0; padding: 8px 16px; border-radius: 4px; }
-.user-badge { background: #F0F0F0; padding: 8px 20px; font-weight: 700; font-size: 13px; border-radius: 4px; }
-.logout-btn { background: none; border: none; cursor: pointer; font-size: 18px; margin-left: 10px; color: var(--nba-black); }
+
+/* עיצוב אזור המשתמש המעודכן */
+.user-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* מזיז את כפתור היציאה ימינה מהשם */
+    background: #F5F5F5;
+    padding: 6px 16px;
+    border-radius: 50px; /* מראה קפסולה מודרני */
+    border: 1px solid var(--border-color);
+}
+
+.user-badge {
+    color: var(--nba-black);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--nba-black);
+    display: flex;
+    align-items: center;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    color: var(--nba-red);
+    transform: scale(1.1);
+}
 
 /* Header */
 .page-header { text-align: center; padding: 60px 0 40px; }
@@ -67,16 +106,15 @@ body.light-bg {
 
 .search-bar i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #999; z-index: 2; }
 
-/* הקופסה הצפה של החיפוש */
 .suggestions-dropdown {
     position: absolute;
-    top: 110%; /* רווח קטן מתחת לאינפוט */
+    top: 110%;
     left: 0;
     right: 0;
     background: white;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    z-index: 9999; /* הכי למעלה שיש */
+    z-index: 9999;
     overflow: hidden;
     border: 1px solid var(--border-color);
     max-height: 400px;
@@ -93,10 +131,7 @@ body.light-bg {
 }
 
 .suggestion-item:last-child { border-bottom: none; }
-
-.suggestion-item:hover {
-    background-color: #f5f5f5;
-}
+.suggestion-item:hover { background-color: #f5f5f5; }
 
 .player-circle-abbr {
     width: 45px;
@@ -113,23 +148,9 @@ body.light-bg {
     flex-shrink: 0;
 }
 
-.suggestion-info {
-    flex-grow: 1;
-    text-align: left;
-}
-
-.suggestion-name {
-    display: block;
-    font-weight: 700;
-    font-size: 15px;
-    color: var(--nba-black);
-}
-
-.suggestion-team {
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
+.suggestion-info { flex-grow: 1; text-align: left; }
+.suggestion-name { display: block; font-weight: 700; font-size: 15px; color: var(--nba-black); }
+.suggestion-team { font-size: 12px; color: var(--text-muted); }
 .suggestion-stats {
     background: #F0F0F0;
     padding: 6px 12px;
