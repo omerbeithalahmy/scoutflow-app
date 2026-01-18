@@ -49,7 +49,7 @@ async function initDynamicPage() {
     try {
         const teamRes = await fetch(`http://localhost:8000/teams/${teamId}`);
         const team = await teamRes.json();
-        
+
         updateUIHeader(team);
 
         const playersRes = await fetch(`http://localhost:8000/teams/${teamId}/players`);
@@ -64,7 +64,7 @@ async function initDynamicPage() {
 // 3. עדכון כותרת הדף וצבעי הקבוצה
 function updateUIHeader(team) {
     const extra = teamExtraData[team.abbreviation] || { nbaId: 0, color: "#111", conf: "NBA", div: "N/A" };
-    
+
     document.documentElement.style.setProperty('--team-color', extra.color);
 
     const logoImg = document.getElementById('teamLogo');
@@ -81,7 +81,7 @@ function updateUIHeader(team) {
         nameEl.innerText = team.name.toUpperCase();
         nameEl.style.color = extra.color;
     }
-    
+
     const metaEl = document.getElementById('teamMeta');
     if (metaEl) {
         metaEl.innerText = `${extra.conf}ERN CONFERENCE • ${extra.div.toUpperCase()}`;
@@ -89,19 +89,45 @@ function updateUIHeader(team) {
 }
 
 // 4. רינדור רשימת השחקנים
-function renderPlayers(players) {
+async function renderPlayers(players) {
     const container = document.getElementById('dynamicRoster');
     if (!container) return;
+
+    // Get current user ID from localStorage
+    const userId = localStorage.getItem('userId');
+
+    // Fetch follow status for all players if user is logged in
+    let followStatusMap = {};
+    if (userId) {
+        try {
+            const followStatusPromises = players.map(p =>
+                fetch(`http://localhost:8000/users/${userId}/followed-players/${p.id}/status`)
+                    .then(res => res.json())
+                    .then(data => ({ playerId: p.id, isFollowing: data.is_following }))
+                    .catch(() => ({ playerId: p.id, isFollowing: false }))
+            );
+            const followStatuses = await Promise.all(followStatusPromises);
+            followStatuses.forEach(status => {
+                followStatusMap[status.playerId] = status.isFollowing;
+            });
+        } catch (err) {
+            console.error("Error fetching follow statuses:", err);
+        }
+    }
 
     let html = '<div class="players-grid">';
     players.forEach(p => {
         const nameParts = p.full_name.trim().split(/\s+/);
-        const initials = nameParts.length >= 2 
+        const initials = nameParts.length >= 2
             ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
             : nameParts[0][0].toUpperCase();
 
         const stats = p.latest_stats;
         const formatStat = (val) => (val === null || val === undefined || val === 0) ? "N/A" : val.toFixed(1);
+
+        // Determine if player is followed
+        const isFollowed = followStatusMap[p.id] || false;
+        const heartClass = isFollowed ? 'fa-solid fa-heart followed' : 'fa-regular fa-heart';
 
         html += `
             <div class="player-card" onclick="navigateToPlayer(${p.id})">
@@ -118,7 +144,7 @@ function renderPlayers(players) {
                 <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_rebounds)}</span><span class="stat-lbl">RPG</span></div>
                 <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_assists)}</span><span class="stat-lbl">APG</span></div>
                 <div class="card-icons">
-                  <i class="fa-regular fa-heart" onclick="handleFollow(event, ${p.id})"></i>
+                  <i class="${heartClass}" data-player-id="${p.id}" onclick="handleFollow(event, ${p.id})"></i>
                   <i class="fa-solid fa-arrow-right"></i>
                 </div>
               </div>
@@ -126,7 +152,7 @@ function renderPlayers(players) {
     });
     html += '</div>';
     container.innerHTML = html;
-    
+
     const rosterCountEl = document.getElementById('rosterCount');
     if (rosterCountEl) rosterCountEl.innerText = `(${players.length} PLAYERS)`;
 }
@@ -136,9 +162,61 @@ function navigateToPlayer(playerId) {
     window.location.href = `../player/index.html?id=${playerId}`;
 }
 
-function handleFollow(event, playerId) {
+async function handleFollow(event, playerId) {
     event.stopPropagation();
-    console.log("Following player:", playerId);
+
+    // Get user ID from localStorage
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        alert('Please log in to follow players');
+        return;
+    }
+
+    // Get the heart icon element
+    const heartIcon = event.target;
+    const isCurrentlyFollowed = heartIcon.classList.contains('followed');
+
+    try {
+        if (isCurrentlyFollowed) {
+            // Unfollow the player
+            const response = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                // Update the heart icon to empty
+                heartIcon.classList.remove('fa-solid', 'followed');
+                heartIcon.classList.add('fa-regular');
+                console.log(`Unfollowed player ${playerId}`);
+            } else {
+                throw new Error('Failed to unfollow player');
+            }
+        } else {
+            // Follow the player
+            const response = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                // Update the heart icon to filled
+                heartIcon.classList.remove('fa-regular');
+                heartIcon.classList.add('fa-solid', 'followed');
+                console.log(`Followed player ${playerId}`);
+            } else {
+                const errorData = await response.json();
+                if (errorData.detail === 'Already following this player') {
+                    // Already followed, just update UI
+                    heartIcon.classList.remove('fa-regular');
+                    heartIcon.classList.add('fa-solid', 'followed');
+                } else {
+                    throw new Error('Failed to follow player');
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error toggling follow status:', error);
+        alert('An error occurred. Please try again.');
+    }
 }
 
 /* ================================
@@ -147,7 +225,7 @@ function handleFollow(event, playerId) {
 function initUserDisplay() {
     const userNameDisplay = document.getElementById('userNameDisplay');
     const logoutBtn = document.querySelector('.logout-btn');
-    
+
     // שליפת השם המלא שנשמר ב-LocalStorage בזמן ה-Login
     const storedName = localStorage.getItem('userName');
 

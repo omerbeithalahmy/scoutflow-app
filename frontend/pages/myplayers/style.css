@@ -63,7 +63,8 @@ body {
 }
 
 .nav-link.active {
-    color: var(--nba-red);
+    background: #F0F0F0;
+    border-radius: 4px;
 }
 
 .user-wrapper {

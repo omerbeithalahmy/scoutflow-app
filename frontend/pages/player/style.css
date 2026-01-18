@@ -183,7 +183,7 @@ body {
 }
 
 .follow-btn.following {
-    background: var(--team-color);
+    background: var(--nba-red);
 }
 
 .follow-btn.following:hover {
