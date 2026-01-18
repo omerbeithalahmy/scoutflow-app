@@ -3,7 +3,7 @@
     --nba-black: #0F0F0F;
     --muted-gray: #888;
     --border-light: #eeeeee;
-    --team-color: #111; /* ברירת מחדל שתשתנה ע"י ה-JS */
+    --team-color: #111;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,21 +17,43 @@ body { font-family: 'Inter', sans-serif; background-color: #fff; color: var(--nb
     padding: 12px 40px; 
     border-bottom: 1px solid var(--border-light); 
     background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .logo-text { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; }
 .red-text { color: var(--nba-red); }
 
+/* עיצוב הניווט המרכזי */
+.nav-center {
+    display: flex;
+    align-items: center;
+}
+
 .nav-link { 
     text-decoration: none; 
     color: var(--nba-black); 
     font-weight: 600; 
-    margin: 0 15px; 
+    margin: 0 10px; 
     font-size: 13px; 
-    text-transform: uppercase; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
 }
 
-/* עיצוב אזור המשתמש המעודכן - בדיוק כמו בעמוד הבית */
+.nav-link:hover {
+    color: var(--nba-red);
+}
+
+/* עיצוב הלחצן הפעיל - בדיוק כמו בעמוד הבית */
+.nav-link.active { 
+    background: #F0F0F0; 
+    border-radius: 4px; 
+}
+
+/* אזור המשתמש (User Wrapper) */
 .user-wrapper {
     display: flex;
     align-items: center;
@@ -62,75 +84,35 @@ body { font-family: 'Inter', sans-serif; background-color: #fff; color: var(--nb
     transition: all 0.2s ease;
 }
 
-.logout-btn:hover {
-    color: var(--nba-red);
-    transform: scale(1.1);
-}
+.logout-btn:hover { color: var(--nba-red); transform: scale(1.1); }
 
-/* Hero Section */
+/* שאר עיצובי ה-Hero וה-Roster נשארים ללא שינוי */
 .back-link { display: inline-flex; align-items: center; gap: 8px; margin: 30px 40px; text-decoration: none; color: var(--nba-black); font-weight: 700; font-size: 12px; text-transform: uppercase; }
 .team-hero { padding: 0 40px 40px; border-bottom: 1px solid var(--border-light); }
 .hero-content { display: flex; align-items: center; gap: 40px; }
 .team-hero-logo { width: 150px; height: 150px; object-fit: contain; }
 .hero-meta { color: var(--muted-gray); letter-spacing: 2px; font-size: 13px; margin-bottom: 5px; text-transform: uppercase; }
 .hero-city { font-family: 'Oswald', sans-serif; font-size: 50px; line-height: 0.9; color: #333; }
-.hero-brand { font-family: 'Oswald', sans-serif; font-size: 90px; line-height: 0.8; margin-top: -5px; }
+.hero-brand { font-family: 'Oswald', sans-serif; font-size: 90px; line-height: 0.8; margin-top: 10px; }
 
-/* Roster Section */
 .roster-container { padding: 40px; }
 .roster-title-bar { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; border-bottom: 1px solid #000; padding-bottom: 10px; width: fit-content; }
 .roster-title-bar h2 { font-family: 'Oswald', sans-serif; font-size: 26px; }
 .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); gap: 20px; }
 
-/* THE PLAYER CARD */
-.player-card { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    background: #fff; 
-    border: 1px solid var(--border-light); 
-    transition: all 0.2s ease-in-out; 
-    cursor: pointer !important; 
-    user-select: none;
-    position: relative;
-}
-
-.player-card:hover { 
-    border-color: #bbb; 
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1); 
-    transform: translateY(-2px);
-    background-color: #fafafa;
-}
-
-.player-card:hover .player-num-box {
-    background: var(--team-color) !important;
-}
-
+.player-card { display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid var(--border-light); transition: all 0.2s ease-in-out; cursor: pointer !important; user-select: none; position: relative; }
+.player-card:hover { border-color: #bbb; box-shadow: 0 6px 15px rgba(0,0,0,0.1); transform: translateY(-2px); background-color: #fafafa; }
+.player-card:hover .player-num-box { background: var(--team-color) !important; }
 .card-left { display: flex; align-items: center; }
-
-.player-num-box { 
-    background: #111; 
-    color: #fff; 
-    width: 85px; 
-    height: 105px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-family: 'Oswald', sans-serif; 
-    font-size: 32px; 
-    transition: background 0.2s ease;
-}
-
+.player-num-box { background: #111; color: #fff; width: 85px; height: 105px; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 32px; transition: background 0.2s ease; }
 .player-info-text { padding-left: 20px; }
 .p-pos { font-size: 11px; color: var(--muted-gray); text-transform: uppercase; }
 .p-name { font-family: 'Oswald', sans-serif; font-size: 24px; text-transform: uppercase; color: #111; display: block; margin: 2px 0; }
 .p-phys { font-size: 11px; color: #aaa; }
-
 .card-right { display: flex; align-items: center; gap: 30px; padding-right: 25px; }
 .stat-item { text-align: center; min-width: 45px; }
 .stat-val { font-family: 'Oswald', sans-serif; font-size: 24px; display: block; color: #111; }
 .stat-lbl { font-size: 10px; color: var(--muted-gray); text-transform: uppercase; }
-
 .card-icons { display: flex; flex-direction: column; gap: 10px; color: #ccc; margin-left: 15px; font-size: 14px; }
 .card-icons i { transition: color 0.2s; z-index: 2; cursor: pointer !important; }
 .card-icons i:hover { color: var(--team-color); transform: scale(1.2); }
