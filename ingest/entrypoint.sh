@@ -4,7 +4,7 @@ set -e
 echo "Waiting for PostgreSQL to be ready..."
 
 # מחכים שה־DB יהיה מוכן
-until pg_isready -h db -p 5432 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"; do
+until pg_isready -h "${POSTGRES_HOST}" -p 5432 -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"; do
     echo "Database not ready yet..."
     sleep 2
 done

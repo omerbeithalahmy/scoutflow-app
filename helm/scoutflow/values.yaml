@@ -1,0 +1,93 @@
+# Database configuration
+database:
+  image:
+    repository: scoutflow-app-db
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  
+  replicas: 1
+  
+  service:
+    type: ClusterIP
+    port: 5432
+  
+  persistence:
+    storageClass: "standard"
+    size: 10Gi
+  
+  env:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: password123
+    POSTGRES_DB: nba_stats
+  
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Ingest job configuration
+ingest:
+  image:
+    repository: scoutflow-app-ingest
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  
+  restartPolicy: Never
+  backoffLimit: 3
+  
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+
+# Backend configuration
+backend:
+  image:
+    repository: scoutflow-app-backend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  
+  replicas: 2
+  
+  service:
+    type: ClusterIP
+    port: 8000
+  
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# Frontend configuration
+frontend:
+  image:
+    repository: scoutflow-app-frontend
+    pullPolicy: IfNotPresent
+    tag: "latest"
+  
+  replicas: 2
+  
+  service:
+    type: ClusterIP
+    port: 80
+  
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+# Ingress configuration
+ingress:
+  host: scoutflow.example.com
