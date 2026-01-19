@@ -1,0 +1,41 @@
+# Patterns to ignore when building Helm packages
+
+# Development files
+*.md
+!Chart.yaml
+!values.yaml
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+*.tmproj
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+
+# CI/CD (should not be packaged)
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Testing
+test/
+tests/
+*.test.yaml
+
+# Backup files
+*.orig
+
+# OS files
+Thumbs.db
