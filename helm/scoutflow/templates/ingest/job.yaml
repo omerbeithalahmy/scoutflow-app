@@ -19,6 +19,8 @@ spec:
         app.kubernetes.io/component: ingest
     spec:
       restartPolicy: {{ .Values.ingest.restartPolicy }}
+      imagePullSecrets:
+        - name: {{ index .Values.imagePullSecrets 0 "name" }}
       initContainers:
       - name: wait-for-db
         image: busybox:1.35
@@ -34,7 +36,7 @@ spec:
           echo "Database is ready!"
       containers:
       - name: ingest
-        image: {{ .Values.ingest.image.repository }}:{{ .Values.ingest.image.tag }}
+        image: "{{ .Values.global.registry }}/{{ .Values.ingest.image.repository }}:{{ .Values.ingest.image.tag | default .Values.global.imageTag }}"
         imagePullPolicy: {{ .Values.ingest.image.pullPolicy }}
         env:
         - name: POSTGRES_HOST

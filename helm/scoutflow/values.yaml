@@ -1,9 +1,23 @@
 # Database configuration
+global:
+  registry: 279987127424.dkr.ecr.us-east-1.amazonaws.com
+  imageTag: latest
+
+imagePullSecrets:
+  - name: ecr-registry-secret
+
+# ECR authentication (will be overridden in production by CD pipeline)
+ecr:
+  enabled: false  # Set to true when deploying with ECR
+  username: AWS
+  password: ""  # Will be set via --set-string during deployment
+
+
 database:
   image:
     repository: scoutflow-app-db
-    pullPolicy: IfNotPresent
-    tag: "latest"
+    pullPolicy: Always
+    tag: ""
   
   replicas: 1
   
@@ -32,8 +46,8 @@ database:
 ingest:
   image:
     repository: scoutflow-app-ingest
-    pullPolicy: IfNotPresent
-    tag: "latest"
+    pullPolicy: Always
+    tag: ""
   
   restartPolicy: Never
   backoffLimit: 3
@@ -50,8 +64,8 @@ ingest:
 backend:
   image:
     repository: scoutflow-app-backend
-    pullPolicy: IfNotPresent
-    tag: "latest"
+    pullPolicy: Always
+    tag: ""
   
   replicas: 2
   
@@ -71,8 +85,8 @@ backend:
 frontend:
   image:
     repository: scoutflow-app-frontend
-    pullPolicy: IfNotPresent
-    tag: "latest"
+    pullPolicy: Always
+    tag: ""
   
   replicas: 2
   

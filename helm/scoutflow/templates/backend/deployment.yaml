@@ -22,9 +22,11 @@ spec:
         app.kubernetes.io/name: {{ .Release.Name }}
         app.kubernetes.io/component: backend
     spec:
+      imagePullSecrets:
+        - name: {{ index .Values.imagePullSecrets 0 "name" }}
       containers:
       - name: backend
-        image: {{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}
+        image: "{{ .Values.global.registry }}/{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag | default .Values.global.imageTag }}"
         imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
         ports:
         - containerPort: 8000

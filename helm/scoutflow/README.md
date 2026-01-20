@@ -16,6 +16,7 @@ This chart deploys a full-stack application with:
 - Kubernetes 1.19+
 - Helm 3.0+
 - PersistentVolume provisioner (for database storage)
+- **For ECR deployment**: AWS CLI configured with ECR access
 
 ## Quick Start
 
@@ -44,14 +45,22 @@ kubectl port-forward -n scoutflow service/scoutflow-backend 8000:8000
 # Open: http://localhost:3000
 ```
 
-### AWS EKS Deployment
+### AWS EKS with ECR Images
 
 ```bash
-# Update values.yaml for production
-# Change storageClass from "standard" to "gp2"
+# Create ECR image pull secret
+kubectl create secret docker-registry ecr-registry-secret \
+  --docker-server=279987127424.dkr.ecr.us-east-1.amazonaws.com \
+  --docker-username=AWS \
+  --docker-password=$(aws ecr get-login-password --region us-east-1) \
+  --namespace scoutflow
 
-# Install chart
-helm install scoutflow ./helm/scoutflow --namespace scoutflow --create-namespace
+# Install chart with ECR images
+helm install scoutflow ./helm/scoutflow \
+  --namespace scoutflow \
+  --create-namespace \
+  --set ecr.enabled=true \
+  --set global.imageTag=latest
 
 # Get ALB address
 kubectl get ingress -n scoutflow
