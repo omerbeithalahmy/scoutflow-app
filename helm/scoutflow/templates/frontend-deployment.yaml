@@ -22,9 +22,11 @@ spec:
         app.kubernetes.io/name: {{ .Release.Name }}
         app.kubernetes.io/component: frontend
     spec:
+      imagePullSecrets:
+        - name: {{ index .Values.imagePullSecrets 0 "name" }}
       containers:
       - name: frontend
-        image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+        image: "{{ .Values.global.registry }}/{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag | default .Values.global.imageTag }}"
         imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
         ports:
         - containerPort: 80

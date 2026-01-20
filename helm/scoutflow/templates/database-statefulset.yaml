@@ -18,9 +18,11 @@ spec:
         app.kubernetes.io/name: {{ .Release.Name }}
         app.kubernetes.io/component: database
     spec:
+      imagePullSecrets:
+        - name: {{ index .Values.imagePullSecrets 0 "name" }}
       containers:
       - name: postgres
-        image: {{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}
+        image: "{{ .Values.global.registry }}/{{ .Values.database.image.repository }}:{{ .Values.database.image.tag | default .Values.global.imageTag }}"
         imagePullPolicy: {{ .Values.database.image.pullPolicy }}
         ports:
         - containerPort: 5432
