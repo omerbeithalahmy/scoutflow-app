@@ -1,0 +1,10 @@
+{
+  "name": "scoutflow-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "eslint pages/**/*.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.54.0"
+  }
+}

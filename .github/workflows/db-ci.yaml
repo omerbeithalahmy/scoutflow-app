@@ -17,8 +17,24 @@ env:
   ECR_REPOSITORY: scoutflow-app-db
 
 jobs:
-  build-and-push:
+  validate:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Validate SQL files
+        run: |
+          echo "Checking for SQL syntax errors..."
+          # Basic check - SQL files exist and are not empty
+          if [ -d "db/init" ]; then
+            find db/init -name "*.sql" -type f -empty && exit 1 || echo "SQL files validated"
+          fi
+          
+  build-and-push:
+    needs: validate
+    runs-on: ubuntu-latest
+    # Only run on main or tags, not PRs
+    if: github.event_name != 'pull_request'
 
     steps:
       - name: Checkout code

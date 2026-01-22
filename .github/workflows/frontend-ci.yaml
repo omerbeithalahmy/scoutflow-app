@@ -17,8 +17,29 @@ env:
   ECR_REPOSITORY: scoutflow-app-frontend
   
 jobs:
-  build-and-push:
+  lint:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+      - name: Run linting
+        run: |
+          cd frontend
+          npm run lint
+          
+  build-and-push:
+    needs: lint
+    runs-on: ubuntu-latest
+    # Only run on main or tags, not PRs
+    if: github.event_name != 'pull_request'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
