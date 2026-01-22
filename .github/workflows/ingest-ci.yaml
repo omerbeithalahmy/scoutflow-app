@@ -4,13 +4,8 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-    paths:
-      - 'ingest/**'
-      - '.github/workflows/ingest-ci.yaml'
   pull_request:
     branches: [main]
-    paths:
-      - 'ingest/**'
 
 env:
   AWS_REGION: us-east-1

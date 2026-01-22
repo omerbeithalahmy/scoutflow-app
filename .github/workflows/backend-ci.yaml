@@ -3,13 +3,8 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-    paths:
-      - 'backend/**'
-      - '.github/workflows/backend-ci.yaml'
   pull_request:
     branches: [main]
-    paths:
-      - 'backend/**'
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: scoutflow-app-backend
