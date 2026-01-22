@@ -7,6 +7,5 @@ exclude =
     venv,
     env,
     .venv
-ignore = 
-    E203,  # Whitespace before ':'
-    W503   # Line break before binary operator
+# Ignore whitespace before colon and line break before binary operator
+ignore = E203,W503

@@ -25,9 +25,19 @@ jobs:
       - name: Validate SQL files
         run: |
           echo "Checking for SQL syntax errors..."
-          # Basic check - SQL files exist and are not empty
+          # Check if init directory exists
           if [ -d "db/init" ]; then
-            find db/init -name "*.sql" -type f -empty && exit 1 || echo "SQL files validated"
+            # Check if any SQL files are empty (fail if found)
+            EMPTY_FILES=$(find db/init -name "*.sql" -type f -empty)
+            if [ -n "$EMPTY_FILES" ]; then
+              echo "Error: Empty SQL files found:"
+              echo "$EMPTY_FILES"
+              exit 1
+            else
+              echo "✓ SQL files validated successfully"
+            fi
+          else
+            echo "✓ No SQL files to validate"
           fi
           
   build-and-push:
