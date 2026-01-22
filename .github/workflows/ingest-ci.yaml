@@ -17,8 +17,30 @@ env:
   ECR_REPOSITORY: scoutflow-app-ingest
 
 jobs:
-  build-and-push:
+  lint:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          cd ingest
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      - name: Run linting
+        run: |
+          cd ingest
+          flake8 . --config=../.flake8
+          
+  build-and-push:
+    needs: lint
+    runs-on: ubuntu-latest
+    # Only run on main or tags, not PRs
+    if: github.event_name != 'pull_request'
 
     steps:
       - name: Checkout code
