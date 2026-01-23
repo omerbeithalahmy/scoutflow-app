@@ -14,7 +14,7 @@ def test_health_endpoint():
     assert response.json() == {"status": "ok"}
 
 
-def test_root_redirect():
-    """Test root redirects to docs"""
-    response = client.get("/", follow_redirects=False)
-    assert response.status_code in [307, 308, 301, 302]
+def test_docs_available():
+    """Test the API docs endpoint is available"""
+    response = client.get("/docs")
+    assert response.status_code == 200
