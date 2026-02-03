@@ -1,19 +1,21 @@
-# Base image
-FROM python:3.9-slim
+# ============================================================================
+# Backend Service Container Specification
+# Configures the FastAPI environment and application dependencies
+# ============================================================================
 
-# Set workdir
-WORKDIR /app
+FROM python:3.11-slim
 
-# Copy requirements and install dependencies
+WORKDIR /backend
+
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the app
-COPY app ./app
+COPY . .
 
-# Expose the port FastAPI will run on
 EXPOSE 8000
 
-# Command to run the app
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

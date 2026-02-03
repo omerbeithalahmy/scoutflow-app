@@ -1,1 +1,6 @@
+# ============================================================================
+# Ingest Service Development Dependencies
+# Includes linting and testing tools for the ingest module
+# ============================================================================
+
 flake8==6.1.0

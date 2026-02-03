@@ -1,3 +1,8 @@
+# ============================================================================
+# Database Service Definition
+# Provides a stable network identity for the PostgreSQL StatefulSet
+# ============================================================================
+
 apiVersion: v1
 kind: Service
 metadata:

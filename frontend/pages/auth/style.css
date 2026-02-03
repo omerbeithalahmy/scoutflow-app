@@ -1,3 +1,10 @@
+/*
+============================================================================
+Authentication Module - Visual Styles
+Defines the visual language for the secure login and registration system
+============================================================================
+*/
+
 :root {
     --nba-red: #C9301E;
     --nba-black: #0F0F0F;
@@ -22,7 +29,6 @@ body {
     height: 100%;
 }
 
-/* Left Panel Styling */
 .left-panel {
     flex: 1;
     background-color: var(--nba-black);
@@ -61,7 +67,6 @@ body {
     color: #666;
 }
 
-/* Decorative Background Elements */
 .circle {
     position: absolute;
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -92,7 +97,6 @@ body {
     left: 25%;
 }
 
-/* Right Panel Styling */
 .right-panel {
     flex: 1;
     background: white;
@@ -200,7 +204,7 @@ body {
 }
 
 .sign-in-btn:hover {
-    background-color: #222; /* קצת יותר בהיר מהשחור המוחלט */
+    background-color: #222;
     transform: translateY(-1px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
@@ -231,9 +235,6 @@ body {
     font-style: italic;
     opacity: 0.7;
 }
-/* 🔒 AUTH SLIDER FIX – SAFE */
-
-/* 🔒 AUTH SLIDER SYMMETRIC TRANSITION */
 
 .auth-viewport {
   width: 100%;
@@ -249,7 +250,6 @@ body {
   will-change: transform;
 }
 
-/* כל סקשן חצי רוחב */
 .auth-section {
   width: 50%;
   opacity: 0;
@@ -257,17 +257,14 @@ body {
   will-change: opacity;
 }
 
-/* Login מתחיל פעיל */
 .auth-slider > .auth-section:first-child {
   opacity: 1;
 }
 
-/* Sign Up מתחיל לא פעיל */
 .auth-slider > .auth-section:last-child {
   opacity: 0;
 }
 
-/* מעבר ל-Sign Up */
 .auth-slider.show-signup {
   transform: translateX(-50%);
 }
@@ -278,7 +275,6 @@ body {
   opacity: 1;
 }
 
-/* חזרה ל-Login */
 .auth-slider:not(.show-signup) > .auth-section:first-child {
   opacity: 1;
 }
@@ -286,12 +282,10 @@ body {
   opacity: 0;
 }
 
-/* קורסור להחלפה */
 .switch {
   cursor: pointer;
 }
 
-/* --- TOAST SYSTEM --- */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -314,7 +308,7 @@ body {
     align-items: center;
     gap: 12px;
     min-width: 300px;
-    border-left: 4px solid var(--nba-red); /* הטאץ' של המותג */
+    border-left: 4px solid var(--nba-red);
     transform: translateX(120%);
     transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }

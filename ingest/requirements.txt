@@ -1,3 +1,8 @@
+# ============================================================================
+# Ingest Service Python Dependencies
+# Lists the core packages required for the NBA data ingestion service
+# ============================================================================
+
 psycopg2-binary
 pandas
 nba_api

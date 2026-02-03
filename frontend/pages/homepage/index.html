@@ -1,3 +1,9 @@
+<!--
+============================================================================
+NBA Teams Dashboard - Entry Point
+Consolidated view of all NBA franchises with conference-based navigation
+============================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,7 +18,6 @@
 </head>
 
 <body class="light-bg">
-
   <nav class="main-nav">
     <div class="nav-left">
       <span class="logo-text">Scout<span class="red-text">Flow</span></span>
@@ -30,13 +35,11 @@
       </div>
     </div>
   </nav>
-
   <main class="container">
     <header class="page-header">
       <p class="season-label">2025-26 SEASON</p>
       <h1 class="main-title">NBA TEAMS</h1>
       <p class="subtitle">Select a team to explore their roster</p>
-
       <div class="search-bar">
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id="teamSearch" placeholder="Search for a player to explore their profile..."
@@ -44,12 +47,10 @@
         <div id="searchSuggestions" class="suggestions-dropdown card-hidden"></div>
       </div>
     </header>
-
     <div class="filter-tabs">
       <button class="filter-tab active" data-filter="east" data-index="0">EASTERN CONF</button>
       <button class="filter-tab" data-filter="west" data-index="1">WESTERN CONF</button>
     </div>
-
     <div class="teams-viewport">
       <div class="teams-slider" id="teamsSlider">
         <div class="teams-grid" id="grid-east"></div>
@@ -57,7 +58,6 @@
       </div>
     </div>
   </main>
-
   <script src="script.js"></script>
 </body>
 

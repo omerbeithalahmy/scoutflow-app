@@ -1,4 +1,8 @@
-# Database configuration
+# ============================================================================
+# Production Environment - Helm Values
+# Configures ScoutFlow application for production with high availability
+# ============================================================================
+
 global:
   registry: 279987127424.dkr.ecr.us-east-1.amazonaws.com
   imageTag: latest
@@ -6,12 +10,10 @@ global:
 imagePullSecrets:
   - name: ecr-registry-secret
 
-# ECR authentication (will be overridden in production by CD pipeline)
 ecr:
-  enabled: false  # Set to true when deploying with ECR
+  enabled: false
   username: AWS
-  password: ""  # Will be set via --set-string during deployment
-
+  password: ""
 
 database:
   image:
@@ -42,7 +44,6 @@ database:
       cpu: 500m
       memory: 512Mi
 
-# Ingest job configuration
 ingest:
   image:
     repository: scoutflow-app-ingest
@@ -60,7 +61,6 @@ ingest:
       cpu: 1000m
       memory: 512Mi
 
-# Backend configuration
 backend:
   image:
     repository: scoutflow-app-backend
@@ -81,7 +81,6 @@ backend:
       cpu: 500m
       memory: 256Mi
 
-# Frontend configuration
 frontend:
   image:
     repository: scoutflow-app-frontend
@@ -102,14 +101,10 @@ frontend:
       cpu: 200m
       memory: 128Mi
 
-# Ingress configuration
 ingress:
   host: scoutflow.example.com
 
-# External Secrets Operator configuration
-# When enabled, database secrets are synced from AWS Secrets Manager
-# When disabled, uses manual secret (for local dev)
 externalSecrets:
-  enabled: false  # Set to true in GitOps values files
+  enabled: false
   region: us-east-1
-  secretName: ""  # Set per environment in GitOps (e.g., scoutflow/dev/database)
+  secretName: ""

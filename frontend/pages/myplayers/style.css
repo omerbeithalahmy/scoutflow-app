@@ -1,3 +1,10 @@
+/*
+============================================================================
+My Players Archive - Visual Styles
+Defines the layout for the personal watchlist and empty state displays
+============================================================================
+*/
+
 :root {
     --nba-red: #C9301E;
     --nba-black: #0F0F0F;
@@ -18,7 +25,6 @@ body {
     color: var(--nba-black);
 }
 
-/* ========== NAVBAR ========== */
 .main-nav {
     display: flex;
     justify-content: space-between;
@@ -92,12 +98,10 @@ body {
     font-size: 16px;
 }
 
-/* ========== PAGE CONTENT ========== */
 .page-content {
     padding: 0 40px 60px;
 }
 
-/* ========== ARCHIVE HEADER ========== */
 .archive-header {
     display: flex;
     align-items: center;
@@ -151,7 +155,6 @@ body {
     letter-spacing: 1px;
 }
 
-/* ========== EMPTY STATE ========== */
 .empty-state {
     display: flex;
     flex-direction: column;
@@ -181,7 +184,6 @@ body {
     line-height: 1.6;
 }
 
-/* ========== WATCHLIST CONTAINER ========== */
 .watchlist-container {
     padding: 40px 0;
     display: flex;
@@ -189,7 +191,6 @@ body {
     gap: 15px;
 }
 
-/* ========== PLAYER ROW ========== */
 .player-row {
     display: flex;
     align-items: center;

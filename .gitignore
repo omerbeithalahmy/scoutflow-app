@@ -1,4 +1,8 @@
-# Python
+# ============================================================================
+# Repository Ignore Rules
+# Defines file patterns to be excluded from version control
+# ============================================================================
+
 __pycache__/
 *.py[cod]
 *$py.class
@@ -7,49 +11,29 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-
-# Virtual environments
 venv/
 env/
 ENV/
-
-# Environment variables
 .env
 .env.local
 .env.*.local
-
-# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .DS_Store
-
-# Node modules (frontend)
 node_modules/
 npm-debug.log*
-
-# Docker
 .dockerignore
-
-# Kubernetes
 *.kubeconfig
-
-# Logs
 *.log
 logs/
-
-# Database
 *.sql
 *.sqlite
 *.db
-
-# Temporary files
 *.tmp
 *.bak
 *.cache
 .pytest_cache/
-
-# OS
 Thumbs.db

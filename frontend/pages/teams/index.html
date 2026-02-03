@@ -1,3 +1,9 @@
+<!--
+============================================================================
+Team Roster - Entry Point
+Displays the full roster of an NBA team with key performance indicators
+============================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,17 +18,14 @@
 </head>
 
 <body>
-
   <nav class="main-nav">
     <div class="nav-left">
       <span class="logo-text">Scout<span class="red-text">Flow</span></span>
     </div>
-
     <div class="nav-center">
       <a href="../homepage/index.html" class="nav-link">TEAMS</a>
       <a href="../myplayers/index.html" class="nav-link">MY PLAYERS</a>
     </div>
-
     <div class="nav-right">
       <div class="user-wrapper">
         <span id="userNameDisplay" class="user-badge">GUEST</span>
@@ -32,12 +35,10 @@
       </div>
     </div>
   </nav>
-
   <main class="container">
     <a href="../homepage/index.html" class="back-link">
       <i class="fa-solid fa-arrow-left"></i> BACK TO TEAMS
     </a>
-
     <header class="team-hero">
       <div class="hero-content">
         <img src="" alt="" class="team-hero-logo" id="teamLogo" style="display:none;">
@@ -48,19 +49,16 @@
         </div>
       </div>
     </header>
-
     <section class="roster-container">
       <div class="roster-title-bar">
         <i class="fa-solid fa-users-group"></i>
         <h2>ROSTER <span class="count-badge" id="rosterCount"></span></h2>
       </div>
-
       <div id="dynamicRoster">
         <p style="padding: 20px; color: #888;">Fetching players...</p>
       </div>
     </section>
   </main>
-
   <script src="script.js"></script>
 </body>
 

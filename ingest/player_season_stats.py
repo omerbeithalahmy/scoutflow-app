@@ -1,3 +1,8 @@
+# ============================================================================
+# NBA Player Statistics Ingestion
+# Calculates and updates comprehensive player performance metrics per season
+# ============================================================================
+
 import psycopg2
 import pandas as pd
 from nba_api.stats.endpoints import LeagueDashPlayerStats
@@ -14,7 +19,6 @@ PER_MODE = "PerGame"
 def insert_player_season_stats():
     conn = None
     try:
-        # התחברות ל-DB
         conn = psycopg2.connect(
             host=os.getenv("POSTGRES_HOST", "db"),
             port=int(os.getenv("POSTGRES_PORT", 5432)),
@@ -23,14 +27,10 @@ def insert_player_season_stats():
             password=os.getenv("POSTGRES_PASSWORD")
         )
         cur = conn.cursor()
-
-        # 1. משיכת השחקנים שיש לנו ב-DB כדי לעשות מיפוי (nba_id -> internal_id)
         cur.execute("SELECT id, nba_id FROM players WHERE is_active IS TRUE")
         players_in_db = cur.fetchall()
         player_map = {nba_id: p_id for p_id, nba_id in players_in_db}
         print(f"✅ Found {len(players_in_db)} active players in your DB.")
-
-        # 2. קריאה ל-Dashboard המלא (הכי מפורט שיש)
         print(f"🏀 Fetching ALL NBA player stats for {SEASON} (this might take a few seconds)...")
         ldp = LeagueDashPlayerStats(
             season=SEASON, 
@@ -38,21 +38,13 @@ def insert_player_season_stats():
             per_mode_detailed=PER_MODE
         )
         df = ldp.get_data_frames()[0]
-
         results = []
-        
-        # 3. עיבוד הנתונים
         for _, row in df.iterrows():
             nba_id = int(row["PLAYER_ID"])
-            
-            # אם השחקן קיים אצלנו ב-DB
             if nba_id in player_map:
                 p_id = player_map[nba_id]
-                
-                # ווידוא נתונים נומריים (מניעת NaN)
                 gp = int(row["GP"])
                 if gp == 0: continue
-
                 results.append((
                     p_id, 
                     SEASON, 
@@ -65,8 +57,6 @@ def insert_player_season_stats():
                     float(row["BLK"]), 
                     float(row["TOV"])
                 ))
-
-        # 4. הכנסה ל-DB בבת אחת (Bulk Insert)
         if results:
             cur.executemany("""
                 INSERT INTO player_season_stats
@@ -83,12 +73,10 @@ def insert_player_season_stats():
                     avg_blocks = EXCLUDED.avg_blocks,
                     avg_turnovers = EXCLUDED.avg_turnovers;
             """, results)
-            
             conn.commit()
             print(f"🚀 SUCCESS: Updated stats for {len(results)} players!")
         else:
             print("⚠️ No stats found to update.")
-
     except Exception as e:
         print(f"❌ Database error: {e}")
     finally:

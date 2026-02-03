@@ -1,3 +1,8 @@
+# ============================================================================
+# Application ConfigMap
+# Stores non-sensitive configuration parameters for the ScoutFlow services
+# ============================================================================
+
 apiVersion: v1
 kind: ConfigMap
 metadata:

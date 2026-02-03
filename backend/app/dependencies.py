@@ -1,3 +1,8 @@
+# ============================================================================
+# Backend Service - Dependency Injection
+# Manages resource lifecycle and database session provisioning
+# ============================================================================
+
 from app.db.session import SessionLocal
 
 def get_db():
