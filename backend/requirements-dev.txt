@@ -6,4 +6,4 @@
 pytest
 flake8
 black
-httpx
+httpx==0.27.2
