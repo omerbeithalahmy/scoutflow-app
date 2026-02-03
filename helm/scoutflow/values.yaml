@@ -105,3 +105,11 @@ frontend:
 # Ingress configuration
 ingress:
   host: scoutflow.example.com
+
+# External Secrets Operator configuration
+# When enabled, database secrets are synced from AWS Secrets Manager
+# When disabled, uses manual secret (for local dev)
+externalSecrets:
+  enabled: false  # Set to true in GitOps values files
+  region: us-east-1
+  secretName: ""  # Set per environment in GitOps (e.g., scoutflow/dev/database)
