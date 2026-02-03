@@ -1,6 +1,7 @@
 {
   "name": "scoutflow-frontend",
   "version": "1.0.0",
+  "description": "Responsive web interface for the ScoutFlow NBA performance analysis platform",
   "scripts": {
     "lint": "eslint pages/**/*.js"
   },

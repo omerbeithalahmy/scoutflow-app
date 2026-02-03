@@ -1,19 +1,16 @@
-from sqlalchemy.orm import Session
-from .models import User
-from .models import Team
-from .models import Player
-from .models import PlayerSeasonStats
-from .models import UserFollowedPlayer
+# ============================================================================
+# Backend Service - Persistence Layer
+# Core CRUD operations for data retrieval and state modification
+# ============================================================================
 
+from sqlalchemy.orm import Session
+from .models import User, Team, Player, PlayerSeasonStats, UserFollowedPlayer
 
 def create_user(db: Session, username: str, email: str, password_hash: str):
-    """
-    יוצרת משתמש חדש ומוסיפה למסד הנתונים
-    """
     db_user = User(
         username=username,
         email=email,
-        password_hash=password_hash  # שם השדה תואם למודל ולטבלה
+        password_hash=password_hash
     )
     db.add(db_user)
     db.commit()
@@ -23,17 +20,10 @@ def create_user(db: Session, username: str, email: str, password_hash: str):
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
-
-from .models import Team
-
 def get_teams(db: Session, limit: int = 30):
-    """
-    מחזיר רשימת קבוצות, מוגבל ל-30 ברירת מחדל
-    """
     return db.query(Team).limit(limit).all()
 
 def search_players_suggestions(db: Session, query: str, limit: int = 5):
-    # שליפת השחקנים
     players = (
         db.query(Player)
         .filter(Player.full_name.ilike(f"%{query}%"))
@@ -42,7 +32,6 @@ def search_players_suggestions(db: Session, query: str, limit: int = 5):
     )
     
     for player in players:
-        # הצמדת הסטטיסטיקה האחרונה
         stats = (
             db.query(PlayerSeasonStats)
             .filter(PlayerSeasonStats.player_id == player.id)
@@ -51,7 +40,6 @@ def search_players_suggestions(db: Session, query: str, limit: int = 5):
         )
         player.latest_stats = stats
         
-        # וידוא שיש לו את אובייקט הקבוצה (כדי למנוע שגיאות ב-Frontend)
         if not hasattr(player, 'team') or player.team is None:
             player.team_abbreviation = "NBA"
         else:
@@ -60,18 +48,15 @@ def search_players_suggestions(db: Session, query: str, limit: int = 5):
     return players
 
 def get_players_by_team(db: Session, team_id: int):
-    # מושכים את כל השחקנים של הקבוצה
     players = db.query(Player).filter(Player.team_id == team_id).all()
     
     for player in players:
-        # לכל שחקן, מושכים את הסטטיסטיקה של העונה האחרונה
         stats = (
             db.query(PlayerSeasonStats)
             .filter(PlayerSeasonStats.player_id == player.id)
             .order_by(PlayerSeasonStats.season.desc())
             .first()
         )
-        # אנחנו מצמידים את הסטטיסטיקה לאובייקט השחקן
         player.latest_stats = stats
     
     return players
@@ -96,18 +81,13 @@ def get_player_with_stats(db: Session, player_id: int):
         .all()
     )
 
-    # גם אם אין סטטיסטיקות – מחזירים שחקן
     player.season_stats = stats or []
     return player
 
-
 def get_followed_players(db: Session, user_id: int):
-    """
-    Returns list of players followed by user with their latest season stats
-    """
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        return None  # User doesn't exist
+        return None
 
     followed = (
         db.query(UserFollowedPlayer)
@@ -118,16 +98,12 @@ def get_followed_players(db: Session, user_id: int):
     players_list = []
     for fp in followed:
         player = fp.player
-        
-        # Get latest season stats
         latest_stats = (
             db.query(PlayerSeasonStats)
             .filter(PlayerSeasonStats.player_id == player.id)
             .order_by(PlayerSeasonStats.season.desc())
             .first()
         )
-        
-        # Attach stats and team info
         player.latest_stats = latest_stats
         if player.team:
             player.team_name = player.team.name
@@ -137,24 +113,16 @@ def get_followed_players(db: Session, user_id: int):
 
     return players_list
 
-
 def follow_player(db: Session, user_id: int, player_id: int):
-    """
-    Creates a follow relationship between user and player
-    Returns the created relationship or None if already exists
-    """
-    # Check if already following
     existing = (
         db.query(UserFollowedPlayer)
         .filter(UserFollowedPlayer.user_id == user_id,
                 UserFollowedPlayer.player_id == player_id)
         .first()
     )
-    
     if existing:
-        return None  # Already following
+        return None
     
-    # Create new follow relationship
     new_follow = UserFollowedPlayer(
         user_id=user_id,
         player_id=player_id
@@ -164,12 +132,7 @@ def follow_player(db: Session, user_id: int, player_id: int):
     db.refresh(new_follow)
     return new_follow
 
-
 def check_follow_status(db: Session, user_id: int, player_id: int):
-    """
-    Checks if user is following a specific player
-    Returns True if following, False otherwise
-    """
     followed = (
         db.query(UserFollowedPlayer)
         .filter(UserFollowedPlayer.user_id == user_id,
@@ -178,24 +141,19 @@ def check_follow_status(db: Session, user_id: int, player_id: int):
     )
     return followed is not None
 
-
-
 def remove_followed_player(db: Session, user_id: int, player_id: int):
-    # מוצאים את הרשומה
     followed = (
         db.query(UserFollowedPlayer)
         .filter(UserFollowedPlayer.user_id == user_id,
                 UserFollowedPlayer.player_id == player_id)
         .first()
     )
-
     if not followed:
-        return None  # לא נמצא השחקן במעקב
+        return None
 
     db.delete(followed)
     db.commit()
     return True
-
 
 def get_player_by_full_name(db: Session, full_name: str):
     player = (
@@ -203,7 +161,6 @@ def get_player_by_full_name(db: Session, full_name: str):
         .filter(Player.full_name == full_name)
         .first()
     )
-
     if not player:
         return None
 
@@ -213,8 +170,5 @@ def get_player_by_full_name(db: Session, full_name: str):
         .order_by(PlayerSeasonStats.season.desc())
         .all()
     )
-
     player.season_stats = stats or []
     return player
-
-

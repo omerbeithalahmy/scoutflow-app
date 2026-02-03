@@ -1,12 +1,14 @@
-/* ================================
-   NBA TEAM DETAILS - script.js
-================================ */
+/*
+============================================================================
+Team Roster - Logical Controllers
+Handles the retrieval of team membership and interactive follow status updates
+============================================================================
+*/
 
-// 1. מיפוי נתונים משלימים ללוגו וצבעים (נשמר ב-Frontend)
 const teamExtraData = {
     "ATL": { conf: "EAST", div: "Southeast", nbaId: 1610612737, color: "#E03A3E" },
     "BOS": { conf: "EAST", div: "Atlantic", nbaId: 1610612738, color: "#007A33" },
-    "CLE": { conf: "EAST", div: "Central", nbaId: 1610612739, color: "#860038" },
+    "CLE": { Rock: "EAST", div: "Central", nbaId: 1610612739, color: "#860038" },
     "NOP": { conf: "WEST", div: "Southwest", nbaId: 1610612740, color: "#0C2340" },
     "CHI": { conf: "EAST", div: "Central", nbaId: 1610612741, color: "#CE1141" },
     "DAL": { conf: "WEST", div: "Southwest", nbaId: 1610612742, color: "#00538C" },
@@ -36,67 +38,48 @@ const teamExtraData = {
     "WAS": { conf: "EAST", div: "Southeast", nbaId: 1610612764, color: "#002B5C" }
 };
 
-// 2. פונקציית האתחול המרכזית
 async function initDynamicPage() {
-    // בדיקה והצגת שם משתמש ב-Navbar מיד עם טעינת הדף
     initUserDisplay();
-
     const urlParams = new URLSearchParams(window.location.search);
     const teamId = urlParams.get('id');
-
     if (!teamId) return;
-
     try {
         const teamRes = await fetch(`http://localhost:8000/teams/${teamId}`);
         const team = await teamRes.json();
-
         updateUIHeader(team);
-
         const playersRes = await fetch(`http://localhost:8000/teams/${teamId}/players`);
         const players = await playersRes.json();
-
         renderPlayers(players);
     } catch (err) {
         console.error("Error fetching team data:", err);
     }
 }
 
-// 3. עדכון כותרת הדף וצבעי הקבוצה
 function updateUIHeader(team) {
     const extra = teamExtraData[team.abbreviation] || { nbaId: 0, color: "#111", conf: "NBA", div: "N/A" };
-
     document.documentElement.style.setProperty('--team-color', extra.color);
-
     const logoImg = document.getElementById('teamLogo');
     if (logoImg && extra.nbaId !== 0) {
         logoImg.src = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
         logoImg.style.display = 'block';
     }
-
     const cityEl = document.getElementById('teamCity');
     if (cityEl) cityEl.innerText = team.city.toUpperCase();
-
     const nameEl = document.getElementById('teamName');
     if (nameEl) {
         nameEl.innerText = team.name.toUpperCase();
         nameEl.style.color = extra.color;
     }
-
     const metaEl = document.getElementById('teamMeta');
     if (metaEl) {
         metaEl.innerText = `${extra.conf}ERN CONFERENCE • ${extra.div.toUpperCase()}`;
     }
 }
 
-// 4. רינדור רשימת השחקנים
 async function renderPlayers(players) {
     const container = document.getElementById('dynamicRoster');
     if (!container) return;
-
-    // Get current user ID from localStorage
     const userId = localStorage.getItem('userId');
-
-    // Fetch follow status for all players if user is logged in
     let followStatusMap = {};
     if (userId) {
         try {
@@ -114,21 +97,16 @@ async function renderPlayers(players) {
             console.error("Error fetching follow statuses:", err);
         }
     }
-
     let html = '<div class="players-grid">';
     players.forEach(p => {
         const nameParts = p.full_name.trim().split(/\s+/);
         const initials = nameParts.length >= 2
             ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
             : nameParts[0][0].toUpperCase();
-
         const stats = p.latest_stats;
         const formatStat = (val) => (val === null || val === undefined || val === 0) ? "N/A" : val.toFixed(1);
-
-        // Determine if player is followed
         const isFollowed = followStatusMap[p.id] || false;
         const heartClass = isFollowed ? 'fa-solid fa-heart followed' : 'fa-regular fa-heart';
-
         html += `
             <div class="player-card" onclick="navigateToPlayer(${p.id})">
               <div class="card-left">
@@ -152,39 +130,29 @@ async function renderPlayers(players) {
     });
     html += '</div>';
     container.innerHTML = html;
-
     const rosterCountEl = document.getElementById('rosterCount');
     if (rosterCountEl) rosterCountEl.innerText = `(${players.length} PLAYERS)`;
 }
 
-// 5. ניווט
 function navigateToPlayer(playerId) {
     window.location.href = `../player/index.html?id=${playerId}`;
 }
 
 async function handleFollow(event, playerId) {
     event.stopPropagation();
-
-    // Get user ID from localStorage
     const userId = localStorage.getItem('userId');
     if (!userId) {
         alert('Please log in to follow players');
         return;
     }
-
-    // Get the heart icon element
     const heartIcon = event.target;
     const isCurrentlyFollowed = heartIcon.classList.contains('followed');
-
     try {
         if (isCurrentlyFollowed) {
-            // Unfollow the player
             const response = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
                 method: 'DELETE'
             });
-
             if (response.ok) {
-                // Update the heart icon to empty
                 heartIcon.classList.remove('fa-solid', 'followed');
                 heartIcon.classList.add('fa-regular');
                 console.log(`Unfollowed player ${playerId}`);
@@ -192,20 +160,16 @@ async function handleFollow(event, playerId) {
                 throw new Error('Failed to unfollow player');
             }
         } else {
-            // Follow the player
             const response = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
                 method: 'POST'
             });
-
             if (response.ok) {
-                // Update the heart icon to filled
                 heartIcon.classList.remove('fa-regular');
                 heartIcon.classList.add('fa-solid', 'followed');
                 console.log(`Followed player ${playerId}`);
             } else {
                 const errorData = await response.json();
                 if (errorData.detail === 'Already following this player') {
-                    // Already followed, just update UI
                     heartIcon.classList.remove('fa-regular');
                     heartIcon.classList.add('fa-solid', 'followed');
                 } else {
@@ -219,23 +183,15 @@ async function handleFollow(event, playerId) {
     }
 }
 
-/* ================================
-   6. לוגיקת תצוגת משתמש (Auth Display)
-================================ */
 function initUserDisplay() {
     const userNameDisplay = document.getElementById('userNameDisplay');
     const logoutBtn = document.querySelector('.logout-btn');
-
-    // שליפת השם המלא שנשמר ב-LocalStorage בזמן ה-Login
     const storedName = localStorage.getItem('userName');
-
     if (storedName && userNameDisplay) {
         userNameDisplay.textContent = storedName.toUpperCase();
     } else if (userNameDisplay) {
         userNameDisplay.textContent = "GUEST";
     }
-
-    // הגדרת כפתור ה-Logout (ניקוי זיכרון וחזרה לדף כניסה)
     if (logoutBtn) {
         logoutBtn.onclick = (e) => {
             e.preventDefault();
@@ -245,5 +201,4 @@ function initUserDisplay() {
     }
 }
 
-// הפעלה בטעינת הדף
 document.addEventListener('DOMContentLoaded', initDynamicPage);

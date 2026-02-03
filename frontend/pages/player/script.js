@@ -1,3 +1,10 @@
+/*
+============================================================================
+Player Profile - Logical Controllers
+Orchestrates player data retrieval, follow/unfollow actions, and dynamic chart rendering
+============================================================================
+*/
+
 const teamExtraData = {
     "ATL": { nbaId: 1610612737, color: "#E03A3E" },
     "BOS": { nbaId: 1610612738, color: "#007A33" },
@@ -35,19 +42,15 @@ async function initPlayerPage() {
     initUserDisplay();
     const urlParams = new URLSearchParams(window.location.search);
     const playerId = urlParams.get('id');
-
     if (!playerId) {
         window.location.href = '../homepage/index.html';
         return;
     }
-
     try {
         const res = await fetch(`http://localhost:8000/players/${playerId}`);
         if (!res.ok) throw new Error("Player not found");
         const player = await res.json();
         renderPlayerPage(player);
-
-        // Check follow status and setup follow button
         await setupFollowButton(playerId);
     } catch (err) {
         console.error(err);
@@ -58,13 +61,10 @@ async function initPlayerPage() {
 async function setupFollowButton(playerId) {
     const userId = localStorage.getItem('userId');
     const followBtn = document.querySelector('.follow-btn');
-
     if (!userId || !followBtn) {
         return;
     }
-
     try {
-        // Check if user is following this player
         const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}/status`);
         if (res.ok) {
             const data = await res.json();
@@ -73,8 +73,6 @@ async function setupFollowButton(playerId) {
     } catch (err) {
         console.error('Error checking follow status:', err);
     }
-
-    // Add click handler
     followBtn.onclick = () => toggleFollow(playerId, followBtn);
 }
 
@@ -84,12 +82,9 @@ async function toggleFollow(playerId, button) {
         alert('Please log in to follow players');
         return;
     }
-
     const isCurrentlyFollowing = button.classList.contains('following');
-
     try {
         if (isCurrentlyFollowing) {
-            // Unfollow
             const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
                 method: 'DELETE'
             });
@@ -97,7 +92,6 @@ async function toggleFollow(playerId, button) {
                 updateFollowButtonState(button, false);
             }
         } else {
-            // Follow
             const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
                 method: 'POST'
             });
@@ -124,32 +118,24 @@ function updateFollowButtonState(button, isFollowing) {
 function renderPlayerPage(p) {
     const extra = teamExtraData[p.team_abbreviation] || { nbaId: 0, color: "#111" };
     document.documentElement.style.setProperty('--team-color', extra.color);
-
     const nameParts = p.full_name.trim().split(/\s+/);
     document.getElementById('firstName').innerText = nameParts[0].toUpperCase();
     document.getElementById('lastName').innerText = nameParts.slice(1).join(" ").toUpperCase();
-
     const logoImg = document.getElementById('playerTeamLogo');
     if (logoImg && extra.nbaId !== 0) {
         logoImg.src = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
         logoImg.style.display = 'block';
     }
-
     document.getElementById('playerSubTitle').innerText = `${p.team_name.toUpperCase()} | NBA PLAYER`;
-
     const backBtn = document.querySelector('.back-link');
     if (backBtn) {
         backBtn.innerHTML = `<i class="fa-solid fa-arrow-left"></i> BACK TO ${p.team_name.toUpperCase()}`;
         backBtn.href = `../teams/index.html?id=${p.team_id}`;
     }
-
     if (p.season_stats && p.season_stats.length > 0) {
         const s = p.season_stats[0];
         const format = (v) => (v !== undefined && v !== null) ? v.toFixed(1) : "0.0";
-
         document.getElementById('gamesPlayed').innerText = `(${s.games_played || 0} GP)`;
-
-        // עדכון טקסט
         document.getElementById('val-ppg').innerText = format(s.avg_points);
         document.getElementById('val-rpg').innerText = format(s.avg_rebounds);
         document.getElementById('val-apg').innerText = format(s.avg_assists);
@@ -157,15 +143,13 @@ function renderPlayerPage(p) {
         document.getElementById('val-bpg').innerText = format(s.avg_blocks);
         document.getElementById('val-tov').innerText = format(s.avg_turnovers);
         document.getElementById('val-mpg').innerText = format(s.avg_minutes);
-
-        // עדכון גרף (גובה עמודות)
-        updateBar('bar-ppg', s.avg_points, 25);  // נקודות - מקסימום 35 בגרף
-        updateBar('bar-rpg', s.avg_rebounds, 10); // ריבאונד - מקסימום 15
-        updateBar('bar-apg', s.avg_assists, 18);  // אסיסטים - מקסימום 12
-        updateBar('bar-spg', s.avg_steals, 2);    // חטיפות - מקסימום 3
-        updateBar('bar-bpg', s.avg_blocks, 2);    // חסימות - מקסימום 3
-        updateBar('bar-tov', s.avg_turnovers, 3.5); // איבודים - מקסימום 5
-        updateBar('bar-mpg', s.avg_minutes, 38);  // דקות - מקסימום 48
+        updateBar('bar-ppg', s.avg_points, 25);
+        updateBar('bar-rpg', s.avg_rebounds, 10);
+        updateBar('bar-apg', s.avg_assists, 18);
+        updateBar('bar-spg', s.avg_steals, 2);
+        updateBar('bar-bpg', s.avg_blocks, 2);
+        updateBar('bar-tov', s.avg_turnovers, 3.5);
+        updateBar('bar-mpg', s.avg_minutes, 38);
     }
 }
 
@@ -182,7 +166,6 @@ function initUserDisplay() {
     const userNameDisplay = document.getElementById('userNameDisplay');
     const storedName = localStorage.getItem('userName');
     if (storedName && userNameDisplay) userNameDisplay.textContent = storedName.toUpperCase();
-
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
         logoutBtn.onclick = () => {

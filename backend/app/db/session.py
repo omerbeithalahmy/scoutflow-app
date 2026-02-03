@@ -1,9 +1,13 @@
+# ============================================================================
+# Backend Service - Database Session Management
+# Orchestrates connectivity and transactional context with the PostgreSQL host
+# ============================================================================
+
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
-# טוען משתני סביבה מקובץ .env
 load_dotenv()
 
 DATABASE_URL = (
@@ -12,8 +16,5 @@ DATABASE_URL = (
     f"{os.getenv('POSTGRES_DB')}"
 )
 
-# יצירת ה-engine
 engine = create_engine(DATABASE_URL)
-
-# יצירת session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

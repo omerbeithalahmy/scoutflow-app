@@ -1,4 +1,8 @@
---- Teams Table ---
+-- ============================================================================
+-- Database Schema Initialization
+-- Defines the core tables for teams, players, statistics, and user data
+-- ============================================================================
+
 CREATE TABLE teams (
   id SERIAL PRIMARY KEY,
   nba_id INTEGER UNIQUE NOT NULL,
@@ -7,8 +11,6 @@ CREATE TABLE teams (
   city TEXT
 );
 
-
---- Players Table ---
 CREATE TABLE players (
   id SERIAL PRIMARY KEY,
   nba_id INTEGER UNIQUE NOT NULL,
@@ -18,8 +20,6 @@ CREATE TABLE players (
   is_active BOOLEAN
 );
 
-
---- Games Table ---
 CREATE TABLE games (
   id SERIAL PRIMARY KEY,
   nba_game_id TEXT UNIQUE NOT NULL,
@@ -29,8 +29,6 @@ CREATE TABLE games (
   away_team_id INTEGER REFERENCES teams(id)
 );
 
-
---- Player_Season_Stats Table ---
 CREATE TABLE player_season_stats (
   id SERIAL PRIMARY KEY,
   player_id INTEGER REFERENCES players(id),
@@ -46,8 +44,6 @@ CREATE TABLE player_season_stats (
   UNIQUE(player_id, season)
 );
 
-
---- Users Table ---
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
@@ -56,13 +52,9 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
-
---- User_Followed_Player Table ---
 CREATE TABLE user_followed_players (
   user_id INTEGER REFERENCES users(id),
   player_id INTEGER REFERENCES players(id),
   followed_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (user_id, player_id)
 );
-
-

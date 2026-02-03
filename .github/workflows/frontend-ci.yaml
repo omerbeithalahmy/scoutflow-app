@@ -1,16 +1,18 @@
-name: Frontend CI
+# ============================================================================
+# Frontend CI/CD Pipeline
+# Manages static asset validation and Nginx container deployment to ECR
+# ============================================================================
 
+name: Frontend CI
 on:
   push:
     branches: [main]
     tags: ['v*']
   pull_request:
     branches: [main]
-
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: scoutflow-app-frontend
-  
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -29,27 +31,22 @@ jobs:
         run: |
           cd frontend
           npm run lint
-          
   build-and-push:
     needs: lint
     runs-on: ubuntu-latest
-    # Only run on main or tags, not PRs
     if: github.event_name != 'pull_request'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-
       - name: Build, tag, and push image to AWS ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -59,13 +56,10 @@ jobs:
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          
-          # If triggered by a tag, push that tag as well (for production)
           if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
             VERSION_TAG=${GITHUB_REF#refs/tags/}
             echo "Pushing release tag: $VERSION_TAG"
             docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
           fi
-          
           echo "Image pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"

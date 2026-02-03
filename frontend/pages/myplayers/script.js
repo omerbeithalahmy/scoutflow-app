@@ -1,4 +1,10 @@
-// Team mapping data (reused from other pages)
+/*
+============================================================================
+My Players Archive - Logical Controllers
+Manages the retrieval, rendering, and removal of followed players
+============================================================================
+*/
+
 const teamExtraData = {
     "ATL": { nbaId: 1610612737, color: "#E03A3E" },
     "BOS": { nbaId: 1610612738, color: "#007A33" },
@@ -32,41 +38,29 @@ const teamExtraData = {
     "WAS": { nbaId: 1610612764, color: "#002B5C" }
 };
 
-/**
- * Initialize the Archive page
- */
 async function initArchivePage() {
     initUserDisplay();
-
     const userId = localStorage.getItem('userId');
     if (!userId) {
         console.error('No user ID found in localStorage');
         showEmptyState();
         return;
     }
-
     await fetchFollowedPlayers(userId);
 }
 
-/**
- * Fetch followed players from the API
- */
 async function fetchFollowedPlayers(userId) {
     try {
         const res = await fetch(`http://localhost:8000/users/${userId}/followed-players`);
-
         if (!res.ok) {
             throw new Error('Failed to fetch followed players');
         }
-
         const players = await res.json();
-
         if (players.length === 0) {
             showEmptyState();
         } else {
             renderWatchlist(players);
         }
-
         updatePlayerCount(players.length);
     } catch (err) {
         console.error('Error fetching followed players:', err);
@@ -74,29 +68,20 @@ async function fetchFollowedPlayers(userId) {
     }
 }
 
-/**
- * Show empty state (no players followed)
- */
 function showEmptyState() {
     const emptyState = document.getElementById('emptyState');
     const watchlistContainer = document.getElementById('watchlistContainer');
-
     if (emptyState) emptyState.style.display = 'flex';
     if (watchlistContainer) watchlistContainer.style.display = 'none';
 }
 
-/**
- * Render the watchlist with followed players
- */
 function renderWatchlist(players) {
     const emptyState = document.getElementById('emptyState');
     const watchlistContainer = document.getElementById('watchlistContainer');
-
     if (emptyState) emptyState.style.display = 'none';
     if (watchlistContainer) {
         watchlistContainer.style.display = 'flex';
         watchlistContainer.innerHTML = '';
-
         players.forEach(player => {
             const playerRow = createPlayerRow(player);
             watchlistContainer.appendChild(playerRow);
@@ -104,39 +89,26 @@ function renderWatchlist(players) {
     }
 }
 
-/**
- * Create a player row element
- */
 function createPlayerRow(player) {
     const row = document.createElement('div');
     row.className = 'player-row';
-
-    // Extract player data
     const teamAbbr = player.team_abbreviation || 'NBA';
     const teamData = teamExtraData[teamAbbr] || { nbaId: 0, color: '#111' };
     const teamLogoUrl = `https://cdn.nba.com/logos/nba/${teamData.nbaId}/primary/L/logo.svg`;
-
     const teamName = player.team_name || 'NBA';
-
-    // Get stats from latest_stats
     const stats = player.latest_stats || {};
     const ppg = stats.avg_points !== undefined && stats.avg_points !== null ? stats.avg_points.toFixed(1) : '0.0';
     const rpg = stats.avg_rebounds !== undefined && stats.avg_rebounds !== null ? stats.avg_rebounds.toFixed(1) : '0.0';
     const apg = stats.avg_assists !== undefined && stats.avg_assists !== null ? stats.avg_assists.toFixed(1) : '0.0';
-
-    // Extract jersey number or use initials
     const jerseyDisplay = extractJerseyNumber(player.full_name);
-
     row.innerHTML = `
         <div class="player-jersey">
             <span>${jerseyDisplay}</span>
         </div>
-        
         <div class="player-info">
             <span class="player-position-team">${teamName.toUpperCase()}</span>
             <h3 class="player-name">${player.full_name}</h3>
         </div>
-        
         <div class="player-stats">
             <div class="stat-item">
                 <span class="stat-value">${ppg}</span>
@@ -151,7 +123,6 @@ function createPlayerRow(player) {
                 <span class="stat-label">APG</span>
             </div>
         </div>
-        
         <div class="player-actions">
             <button class="unfollow-btn" onclick="unfollowPlayer(event, ${player.id})" title="Unfollow">
                 <i class="fa-solid fa-heart"></i>
@@ -159,25 +130,16 @@ function createPlayerRow(player) {
             <i class="fa-solid fa-arrow-right-long arrow-icon"></i>
         </div>
     `;
-
-    // Add click handler to navigate to player page (except for unfollow button)
     row.addEventListener('click', (e) => {
         if (!e.target.closest('.unfollow-btn')) {
             window.location.href = `../player/index.html?id=${player.id}`;
         }
     });
-
     return row;
 }
 
-/**
- * Extract jersey number or initials from player name
- */
 function extractJerseyNumber(fullName) {
-    // For now, use initials (e.g., "Jayson Tatum" -> "JT")
-    // In a real scenario, you'd have jersey numbers in the database
     const nameParts = fullName.trim().split(/\s+/);
-
     if (nameParts.length >= 2) {
         return nameParts[0][0] + nameParts[nameParts.length - 1][0];
     } else if (nameParts.length === 1) {
@@ -186,28 +148,20 @@ function extractJerseyNumber(fullName) {
     return 'XX';
 }
 
-/**
- * Unfollow a player
- */
 async function unfollowPlayer(event, playerId) {
-    event.stopPropagation(); // Prevent row click
-
+    event.stopPropagation();
     const userId = localStorage.getItem('userId');
     if (!userId) {
         console.error('No user ID found');
         return;
     }
-
     try {
         const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
             method: 'DELETE'
         });
-
         if (!res.ok) {
             throw new Error('Failed to unfollow player');
         }
-
-        // Refresh the watchlist
         await fetchFollowedPlayers(userId);
     } catch (err) {
         console.error('Error unfollowing player:', err);
@@ -215,9 +169,6 @@ async function unfollowPlayer(event, playerId) {
     }
 }
 
-/**
- * Update the player count display
- */
 function updatePlayerCount(count) {
     const countElement = document.getElementById('playerCount');
     if (countElement) {
@@ -226,17 +177,12 @@ function updatePlayerCount(count) {
     }
 }
 
-/**
- * Initialize user display and logout
- */
 function initUserDisplay() {
     const userNameDisplay = document.getElementById('userNameDisplay');
     const storedName = localStorage.getItem('userName');
-
     if (storedName && userNameDisplay) {
         userNameDisplay.textContent = storedName.toUpperCase();
     }
-
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
         logoutBtn.onclick = () => {
@@ -246,5 +192,4 @@ function initUserDisplay() {
     }
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', initArchivePage);

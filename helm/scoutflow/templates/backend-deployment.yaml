@@ -1,3 +1,8 @@
+# ============================================================================
+# Backend Service Deployment
+# Defines the rolling update strategy and container specifications for the API
+# ============================================================================
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:

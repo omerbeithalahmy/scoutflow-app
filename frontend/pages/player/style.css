@@ -1,3 +1,10 @@
+/*
+============================================================================
+Player Profile - Visual Styles
+Implements the high-impact hero section and statistical performance charts
+============================================================================
+*/
+
 :root {
     --nba-red: #C9301E;
     --nba-black: #0F0F0F;
@@ -19,7 +26,6 @@ body {
     color: var(--nba-black);
 }
 
-/* Navbar */
 .main-nav {
     display: flex;
     justify-content: space-between;
@@ -87,7 +93,6 @@ body {
     color: var(--nba-black);
 }
 
-/* Player Hero */
 .page-content {
     padding: 0 0 60px;
 }
@@ -190,8 +195,6 @@ body {
     opacity: 0.9;
 }
 
-
-/* STATS CHART SECTION */
 .stats-section {
     padding: 40px;
 }
@@ -211,7 +214,6 @@ body {
     grid-template-columns: repeat(7, 1fr);
     gap: 20px;
     height: 300px;
-    /* גובה הגרף */
     align-items: flex-end;
     background: var(--bg-gray);
     padding: 40px 20px 20px;
@@ -240,7 +242,6 @@ body {
 .bar {
     width: 45px;
     height: 0;
-    /* מתחיל מ-0 בשביל האנימציה */
     background-color: var(--team-color);
     border-radius: 4px 4px 0 0;
     transition: height 1s cubic-bezier(0.17, 0.67, 0.83, 0.67);

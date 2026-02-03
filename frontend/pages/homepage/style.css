@@ -1,3 +1,10 @@
+/*
+============================================================================
+NBA Teams Dashboard - Visual Styles
+Implements the conference-based layout and team card aesthetics
+============================================================================
+*/
+
 :root {
     --nba-red: #C9301E;
     --nba-black: #0F0F0F;
@@ -6,7 +13,11 @@
     --text-muted: #666;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body.light-bg {
     background-color: white;
@@ -15,7 +26,6 @@ body.light-bg {
     overflow-x: hidden;
 }
 
-/* --- Navbar (Updated with Bold & Red Hover) --- */
 .main-nav {
     display: flex;
     justify-content: space-between;
@@ -28,15 +38,25 @@ body.light-bg {
     z-index: 1000;
 }
 
-.logo-text { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; }
-.red-text { color: var(--nba-red); }
+.logo-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+}
 
-.nav-center { display: flex; align-items: center; }
+.red-text {
+    color: var(--nba-red);
+}
+
+.nav-center {
+    display: flex;
+    align-items: center;
+}
 
 .nav-link {
     text-decoration: none;
     color: var(--nba-black);
-    font-weight: 700; /* מודגש משמעותית */
+    font-weight: 700;
     margin: 0 10px;
     font-size: 13px;
     letter-spacing: 1px;
@@ -45,17 +65,15 @@ body.light-bg {
     transition: all 0.2s ease;
 }
 
-/* אפקט המעבר באדום */
 .nav-link:hover {
     color: var(--nba-red);
 }
 
-.nav-link.active { 
-    background: #F0F0F0; 
-    border-radius: 4px; 
+.nav-link.active {
+    background: #F0F0F0;
+    border-radius: 4px;
 }
 
-/* עיצוב אזור המשתמש בקפסולה */
 .user-wrapper {
     display: flex;
     align-items: center;
@@ -91,13 +109,31 @@ body.light-bg {
     transform: scale(1.1);
 }
 
-/* --- Header --- */
-.page-header { text-align: center; padding: 60px 0 40px; }
-.main-title { font-family: 'Oswald', sans-serif; font-size: 80px; letter-spacing: -2px; line-height: 1; }
-.season-label { letter-spacing: 4px; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+.page-header {
+    text-align: center;
+    padding: 60px 0 40px;
+}
 
-/* --- Search Bar & Suggestions --- */
-.search-bar { max-width: 600px; margin: 30px auto 0; position: relative; }
+.main-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 80px;
+    letter-spacing: -2px;
+    line-height: 1;
+}
+
+.season-label {
+    letter-spacing: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.search-bar {
+    max-width: 600px;
+    margin: 30px auto 0;
+    position: relative;
+}
+
 .search-bar input {
     width: 100%;
     padding: 18px 20px 18px 50px;
@@ -111,11 +147,18 @@ body.light-bg {
 
 .search-bar input:focus {
     background: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     border-color: #ccc;
 }
 
-.search-bar i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #999; z-index: 2; }
+.search-bar i {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    z-index: 2;
+}
 
 .suggestions-dropdown {
     position: absolute;
@@ -124,7 +167,7 @@ body.light-bg {
     right: 0;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     z-index: 9999;
     overflow: hidden;
     border: 1px solid var(--border-color);
@@ -141,7 +184,9 @@ body.light-bg {
     border-bottom: 1px solid #f9f9f9;
 }
 
-.suggestion-item:hover { background-color: #f5f5f5; }
+.suggestion-item:hover {
+    background-color: #f5f5f5;
+}
 
 .player-circle-abbr {
     width: 45px;
@@ -158,9 +203,23 @@ body.light-bg {
     flex-shrink: 0;
 }
 
-.suggestion-info { flex-grow: 1; text-align: left; }
-.suggestion-name { display: block; font-weight: 700; font-size: 15px; color: var(--nba-black); }
-.suggestion-team { font-size: 12px; color: var(--text-muted); }
+.suggestion-info {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.suggestion-name {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--nba-black);
+}
+
+.suggestion-team {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
 .suggestion-stats {
     background: #F0F0F0;
     padding: 6px 12px;
@@ -171,43 +230,126 @@ body.light-bg {
     flex-shrink: 0;
 }
 
-/* --- Tabs & Slider --- */
-.filter-tabs { display: flex; justify-content: center; border-bottom: 1px solid var(--border-color); margin-top: 20px; }
-.filter-tab {
-    background: none; border: none; padding: 15px 40px;
-    font-weight: 700; font-size: 13px; color: var(--text-muted); cursor: pointer;
-    position: relative; transition: color 0.3s;
-}
-.filter-tab.active { color: black; }
-.filter-tab.active::after {
-    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: black;
+.filter-tabs {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-color);
+    margin-top: 20px;
 }
 
-.teams-viewport { width: 100%; overflow: hidden; position: relative; }
+.filter-tab {
+    background: none;
+    border: none;
+    padding: 15px 40px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.filter-tab.active {
+    color: black;
+}
+
+.filter-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: black;
+}
+
+.teams-viewport {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
 .teams-slider {
-    display: flex; width: 200%;
+    display: flex;
+    width: 200%;
     transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .teams-grid {
-    width: 50%; display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 20px; padding: 40px; opacity: 0; transition: opacity 0.5s ease; pointer-events: none;
+    width: 50%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
 }
-.teams-grid.active { opacity: 1; pointer-events: auto; }
 
-/* --- Team Card --- */
+.teams-grid.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .team-card {
-    border: 1px solid var(--border-color); padding: 25px;
-    display: flex; justify-content: space-between; align-items: center;
-    cursor: pointer; transition: all 0.3s ease; background: white;
+    border: 1px solid var(--border-color);
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
 }
-.team-card:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.05); transform: translateY(-2px); border-color: #ccc; }
-.team-info { display: flex; align-items: center; gap: 20px; }
-.team-logo { width: 60px; height: 60px; object-fit: contain; }
-.team-name { font-family: 'Oswald', sans-serif; font-size: 28px; line-height: 1; }
-.city { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-.meta { margin-top: 5px; display: flex; gap: 10px; font-size: 11px; }
-.abbr { background: #F0F0F0; padding: 2px 6px; font-weight: 700; }
-.arrow-icon { color: #CCC; font-size: 20px; }
 
-.card-hidden { display: none !important; }
+.team-card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    border-color: #ccc;
+}
+
+.team-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.team-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.team-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.city {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.meta {
+    margin-top: 5px;
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+}
+
+.abbr {
+    background: #F0F0F0;
+    padding: 2px 6px;
+    font-weight: 700;
+}
+
+.arrow-icon {
+    color: #CCC;
+    font-size: 20px;
+}
+
+.card-hidden {
+    display: none !important;
+}

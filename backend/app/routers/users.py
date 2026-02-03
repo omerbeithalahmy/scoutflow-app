@@ -1,10 +1,15 @@
+# ============================================================================
+# Backend Service - Users Router
+# Manages user accounts, authentication, and player follow relationships
+# ============================================================================
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
 from app import crud, schemas
 from app.dependencies import get_db
-from app.security import hash_password, verify_password  # ← Argon2 hashing
+from app.security import hash_password, verify_password
 
 router = APIRouter(
     prefix="/users",
@@ -16,7 +21,6 @@ def create_user(
     user: schemas.UserCreate,
     db: Session = Depends(get_db)
 ):
-    # hash לסיסמה לפני הוספה למסד הנתונים
     hashed_pw = hash_password(user.password)
 
     try:
@@ -24,12 +28,10 @@ def create_user(
             db=db,
             username=user.username,
             email=user.email,
-            password_hash=hashed_pw  # ← כאן השם שונה כדי להתאים ל-crud.py
+            password_hash=hashed_pw
         )
         return created_user
     except Exception as e:
-        # Check if it's an integrity error (duplicate entry)
-        # sqlalchemy IntegirtyError usually wraps psycopg2 errors
         error_str = str(e).lower()
         if "integrityerror" in error_str or "unique constraint" in error_str:
             raise HTTPException(
@@ -48,10 +50,9 @@ def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
     if not verify_password(user.password, db_user.password_hash):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
-    # כאן הוספנו את ה-username המקורי (השם המלא מה-DB)
     return {
         "id": db_user.id, 
-        "username": db_user.username, # זה השם המלא (למשל "Sherif Cooper")
+        "username": db_user.username,
         "email": db_user.email
     }
 
@@ -62,14 +63,10 @@ def follow_player_endpoint(
     player_id: int,
     db: Session = Depends(get_db)
 ):
-    """
-    Follow a player
-    """
     user = crud.get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Check if player exists
     player = crud.get_player_with_stats(db, player_id)
     if not player:
         raise HTTPException(status_code=404, detail="Player not found")
@@ -87,9 +84,6 @@ def check_follow_status_endpoint(
     player_id: int,
     db: Session = Depends(get_db)
 ):
-    """
-    Check if user is following a specific player
-    """
     user = crud.get_user(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -121,4 +115,3 @@ def delete_followed_player(
         raise HTTPException(status_code=404, detail="Player not followed by user")
 
     return {"detail": "Player removed from followed list"}
-

@@ -1,3 +1,8 @@
+# ============================================================================
+# Backend CI/CD Pipeline
+# Automates linting, testing, and Docker image deployment for the FastAPI service
+# ============================================================================
+
 name: Backend CI
 on:
   push:
@@ -40,7 +45,6 @@ jobs:
   build-and-push:
     needs: lint-and-test
     runs-on: ubuntu-latest
-    # Only run on main or tags, not PRs
     if: github.event_name != 'pull_request'
     steps:
       - name: Checkout code
@@ -59,22 +63,14 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build image
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./backend
-          
-          # Push SHA tag (for staging)
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          
-          # Tag and push 'latest'
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          
-          # If triggered by a tag, push that tag as well (for production)
           if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
             VERSION_TAG=${GITHUB_REF#refs/tags/}
             echo "Pushing release tag: $VERSION_TAG"
             docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
             docker push $ECR_REGISTRY/$ECR_REPOSITORY:$VERSION_TAG
           fi
-          
           echo "Image pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"

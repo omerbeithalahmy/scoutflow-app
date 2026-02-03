@@ -1,3 +1,10 @@
+/*
+============================================================================
+Team Roster - Visual Styles
+Defines the team hero layout and the interactive player roster grid
+============================================================================
+*/
+
 :root {
     --nba-red: #C9301E;
     --nba-black: #0F0F0F;
@@ -18,7 +25,6 @@ body {
     color: var(--nba-black);
 }
 
-/* Navbar */
 .main-nav {
     display: flex;
     justify-content: space-between;
@@ -41,7 +47,6 @@ body {
     color: var(--nba-red);
 }
 
-/* עיצוב הניווט המרכזי */
 .nav-center {
     display: flex;
     align-items: center;
@@ -63,13 +68,11 @@ body {
     color: var(--nba-red);
 }
 
-/* עיצוב הלחצן הפעיל - בדיוק כמו בעמוד הבית */
 .nav-link.active {
     background: #F0F0F0;
     border-radius: 4px;
 }
 
-/* אזור המשתמש (User Wrapper) */
 .user-wrapper {
     display: flex;
     align-items: center;
@@ -105,7 +108,6 @@ body {
     transform: scale(1.1);
 }
 
-/* שאר עיצובי ה-Hero וה-Roster נשארים ללא שינוי */
 .back-link {
     display: inline-flex;
     align-items: center;

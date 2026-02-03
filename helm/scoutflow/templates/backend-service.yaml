@@ -1,3 +1,8 @@
+# ============================================================================
+# Backend Service Definition
+# Exposes the backend API pods internally within the Kubernetes cluster
+# ============================================================================
+
 apiVersion: v1
 kind: Service
 metadata:
