@@ -254,13 +254,13 @@ helm upgrade --install scoutflow ./helm/scoutflow -n production
 ## ✅ Production Checklist
 
 Before promoting to production:
-- [ ] CI Pipelines passed (Tests & Lint)
-- [ ] Docker images scanned for vulnerabilities
-- [ ] Helm values configured for HA (Replicas > 1)
-- [ ] Database migrations tested in Staging
-- [ ] External Secrets mapped correctly to AWS
-- [ ] Liveness/Readiness probes are active
-- [ ] Ingress annotations set for SSL/TLS
+- [x] CI Pipelines passed (Tests & Lint)
+- [x] Docker images scanned for vulnerabilities
+- [x] Helm values configured for HA (Replicas > 1)
+- [x] Database migrations tested in Staging
+- [x] External Secrets mapped correctly to AWS
+- [x] Liveness/Readiness probes are active
+- [x] Ingress annotations set for SSL/TLS
 
 ---
 
