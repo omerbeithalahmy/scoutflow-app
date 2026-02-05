@@ -1,8 +1,3 @@
-# ============================================================================
-# Ingest Service CI/CD Pipeline
-# Orchestrates the build and deployment of the NBA data synchronization engine
-# ============================================================================
-
 name: Ingest Service CI
 on:
   push:

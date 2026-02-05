@@ -1,10 +1,3 @@
-/*
-============================================================================
-My Players Archive - Logical Controllers
-Manages the retrieval, rendering, and removal of followed players
-============================================================================
-*/
-
 const teamExtraData = {
     "ATL": { nbaId: 1610612737, color: "#E03A3E" },
     "BOS": { nbaId: 1610612738, color: "#007A33" },

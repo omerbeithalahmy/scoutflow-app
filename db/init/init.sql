@@ -1,8 +1,3 @@
--- ============================================================================
--- Database Schema Initialization
--- Defines the core tables for teams, players, statistics, and user data
--- ============================================================================
-
 CREATE TABLE teams (
   id SERIAL PRIMARY KEY,
   nba_id INTEGER UNIQUE NOT NULL,

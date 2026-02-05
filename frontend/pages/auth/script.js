@@ -1,10 +1,3 @@
-/*
-============================================================================
-Authentication Module - Logical Controllers
-Orchestrates secure user sessions, credential validation, and UI transitions
-============================================================================
-*/
-
 function showToast(message, type = 'success') {
   const container = document.getElementById('toast-container');
   if (!container) return;

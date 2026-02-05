@@ -1,8 +1,3 @@
-# ============================================================================
-# Database CI/CD Pipeline
-# Validates SQL initialization scripts and packages the PostgreSQL container
-# ============================================================================
-
 name: Database CI
 on:
   push:

@@ -1,8 +1,3 @@
-# ============================================================================
-# Backend Service - API Tests
-# Automated test suite for validating endpoint availability and health status
-# ============================================================================
-
 from fastapi.testclient import TestClient
 from app.main import app
 

@@ -1,8 +1,3 @@
-# ============================================================================
-# Ingest Service Container Specification
-# Defines the automated environment for periodic NBA data synchronization
-# ============================================================================
-
 FROM python:3.11-slim
 
 WORKDIR /app

@@ -1,8 +1,3 @@
-# ============================================================================
-# Backend Service Container Specification
-# Configures the FastAPI environment and application dependencies
-# ============================================================================
-
 FROM python:3.11-slim
 
 WORKDIR /backend
