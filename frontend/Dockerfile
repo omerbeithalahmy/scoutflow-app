@@ -1,8 +1,3 @@
-# ============================================================================
-# Frontend Service Container Specification
-# Configures the Nginx environment for serving the ScoutFlow web interface
-# ============================================================================
-
 FROM nginx:alpine
 
 RUN rm /etc/nginx/conf.d/default.conf

@@ -1,8 +1,4 @@
 #!/bin/bash
-# ============================================================================
-# Ingest Service Entrypoint Script
-# Ensures database availability and orchestrates the sequence of data loads
-# ============================================================================
 
 set -e
 echo "Waiting for PostgreSQL to be ready..."

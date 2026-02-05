@@ -1,10 +1,3 @@
-/*
-============================================================================
-Player Profile - Logical Controllers
-Orchestrates player data retrieval, follow/unfollow actions, and dynamic chart rendering
-============================================================================
-*/
-
 const teamExtraData = {
     "ATL": { nbaId: 1610612737, color: "#E03A3E" },
     "BOS": { nbaId: 1610612738, color: "#007A33" },

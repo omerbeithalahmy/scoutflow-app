@@ -1,10 +1,3 @@
-/*
-============================================================================
-NBA Teams Dashboard - Logical Controllers
-Handles team filtering, conference navigation, and player search autocomplete
-============================================================================
-*/
-
 const teamExtraData = {
     "ATL": { conf: "east", div: "Southeast", nbaId: 1610612737 },
     "BOS": { conf: "east", div: "Atlantic", nbaId: 1610612738 },

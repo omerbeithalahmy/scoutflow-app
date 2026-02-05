@@ -1,8 +1,3 @@
-# ============================================================================
-# Production Environment - Helm Values
-# Configures ScoutFlow application for production with high availability
-# ============================================================================
-
 global:
   registry: 279987127424.dkr.ecr.us-east-1.amazonaws.com
   imageTag: latest

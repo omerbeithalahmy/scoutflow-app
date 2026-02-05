@@ -1,10 +1,3 @@
-/*
-============================================================================
-Team Roster - Logical Controllers
-Handles the retrieval of team membership and interactive follow status updates
-============================================================================
-*/
-
 const teamExtraData = {
     "ATL": { conf: "EAST", div: "Southeast", nbaId: 1610612737, color: "#E03A3E" },
     "BOS": { conf: "EAST", div: "Atlantic", nbaId: 1610612738, color: "#007A33" },

@@ -1,8 +1,3 @@
-# ============================================================================
-# Local Orchestration Specification
-# Coordinates the multi-container environment for the ScoutFlow ecosystem
-# ============================================================================
-
 services:
   db:
     build: ./db
