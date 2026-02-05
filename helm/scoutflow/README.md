@@ -77,10 +77,8 @@ database:
   persistence:
     storageClass: "standard"  # Use "gp2" for AWS EKS
     size: 10Gi
-  env:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: password123  # Change in production!
-    POSTGRES_DB: nba_stats
+  # Note: Database credentials are managed via External Secrets in production
+  # See "Secrets Management" section below
 
 # Backend
 backend:
@@ -93,6 +91,12 @@ frontend:
 # Ingress
 ingress:
   host: scoutflow.example.com  # Update with your domain
+
+# External Secrets (REQUIRED for production)
+externalSecrets:
+  enabled: true  # Must be true for production
+  region: us-east-1
+  secretName: "scoutflow/prod/database"  # Your AWS Secrets Manager secret path
 ```
 
 ## Architecture
@@ -126,7 +130,7 @@ ingress:
 ## Components
 
 ### Database (StatefulSet)
-- PostgreSQL 13
+- PostgreSQL 16
 - Persistent storage via PVC
 - Headless service for stable DNS
 - Health checks via `pg_isready`
@@ -157,12 +161,48 @@ ingress:
 
 ## Secrets Management
 
-Database credentials are managed securely:
+### ⚠️ Production Requirement: External Secrets Operator
+
+For **production deployments**, database credentials MUST be managed via External Secrets Operator:
+
+**Prerequisites** (provided by `scoutflow-infra`):
+- External Secrets Operator installed in cluster
+- IAM role for service account (IRSA) configured
+- Secret exists in AWS Secrets Manager with keys: `username`, `password`, `database`
+
+**Production Configuration**:
+```yaml
+externalSecrets:
+  enabled: true
+  region: us-east-1
+  secretName: "scoutflow/prod/database"  # Path to your AWS Secrets Manager secret
+```
+
+**What Happens**:
+1. External Secrets Operator reads from AWS Secrets Manager
+2. Creates Kubernetes Secret: `scoutflow-db-secret`
+3. Pods consume secret via environment variables
+4. **Zero passwords in Git** ✅
+
+### Local Development
+
+For **local development** (Minikube), External Secrets can be disabled:
+
+```yaml
+externalSecrets:
+  enabled: false  # Uses fallback secret
+```
+
+When disabled, a fallback secret is created using values from `database.env` in `values.yaml`.
+
+### Resources Created
 
 - **ConfigMap** (`scoutflow-db-config`): Non-sensitive config (host, port, DB name)
 - **Secret** (`scoutflow-db-secret`): Sensitive credentials (username, password)
+  - Created by External Secrets Operator (production)
+  - Or fallback secret template (local dev)
 
-All pods reference these resources via `valueFrom` instead of hardcoded values.
+All pods reference these resources via `envFrom` instead of hardcoded values.
 
 ## Resource Limits
 
@@ -219,17 +259,38 @@ kubectl get all -n scoutflow
 helm status scoutflow -n scoutflow
 ```
 
+### External Secrets not syncing
+```bash
+# Check if External Secrets Operator is installed
+kubectl get pods -n external-secrets-system
+
+# Check ExternalSecret status
+kubectl get externalsecret -n scoutflow
+kubectl describe externalsecret scoutflow-db-external-secret -n scoutflow
+
+# Check if secret was created
+kubectl get secret scoutflow-db-secret -n scoutflow
+
+# Check operator logs
+kubectl logs -n external-secrets-system -l app.kubernetes.io/name=external-secrets
+
+# Verify AWS Secrets Manager secret exists
+aws secretsmanager get-secret-value --secret-id scoutflow/prod/database --region us-east-1
+```
+
 ## Production Checklist
 
 Before deploying to production:
 
-- [ ] Change `POSTGRES_PASSWORD` in `values.yaml`
-- [ ] Update `ingress.host` to your domain
-- [ ] Configure TLS certificate
-- [ ] Set `storageClass` to `gp2` (AWS EKS)
-- [ ] Review resource limits for your cluster size
-- [ ] Enable monitoring/logging
-- [ ] Set up backup strategy for database
+- [ ] **Enable External Secrets**: Set `externalSecrets.enabled: true`
+- [ ] **Configure AWS Secret**: Set `externalSecrets.secretName` to your AWS Secrets Manager secret path
+- [ ] **Verify IAM Roles**: Ensure External Secrets Operator has IRSA configured (via `scoutflow-infra`)
+- [ ] **Update Ingress Host**: Change `ingress.host` to your domain
+- [ ] **Configure TLS Certificate**: Set up cert-manager or manual TLS
+- [ ] **Set Storage Class**: Use `gp2` or `gp3` for AWS EKS
+- [ ] **Review Resource Limits**: Adjust based on your cluster size and load
+- [ ] **Enable Monitoring/Logging**: Set up Prometheus/Grafana
+- [ ] **Database Backups**: Configure backup strategy for StatefulSet PVC
 
 ## Development
 
