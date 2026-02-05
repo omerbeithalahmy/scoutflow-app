@@ -101,8 +101,18 @@ frontend:
       cpu: 200m
       memory: 128Mi
 
+
 ingress:
+  className: alb
   host: scoutflow.example.com
+  albScheme: internet-facing
+  tls:
+    enabled: false
+    secretName: ""
+    certManager:
+      enabled: false
+      issuer: letsencrypt-prod
+  annotations: {}
 
 externalSecrets:
   enabled: false
