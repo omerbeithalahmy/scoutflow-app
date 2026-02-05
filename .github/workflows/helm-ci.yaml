@@ -1,0 +1,77 @@
+# ============================================================================
+# Helm Chart CI/CD Pipeline
+# Validates Helm chart syntax, linting, and template rendering
+# ============================================================================
+
+name: Helm Chart CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'helm/**'
+      - '.github/workflows/helm-ci.yaml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'helm/**'
+      - '.github/workflows/helm-ci.yaml'
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: '3.14.0'
+
+      - name: Lint Helm chart
+        run: helm lint ./helm/scoutflow
+
+      - name: Validate default template
+        run: |
+          helm template scoutflow ./helm/scoutflow --dry-run > /dev/null
+          echo "Default template validation passed"
+
+      - name: Validate with External Secrets
+        run: |
+          helm template scoutflow ./helm/scoutflow \
+            --set externalSecrets.enabled=true \
+            --set externalSecrets.secretName="scoutflow/test/database" \
+            --dry-run > /dev/null
+          echo "External Secrets template validation passed"
+
+      - name: Validate production configuration
+        run: |
+          helm template scoutflow ./helm/scoutflow \
+            --set externalSecrets.enabled=true \
+            --set externalSecrets.secretName="scoutflow/prod/database" \
+            --set global.imageTag=v1.0.0 \
+            --set backend.replicas=3 \
+            --set frontend.replicas=3 \
+            --dry-run > /dev/null
+          echo "Production configuration validation passed"
+
+      - name: Verify required resources
+        run: |
+          helm template scoutflow ./helm/scoutflow > manifests.yaml
+          grep -q "kind: Deployment" manifests.yaml
+          grep -q "kind: Service" manifests.yaml
+          grep -q "kind: StatefulSet" manifests.yaml
+          grep -q "kind: Job" manifests.yaml
+          grep -q "kind: Secret" manifests.yaml
+          grep -q "kind: ConfigMap" manifests.yaml
+          echo "All required Kubernetes resources present"
+
+      - name: Validate Chart version
+        run: |
+          CHART_VERSION=$(helm show chart ./helm/scoutflow | grep '^version:' | awk '{print $2}')
+          if [[ ! "$CHART_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Invalid chart version format (expected semver)"
+            exit 1
+          fi
+          echo "Chart version $CHART_VERSION is valid"
