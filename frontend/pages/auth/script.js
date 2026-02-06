@@ -57,7 +57,7 @@ if (loginForm) {
     const password = loginForm.querySelector('input[type="password"]').value.trim();
     if (!validateAuthData(null, email, null)) return;
     try {
-      const res = await fetch('http://localhost:8000/users/login', {
+      const res = await fetch('/api/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: email, password: password })
@@ -87,7 +87,7 @@ if (signupForm) {
     const password = inputs[2].value.trim();
     if (!validateAuthData(username, email, password)) return;
     try {
-      const res = await fetch('http://localhost:8000/users/', {
+      const res = await fetch('/api/users/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, password })

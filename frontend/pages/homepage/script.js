@@ -39,7 +39,7 @@ const grids = {
 
 async function fetchTeamsFromDB() {
     try {
-        const response = await fetch('http://localhost:8000/teams/');
+        const response = await fetch('/api/teams/');
         const teamsData = await response.json();
         renderTeams(teamsData);
     } catch (error) {
@@ -101,7 +101,7 @@ if (searchInput) {
             const query = searchInput.value.trim();
             if (query.length < 2) return;
             try {
-                const response = await fetch(`http://localhost:8000/players/suggestions?q=${encodeURIComponent(query)}`);
+                const response = await fetch(`/api/players/suggestions?q=${encodeURIComponent(query)}`);
                 const players = await response.json();
                 if (players && players.length > 0) {
                     window.location.href = `../player/index.html?id=${players[0].id}`;
@@ -118,7 +118,7 @@ if (searchInput) {
         }
         debounceTimer = setTimeout(async () => {
             try {
-                const response = await fetch(`http://localhost:8000/players/suggestions?q=${encodeURIComponent(query)}`);
+                const response = await fetch(`/api/players/suggestions?q=${encodeURIComponent(query)}`);
                 if (response.ok) {
                     const players = await response.json();
                     renderSuggestions(players);

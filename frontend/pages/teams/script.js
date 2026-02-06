@@ -37,10 +37,10 @@ async function initDynamicPage() {
     const teamId = urlParams.get('id');
     if (!teamId) return;
     try {
-        const teamRes = await fetch(`http://localhost:8000/teams/${teamId}`);
+        const teamRes = await fetch(`/api/teams/${teamId}`);
         const team = await teamRes.json();
         updateUIHeader(team);
-        const playersRes = await fetch(`http://localhost:8000/teams/${teamId}/players`);
+        const playersRes = await fetch(`/api/teams/${teamId}/players`);
         const players = await playersRes.json();
         renderPlayers(players);
     } catch (err) {
@@ -77,7 +77,7 @@ async function renderPlayers(players) {
     if (userId) {
         try {
             const followStatusPromises = players.map(p =>
-                fetch(`http://localhost:8000/users/${userId}/followed-players/${p.id}/status`)
+                fetch(`/api/users/${userId}/followed-players/${p.id}/status`)
                     .then(res => res.json())
                     .then(data => ({ playerId: p.id, isFollowing: data.is_following }))
                     .catch(() => ({ playerId: p.id, isFollowing: false }))
@@ -142,7 +142,7 @@ async function handleFollow(event, playerId) {
     const isCurrentlyFollowed = heartIcon.classList.contains('followed');
     try {
         if (isCurrentlyFollowed) {
-            const response = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+            const response = await fetch(`/api/users/${userId}/followed-players/${playerId}`, {
                 method: 'DELETE'
             });
             if (response.ok) {
@@ -153,7 +153,7 @@ async function handleFollow(event, playerId) {
                 throw new Error('Failed to unfollow player');
             }
         } else {
-            const response = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+            const response = await fetch(`/api/users/${userId}/followed-players/${playerId}`, {
                 method: 'POST'
             });
             if (response.ok) {

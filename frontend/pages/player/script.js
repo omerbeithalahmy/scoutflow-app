@@ -40,7 +40,7 @@ async function initPlayerPage() {
         return;
     }
     try {
-        const res = await fetch(`http://localhost:8000/players/${playerId}`);
+        const res = await fetch(`/api/players/${playerId}`);
         if (!res.ok) throw new Error("Player not found");
         const player = await res.json();
         renderPlayerPage(player);
@@ -58,7 +58,7 @@ async function setupFollowButton(playerId) {
         return;
     }
     try {
-        const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}/status`);
+        const res = await fetch(`/api/users/${userId}/followed-players/${playerId}/status`);
         if (res.ok) {
             const data = await res.json();
             updateFollowButtonState(followBtn, data.is_following);
@@ -78,14 +78,14 @@ async function toggleFollow(playerId, button) {
     const isCurrentlyFollowing = button.classList.contains('following');
     try {
         if (isCurrentlyFollowing) {
-            const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+            const res = await fetch(`/api/users/${userId}/followed-players/${playerId}`, {
                 method: 'DELETE'
             });
             if (res.ok) {
                 updateFollowButtonState(button, false);
             }
         } else {
-            const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+            const res = await fetch(`/api/users/${userId}/followed-players/${playerId}`, {
                 method: 'POST'
             });
             if (res.ok) {

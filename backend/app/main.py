@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, teams, players
 
-app = FastAPI(title="ScoutFlow Backend")
+app = FastAPI(title="ScoutFlow Backend", root_path="/api")
 
 app.add_middleware(
     CORSMiddleware,

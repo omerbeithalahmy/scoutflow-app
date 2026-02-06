@@ -44,7 +44,7 @@ async function initArchivePage() {
 
 async function fetchFollowedPlayers(userId) {
     try {
-        const res = await fetch(`http://localhost:8000/users/${userId}/followed-players`);
+        const res = await fetch(`/api/users/${userId}/followed-players`);
         if (!res.ok) {
             throw new Error('Failed to fetch followed players');
         }
@@ -149,7 +149,7 @@ async function unfollowPlayer(event, playerId) {
         return;
     }
     try {
-        const res = await fetch(`http://localhost:8000/users/${userId}/followed-players/${playerId}`, {
+        const res = await fetch(`/api/users/${userId}/followed-players/${playerId}`, {
             method: 'DELETE'
         });
         if (!res.ok) {
