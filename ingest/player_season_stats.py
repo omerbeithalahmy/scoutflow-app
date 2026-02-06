@@ -12,6 +12,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+HEADERS = {
+    'Host': 'stats.nba.com',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Referer': 'https://stats.nba.com/',
+    'Connection': 'keep-alive',
+}
+
 SEASON = "2025-26"
 SEASON_TYPE = "Regular Season"
 PER_MODE = "PerGame"
@@ -35,7 +44,9 @@ def insert_player_season_stats():
         ldp = LeagueDashPlayerStats(
             season=SEASON, 
             season_type_all_star=SEASON_TYPE, 
-            per_mode_detailed=PER_MODE
+            per_mode_detailed=PER_MODE,
+            headers=HEADERS,
+            timeout=60
         )
         df = ldp.get_data_frames()[0]
         results = []

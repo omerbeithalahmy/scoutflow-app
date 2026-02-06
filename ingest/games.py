@@ -10,6 +10,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+HEADERS = {
+    'Host': 'stats.nba.com',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Referer': 'https://stats.nba.com/',
+    'Connection': 'keep-alive',
+}
+
 def insert_games(season="2025-26"):
     try:
         conn = psycopg2.connect(
@@ -20,7 +29,11 @@ def insert_games(season="2025-26"):
             password=os.getenv("POSTGRES_PASSWORD")
         )
         cur = conn.cursor()
-        finder = leaguegamefinder.LeagueGameFinder(season_nullable=season)
+        finder = leaguegamefinder.LeagueGameFinder(
+            season_nullable=season,
+            headers=HEADERS,
+            timeout=60
+        )
         df = finder.get_data_frames()[0]
         grouped = df.groupby("GAME_ID")
         for game_id, group in grouped:
