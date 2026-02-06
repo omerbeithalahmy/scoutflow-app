@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, teams, players
 
-app = FastAPI(title="ScoutFlow Backend", root_path="/api")
+app = FastAPI(title="ScoutFlow Backend")
 
 app.add_middleware(
     CORSMiddleware,
@@ -17,10 +17,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(users.router)
-app.include_router(teams.router)
-app.include_router(players.router)
+# Root route for ALB health check
+@app.get("/")
+def home():
+    return {"status": "ok", "message": "ScoutFlow API"}
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+# Create a sub-app for the /api prefix to handle cloud routing correctly
+api_app = FastAPI(title="ScoutFlow API")
+
+api_app.include_router(users.router)
+api_app.include_router(teams.router)
+api_app.include_router(players.router)
+
+app.mount("/api", api_app)
