@@ -90,38 +90,61 @@ async function renderPlayers(players) {
             console.error("Error fetching follow statuses:", err);
         }
     }
-    let html = '<div class="players-grid">';
+    const groupedPlayers = {
+        'GUARDS': [],
+        'FORWARDS': [],
+        'CENTERS': []
+    };
+
     players.forEach(p => {
-        const nameParts = p.full_name.trim().split(/\s+/);
-        const initials = nameParts.length >= 2
-            ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
-            : nameParts[0][0].toUpperCase();
-        const stats = p.latest_stats;
-        const formatStat = (val) => (val === null || val === undefined || val === 0) ? "N/A" : val.toFixed(1);
-        const isFollowed = followStatusMap[p.id] || false;
-        const heartClass = isFollowed ? 'fa-solid fa-heart followed' : 'fa-regular fa-heart';
-        html += `
-            <div class="player-card" onclick="navigateToPlayer(${p.id})">
-              <div class="card-left">
-                <div class="player-num-box">${initials}</div>
-                <div class="player-info-text">
-                  <span class="p-pos">NBA PLAYER</span>
-                  <h3 class="p-name">${p.full_name.toUpperCase()}</h3>
-                  <span class="p-phys">2025-26 SEASON</span>
-                </div>
-              </div>
-              <div class="card-right">
-                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_points)}</span><span class="stat-lbl">PPG</span></div>
-                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_rebounds)}</span><span class="stat-lbl">RPG</span></div>
-                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_assists)}</span><span class="stat-lbl">APG</span></div>
-                <div class="card-icons">
-                  <i class="${heartClass}" data-player-id="${p.id}" onclick="handleFollow(event, ${p.id})"></i>
-                  <i class="fa-solid fa-arrow-right"></i>
-                </div>
-              </div>
-            </div>`;
+        const pos = (p.position || '').toUpperCase();
+        if (pos.includes('G')) groupedPlayers['GUARDS'].push(p);
+        else if (pos.includes('F')) groupedPlayers['FORWARDS'].push(p);
+        else if (pos.includes('C')) groupedPlayers['CENTERS'].push(p);
+        else groupedPlayers['GUARDS'].push(p); // Default
     });
-    html += '</div>';
+
+    let html = '';
+    const order = ['GUARDS', 'FORWARDS', 'CENTERS'];
+    order.forEach(groupName => {
+        const groupPlayers = groupedPlayers[groupName];
+        if (!groupPlayers || groupPlayers.length === 0) return;
+
+        html += `<h2 class="group-header">${groupName}</h2>`;
+        html += '<div class="players-grid">';
+
+        groupPlayers.forEach(p => {
+            const nameParts = p.full_name.trim().split(/\s+/);
+            const initials = nameParts.length >= 2
+                ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+                : nameParts[0][0].toUpperCase();
+            const stats = p.latest_stats;
+            const formatStat = (val) => (val === null || val === undefined || val === 0) ? "N/A" : val.toFixed(1);
+            const isFollowed = followStatusMap[p.id] || false;
+            const heartClass = isFollowed ? 'fa-solid fa-heart followed' : 'fa-regular fa-heart';
+            html += `
+                <div class="player-card" onclick="navigateToPlayer(${p.id})">
+                  <div class="card-left">
+                    <div class="player-num-box">${initials}</div>
+                    <div class="player-info-text">
+                      <span class="p-pos">${p.position} | AGE: ${p.age || 'N/A'}</span>
+                      <h3 class="p-name">${p.full_name.toUpperCase()}</h3>
+                      <span class="p-phys">2025-26 SEASON</span>
+                    </div>
+                  </div>
+                  <div class="card-right">
+                    <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_points)}</span><span class="stat-lbl">PPG</span></div>
+                    <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_rebounds)}</span><span class="stat-lbl">RPG</span></div>
+                    <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_assists)}</span><span class="stat-lbl">APG</span></div>
+                    <div class="card-icons">
+                      <i class="${heartClass}" data-player-id="${p.id}" onclick="handleFollow(event, ${p.id})"></i>
+                      <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                  </div>
+                </div>`;
+        });
+        html += '</div>';
+    });
     container.innerHTML = html;
     const rosterCountEl = document.getElementById('rosterCount');
     if (rosterCountEl) rosterCountEl.innerText = `(${players.length} PLAYERS)`;

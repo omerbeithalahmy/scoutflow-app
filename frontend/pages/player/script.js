@@ -119,7 +119,7 @@ function renderPlayerPage(p) {
         logoImg.src = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
         logoImg.style.display = 'block';
     }
-    document.getElementById('playerSubTitle').innerText = `${p.team_name.toUpperCase()} | NBA PLAYER`;
+    document.getElementById('playerSubTitle').innerText = `${p.team_name.toUpperCase()} | ${p.position} | ${p.age || 'N/A'} YEARS OLD`;
     const backBtn = document.querySelector('.back-link');
     if (backBtn) {
         backBtn.innerHTML = `<i class="fa-solid fa-arrow-left"></i> BACK TO ${p.team_name.toUpperCase()}`;
@@ -127,7 +127,7 @@ function renderPlayerPage(p) {
     }
     if (p.season_stats && p.season_stats.length > 0) {
         const s = p.season_stats[0];
-        const format = (v) => (v !== undefined && v !== null) ? v.toFixed(1) : "0.0";
+        const format = (v) => (v !== undefined && v !== null) ? (typeof v === 'number' ? v.toFixed(1) : v) : "0.0";
         document.getElementById('gamesPlayed').innerText = `(${s.games_played || 0} GP)`;
         document.getElementById('val-ppg').innerText = format(s.avg_points);
         document.getElementById('val-rpg').innerText = format(s.avg_rebounds);
@@ -136,6 +136,15 @@ function renderPlayerPage(p) {
         document.getElementById('val-bpg').innerText = format(s.avg_blocks);
         document.getElementById('val-tov').innerText = format(s.avg_turnovers);
         document.getElementById('val-mpg').innerText = format(s.avg_minutes);
+
+        // Populate advanced stats
+        document.getElementById('val-usg').innerText = format(s.usage_pct);
+        document.getElementById('val-ts').innerText = format(s.ts_pct * 100) + "%";
+        document.getElementById('val-efg').innerText = format(s.efg_pct * 100) + "%";
+        document.getElementById('val-ortg').innerText = format(s.ortg);
+        document.getElementById('val-drtg').innerText = format(s.drtg);
+        document.getElementById('val-vi').innerText = format(s.vi);
+
         updateBar('bar-ppg', s.avg_points, 25);
         updateBar('bar-rpg', s.avg_rebounds, 10);
         updateBar('bar-apg', s.avg_assists, 18);

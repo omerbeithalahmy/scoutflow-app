@@ -47,6 +47,7 @@ class Player(Base):
     nba_id = Column(Integer, unique=True, nullable=False)
     full_name = Column(String, nullable=False)
     position = Column(String)
+    age = Column(Float)
     team_id = Column(Integer, ForeignKey("teams.id"))
     is_active = Column(Boolean, default=True)
 
@@ -68,5 +69,23 @@ class PlayerSeasonStats(Base):
     avg_steals = Column(Float)
     avg_blocks = Column(Float)
     avg_turnovers = Column(Float)
+
+    # Advanced stats
+    usage_pct = Column(Float)
+    turnover_pct = Column(Float)
+    fta = Column(Integer)
+    ft_pct = Column(Float)
+    two_pa = Column(Integer)
+    two_p_pct = Column(Float)
+    three_pa = Column(Integer)
+    three_p_pct = Column(Float)
+    efg_pct = Column(Float)
+    ts_pct = Column(Float)
+    points_rebounds = Column(Float)
+    points_assists = Column(Float)
+    points_rebounds_assists = Column(Float)
+    vi = Column(Float)
+    ortg = Column(Float)
+    drtg = Column(Float)
 
     player = relationship("Player", backref="season_stats")

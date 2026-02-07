@@ -9,19 +9,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
-      interval: 2s
-      retries: 10
-
-  ingest:
-    build: ./ingest
-    container_name: scoutflow-ingest
-    depends_on:
-      db:
-        condition: service_healthy
-    env_file:
-      - ./backend/.env
-    restart: "no"
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-scoutflow}", "-d", "${POSTGRES_DB:-scoutflow}"]
+      interval: 5s
+      retries: 5
 
   backend:
     build: ./backend
@@ -43,6 +33,7 @@ services:
     depends_on:
       - backend
     restart: always
+
 
 volumes:
   postgres_data:

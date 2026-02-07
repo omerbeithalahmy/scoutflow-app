@@ -57,13 +57,32 @@ class PlayerSeasonStatsOut(BaseModel):
     avg_steals: Optional[float] = 0.0
     avg_blocks: Optional[float] = 0.0
     avg_turnovers: Optional[float] = 0.0
+    
+    # Advanced stats
+    usage_pct: Optional[float] = 0.0
+    turnover_pct: Optional[float] = 0.0
+    fta: Optional[int] = 0
+    ft_pct: Optional[float] = 0.0
+    two_pa: Optional[int] = 0
+    two_p_pct: Optional[float] = 0.0
+    three_pa: Optional[int] = 0
+    three_p_pct: Optional[float] = 0.0
+    efg_pct: Optional[float] = 0.0
+    ts_pct: Optional[float] = 0.0
+    points_rebounds: Optional[float] = 0.0
+    points_assists: Optional[float] = 0.0
+    points_rebounds_assists: Optional[float] = 0.0
+    vi: Optional[float] = 0.0
+    ortg: Optional[float] = 0.0
+    drtg: Optional[float] = 0.0
     model_config = {"from_attributes": True}
 
 class PlayerOut(BaseModel):
     id: int
     full_name: str
     position: Optional[str] = None
-    team_id: Optional[int] = True
+    age: Optional[float] = None
+    team_id: Optional[int] = None
     is_active: bool
     latest_stats: Optional[PlayerSeasonStatsOut] = None 
 
@@ -72,6 +91,8 @@ class PlayerOut(BaseModel):
 class PlayerDetailsOut(BaseModel):
     id: int
     full_name: str
+    position: Optional[str] = None
+    age: Optional[float] = None
     team_id: int
     team_name: Optional[str] = None
     team_abbreviation: Optional[str] = None

@@ -290,3 +290,14 @@ body {
 .card-icons i.followed {
     color: var(--nba-red);
 }
+
+.group-header {
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    margin: 30px 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--team-color);
+    width: fit-content;
+    color: var(--team-color);
+    letter-spacing: 1px;
+}
