@@ -34,6 +34,8 @@ services:
       - backend
     volumes:
       - ./frontend/pages:/usr/share/nginx/html/pages
+    environment:
+      - BACKEND_URL=http://backend:8000
     restart: always
 
 

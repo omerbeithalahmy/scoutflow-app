@@ -39,22 +39,6 @@ database:
       cpu: 500m
       memory: 512Mi
 
-ingest:
-  image:
-    repository: scoutflow-app-ingest
-    pullPolicy: Always
-    tag: ""
-  
-  restartPolicy: Never
-  backoffLimit: 3
-  
-  resources:
-    requests:
-      cpu: 200m
-      memory: 256Mi
-    limits:
-      cpu: 1000m
-      memory: 512Mi
 
 backend:
   image:
