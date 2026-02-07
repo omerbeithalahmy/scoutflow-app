@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>ScoutFlow | Elite Player Intelligence & Analytics</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -20,34 +17,73 @@
             "background-light": "#f6f7f8",
             "background-dark": "#101922",
           },
-          fontFamily: {
-            "display": ["Lexend", "sans-serif"]
-          },
+          fontFamily: { "display": ["Lexend", "sans-serif"] },
           borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
         },
       },
     }
   </script>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: 'Lexend', sans-serif; }
+    
+    /* אנימציית החלקה חלקה (Slider Effect) */
+    .slider-transition { transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s ease-in-out; }
+    .smooth-slide { transition: transform 0.5s ease-in-out, opacity 0.3s ease; }
+
+    /* --- SAFARI & CHROME AUTOFILL FIXES (CRITICAL) --- */
+
+    /* 1. העלמת האייקון של המפתח/איש קשר בתוך השדה בספארי */
+    input::-webkit-contacts-auto-fill-button,
+    input::-webkit-credentials-auto-fill-button {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      position: absolute !important;
+      right: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+      opacity: 0 !important;
+    }
+
+    /* 2. ביטול המסגרת הכחולה של ספארי (Focus Ring) */
+    input:focus {
+      outline: none !important;
+      outline-width: 0 !important;
+      outline-style: none !important;
+      box-shadow: none !important; /* מבטל צללים של הדפדפן */
+      /* משאיר את ה-Ring של Tailwind אם תרצה (focus:ring-2) */
+    }
+
+    /* 3. תיקון צבע הרקע כשיש מילוי אוטומטי (Autofill) - מכריח רקע כהה */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #192633 inset !important; /* צבע הרקע של השדה */
+      -webkit-text-fill-color: white !important;
+      transition: background-color 5000s ease-in-out 0s;
+      background-color: #192633 !important;
+      caret-color: white !important; /* צבע הסמן */
+    }
+  </style>
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-white h-screen overflow-hidden">
   <div class="flex h-full flex-col lg:flex-row">
-    <!-- Left Panel: Immersive Visual Section -->
+    
     <div class="relative hidden lg:flex lg:w-1/2 flex-col justify-between p-12 bg-cover bg-center"
       style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDPLY-myu1tnGFJSkMq8PBeagwzZ4LT-zcW-O2k8x3v2nQxPbgZ7F0hfrtHq70f3v2IseP6DU-DKu5xwFCJPoiCF6c19-4wutDezulhOSFoPWlyxMFP4zdUuQlr0dfuqj2GhFmS0mcbrpipCCIM4fqCX-aJRfLyEL3Ocw84aUH3YaFmkEx-8nRRaYsa2h5AzcA-9AwhRsmf_vkUJaoQLRXmlFRmMfBfLEo5uQoK_vQ3nGQ0o_9oH03h4ApHkiPYcg0Ka7FYiMVs2kA');">
-      <div class="absolute inset-0 bg-gradient-to-br from-background-dark/90 via-background-dark/40 to-transparent">
-      </div>
+      <div class="absolute inset-0 bg-gradient-to-br from-background-dark/90 via-background-dark/40 to-transparent"></div>
+      
       <div class="relative z-10 flex items-center gap-3">
         <div class="size-10 text-primary">
           <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
-              fill="currentColor"></path>
+            <path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
           </svg>
         </div>
         <h2 class="text-3xl font-black tracking-tighter uppercase">ScoutFlow</h2>
       </div>
+
       <div class="relative z-10 max-w-lg">
         <h1 class="text-5xl font-extrabold leading-tight mb-6">
           Professional Grade <span class="text-primary">Performance</span> Metrics.
@@ -57,100 +93,120 @@
         </p>
         <div class="mt-12 flex gap-4">
           <div class="flex -space-x-3">
-            <img class="size-10 rounded-full border-2 border-background-dark"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnayGv2KDXhY-g9KShOYE4OwXO3SG47cV8VCPa3_tTOj2Aqs_luDeJOKppE-rVV9OeM4VOB0J1QKdLYXP0iuQP1lu-rjAHCbezZMNozEp0N8eHuQUSE0qffEF_mhNHPUYM1dEuVM9Af_jgOOMeaF8dbMYEf7BcfsPAPQ6Q7EcuDmc8J13yfmM_dlEbpY7s8FVMWri6xPIcIn9lFUx7y8OCHUIPHV7ar2yOXzl7MhaQgRf5PQOOG7TQhJpHXbN7XfMTQEky9lqsatc" />
-            <img class="size-10 rounded-full border-2 border-background-dark"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnfl74ZKrBrednUlGiJMevM7rPbxPE9exfA3rXuCP-J5xOAQ8P1xQj0GdTLf9x6UmQfWfzFqN3brRko_YEo_dDYvQJqbbONq9zoNfdykWwOEFpk55z65S9g5dXJOWZF3H2E_aImHdlGahBKAVZ24EEnombeNw-UvnGbPEn2yJ-tudxWwJD3I0OGEZkvvp5MqSzfGUzIAvSqG0IJQ_YUHye4JvA28GyL7yRwKUAshInqaoS4KkL196TkcpeyMYt5X26JS-bbCuHzl0" />
-            <img class="size-10 rounded-full border-2 border-background-dark"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcG8vImPWTuYNIiUx0LiSoGFFfxZeiWsrYRyKxXKt4rHp5DiQiAfiQJgXKzJFgqEyXdvDn5Ff6injUpdBbMPQIZN60Yxa6MW7ARe_wSP00NPklr9vApmIOl7A-wcy9YcMYpzW3vQxvwmSd8PCN4-HCn3RB05lPwEiPfTrY3JkoFlvE0DGMBsNzWpOfhbgYNryQjFnmzLYLE5INR5daUtCmrZmbNauphBjfEl3gPp_cTHOj5SjRhHz_PXe_R6rQljsKmfZrYc5456c" />
+            <img class="size-10 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnayGv2KDXhY-g9KShOYE4OwXO3SG47cV8VCPa3_tTOj2Aqs_luDeJOKppE-rVV9OeM4VOB0J1QKdLYXP0iuQP1lu-rjAHCbezZMNozEp0N8eHuQUSE0qffEF_mhNHPUYM1dEuVM9Af_jgOOMeaF8dbMYEf7BcfsPAPQ6Q7EcuDmc8J13yfmM_dlEbpY7s8FVMWri6xPIcIn9lFUx7y8OCHUIPHV7ar2yOXzl7MhaQgRf5PQOOG7TQhJpHXbN7XfMTQEky9lqsatc" />
+            <img class="size-10 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnfl74ZKrBrednUlGiJMevM7rPbxPE9exfA3rXuCP-J5xOAQ8P1xQj0GdTLf9x6UmQfWfzFqN3brRko_YEo_dDYvQJqbbONq9zoNfdykWwOEFpk55z65S9g5dXJOWZF3H2E_aImHdlGahBKAVZ24EEnombeNw-UvnGbPEn2yJ-tudxWwJD3I0OGEZkvvp5MqSzfGUzIAvSqG0IJQ_YUHye4JvA28GyL7yRwKUAshInqaoS4KkL196TkcpeyMYt5X26JS-bbCuHzl0" />
+            <img class="size-10 rounded-full border-2 border-background-dark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcG8vImPWTuYNIiUx0LiSoGFFfxZeiWsrYRyKxXKt4rHp5DiQiAfiQJgXKzJFgqEyXdvDn5Ff6injUpdBbMPQIZN60Yxa6MW7ARe_wSP00NPklr9vApmIOl7A-wcy9YcMYpzW3vQxvwmSd8PCN4-HCn3RB05lPwEiPfTrY3JkoFlvE0DGMBsNzWpOfhbgYNryQjFnmzLYLE5INR5daUtCmrZmbNauphBjfEl3gPp_cTHOj5SjRhHz_PXe_R6rQljsKmfZrYc5456c" />
           </div>
           <p class="text-sm self-center text-slate-400">Trusted by front offices worldwide</p>
         </div>
       </div>
+
       <div class="relative z-10 text-xs text-slate-500 uppercase tracking-widest">
         © 2024 ScoutFlow Analytics Inc. | NBA Partner Network
       </div>
     </div>
-    <!-- Right Panel: Authentication Form -->
-    <div
-      class="flex flex-1 flex-col justify-center items-center px-6 py-12 lg:px-24 bg-background-light dark:bg-background-dark relative">
-      <div class="w-full max-w-[440px]">
-        <!-- Mobile Logo -->
-        <div class="lg:hidden flex items-center justify-center gap-3 mb-12">
-          <div class="size-8 text-primary">
-            <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
-                fill="currentColor"></path>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">ScoutFlow</h2>
-        </div>
-        <div class="text-center lg:text-left mb-10">
-          <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-3">Welcome Back</h2>
-          <p class="text-slate-500 dark:text-slate-400">Enter your credentials to access the analytics dashboard.</p>
-        </div>
-        <!-- Social Logins -->
 
-        <!-- Form -->
-        <form class="space-y-6" id="loginForm">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2" for="email">Work
-              Email</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
-                <span class="material-symbols-outlined">mail</span>
-              </div>
-              <input
-                class="block w-full h-14 pl-12 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#192633] text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                id="email" placeholder="scout@nba.com" type="email" required />
+    <div class="flex-1 flex flex-col justify-center items-center px-6 bg-background-light dark:bg-background-dark relative">
+      
+      <div class="lg:hidden absolute top-12 flex items-center gap-3">
+        <div class="size-8 text-primary">
+          <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">ScoutFlow</h2>
+      </div>
+
+      <div class="w-full max-w-[440px] overflow-hidden">
+        <div class="grid grid-cols-1 grid-rows-1 place-items-center">
+          
+          <div id="loginSection" class="col-start-1 row-start-1 w-full smooth-slide translate-x-0 opacity-100 z-10">
+            <div class="text-center lg:text-left mb-10">
+              <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-3">Welcome Back</h2>
+              <p class="text-slate-500 dark:text-slate-400">Enter your credentials to access the analytics dashboard.</p>
             </div>
-          </div>
-          <div>
-            <div class="flex justify-between items-center mb-2">
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300"
-                for="password">Password</label>
-            </div>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
-                <span class="material-symbols-outlined">lock</span>
+            <form class="space-y-6" id="loginForm">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Work Email</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><span class="material-symbols-outlined">mail</span></div>
+                  <input class="block w-full h-14 pl-12 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#192633] text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="email" placeholder="scout@nba.com" type="email" required />
+                </div>
               </div>
-              <input
-                class="block w-full h-14 pl-12 pr-12 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#192633] text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                id="password" placeholder="••••••••" type="password" required />
-              <button class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-white"
-                type="button" id="togglePassword">
-                <span class="material-symbols-outlined">visibility</span>
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
+                </div>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><span class="material-symbols-outlined">lock</span></div>
+                  <input class="block w-full h-14 pl-12 pr-12 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#192633] text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="password" placeholder="••••••••" type="password" required />
+                  <button class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-300 focus:outline-none" type="button" id="togglePassword">
+                    <span class="material-symbols-outlined">visibility</span>
+                  </button>
+                </div>
+              </div>
+              <button class="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2" type="submit">
+                <span>Sign In to Dashboard</span>
+                <span class="material-symbols-outlined">arrow_forward</span>
               </button>
-            </div>
+            </form>
+            <p class="mt-10 text-center text-sm text-slate-500">
+              New to the network? <a class="font-semibold text-primary hover:text-primary/80 cursor-pointer" id="toRegister">Request Analyst Access</a>
+            </p>
           </div>
 
-          <button
-            class="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
-            type="submit">
-            <span>Sign In to Dashboard</span>
-            <span class="material-symbols-outlined">arrow_forward</span>
-          </button>
-        </form>
-        <p class="mt-10 text-center text-sm text-slate-500">
-          New to the network?
-          <a class="font-semibold text-primary hover:text-primary/80" href="#" id="requestAccess">Request
-            Analyst
-            Access</a>
-        </p>
-        <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 text-center">
-          <p class="text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
-            Authorized Use Only. All data access is monitored and subject to NBA professional standards &
-            compliance
-            protocols.
-          </p>
+          <div id="registerSection" class="col-start-1 row-start-1 w-full smooth-slide translate-x-full opacity-0 pointer-events-none z-0">
+            <div class="text-center lg:text-left mb-10">
+              <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-3">Create Account</h2>
+              <p class="text-slate-500 dark:text-slate-400">Join the elite network of NBA professional analysts.</p>
+            </div>
+            <form class="space-y-6" id="registerForm">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><span class="material-symbols-outlined">person</span></div>
+                  <input class="block w-full h-14 pl-12 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#192633] text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="regName" placeholder="Full Name" type="text" required />
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Work Email</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><span class="material-symbols-outlined">mail</span></div>
+                  <input class="block w-full h-14 pl-12 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#192633] text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="regEmail" placeholder="scout@nba.com" type="email" required />
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Create Password</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><span class="material-symbols-outlined">lock</span></div>
+                  <input class="block w-full h-14 pl-12 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#192633] text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="regPassword" placeholder="••••••••" type="password" required />
+                  <button class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-slate-300 focus:outline-none" type="button" id="toggleRegPassword">
+                    <span class="material-symbols-outlined">visibility</span>
+                  </button>
+                </div>
+              </div>
+              <button class="w-full h-14 bg-primary hover:bg-primary/90 text-white font-bold rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2" type="submit">
+                <span>Create Account</span>
+                <span class="material-symbols-outlined">person_add</span>
+              </button>
+            </form>
+            <p class="mt-10 text-center text-sm text-slate-500">
+              Already have access? <a class="font-semibold text-primary hover:text-primary/80 cursor-pointer" id="toLogin">Sign In Instead</a>
+            </p>
+          </div>
+
         </div>
       </div>
-      <!-- Toast Container -->
+
+      <div class="absolute bottom-8 w-full max-w-[440px] border-t border-slate-200 dark:border-slate-800 pt-6 text-center">
+        <p class="text-[10px] text-slate-500 uppercase tracking-widest leading-relaxed">
+          Authorized Use Only. All data access is monitored and subject to NBA professional standards.
+        </p>
+      </div>
+
       <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
     </div>
   </div>
   <script src="script.js"></script>
 </body>
-
 </html>
