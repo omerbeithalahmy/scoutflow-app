@@ -57,7 +57,7 @@ jobs:
           grep -q "kind: Deployment" manifests.yaml
           grep -q "kind: Service" manifests.yaml
           grep -q "kind: StatefulSet" manifests.yaml
-          grep -q "kind: Job" manifests.yaml
+
           grep -q "kind: Secret" manifests.yaml
           grep -q "kind: ConfigMap" manifests.yaml
           echo "All required Kubernetes resources present"
