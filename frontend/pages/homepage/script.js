@@ -1,3 +1,4 @@
+// --- Configuration & Data ---
 const teamExtraData = {
     "ATL": { conf: "east", div: "Southeast", nbaId: 1610612737 },
     "BOS": { conf: "east", div: "Atlantic", nbaId: 1610612738 },
@@ -31,12 +32,13 @@ const teamExtraData = {
     "UTA": { conf: "west", div: "Northwest", nbaId: 1610612762 }
 };
 
-const slider = document.getElementById('teamsSlider');
-const grids = {
-    east: document.getElementById('grid-east'),
-    west: document.getElementById('grid-west')
-};
+// --- DOM Elements ---
+const gridEast = document.getElementById('grid-east');
+const gridWest = document.getElementById('grid-west');
+const tabEast = document.getElementById('tabEast');
+const tabWest = document.getElementById('tabWest');
 
+// --- API Calls ---
 async function fetchTeamsFromDB() {
     try {
         const response = await fetch('/api/teams/');
@@ -47,50 +49,75 @@ async function fetchTeamsFromDB() {
     }
 }
 
+// --- Render Logic ---
 function renderTeams(teams) {
-    if (!grids.east || !grids.west) return;
-    grids.east.innerHTML = '';
-    grids.west.innerHTML = '';
+    if (!gridEast || !gridWest) return;
+    gridEast.innerHTML = '';
+    gridWest.innerHTML = '';
+    
     teams.forEach(team => {
         const extra = teamExtraData[team.abbreviation] || { conf: "east", div: "N/A", nbaId: 0 };
         const logoUrl = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
+        
         const cardHTML = `
-            <div class="team-card" onclick="handleTeamClick(${team.id})">
-                <div class="team-info">
-                    <img src="${logoUrl}" alt="${team.name}" class="team-logo">
-                    <div class="team-details">
-                        <span class="city">${team.city.toUpperCase()}</span>
-                        <h3 class="team-name">${team.name.toUpperCase()}</h3>
-                        <div class="meta">
-                            <span class="abbr">${team.abbreviation}</span>
-                            <span class="division">${extra.div}</span>
+            <div class="group flex items-center justify-between p-5 bg-[#192633] border border-slate-800 rounded-xl hover:border-primary cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-black/20" onclick="handleTeamClick(${team.id})">
+                <div class="flex items-center gap-4">
+                    <img src="${logoUrl}" alt="${team.name}" class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300">
+                    <div>
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">${team.city}</span>
+                        <h3 class="text-lg font-black text-white leading-tight uppercase">${team.name}</h3>
+                        <div class="flex gap-2 mt-1">
+                            <span class="bg-slate-800 text-slate-300 text-[9px] font-bold px-1.5 py-0.5 rounded">${team.abbreviation}</span>
+                            <span class="text-[9px] text-slate-500 font-medium">${extra.div}</span>
                         </div>
                     </div>
                 </div>
-                <i class="fa-solid fa-arrow-right-long arrow-icon"></i>
+                <span class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-colors">arrow_forward</span>
             </div>`;
-        if (extra.conf === 'east') grids.east.innerHTML += cardHTML;
-        else grids.west.innerHTML += cardHTML;
+            
+        if (extra.conf === 'east') gridEast.innerHTML += cardHTML;
+        else gridWest.innerHTML += cardHTML;
     });
-    grids.east.classList.add('active');
 }
 
 function handleTeamClick(id) {
     window.location.href = `../teams/index.html?id=${id}`;
 }
 
-document.querySelectorAll('.filter-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        const activeTab = document.querySelector('.filter-tab.active');
-        if (activeTab) activeTab.classList.remove('active');
-        tab.classList.add('active');
-        const offset = tab.dataset.index * 50;
-        if (slider) slider.style.transform = `translateX(-${offset}%)`;
-        document.querySelectorAll('.teams-grid').forEach(g => g.classList.remove('active'));
-        if (grids[tab.dataset.filter]) grids[tab.dataset.filter].classList.add('active');
-    });
+// --- ANIMATION LOGIC (SLIDER) ---
+tabWest.addEventListener('click', () => {
+    tabEast.classList.remove('active', 'text-white');
+    tabEast.classList.add('text-slate-500');
+    tabEast.querySelector('.active-line').classList.add('hidden');
+    
+    tabWest.classList.add('active', 'text-white');
+    tabWest.classList.remove('text-slate-500');
+    tabWest.querySelector('.active-line').classList.remove('hidden');
+
+    gridEast.classList.remove('translate-x-0', 'opacity-100', 'z-10');
+    gridEast.classList.add('-translate-x-full', 'opacity-0', 'pointer-events-none', 'z-0');
+
+    gridWest.classList.remove('translate-x-full', 'opacity-0', 'pointer-events-none', 'z-0');
+    gridWest.classList.add('translate-x-0', 'opacity-100', 'z-10');
 });
 
+tabEast.addEventListener('click', () => {
+    tabWest.classList.remove('active', 'text-white');
+    tabWest.classList.add('text-slate-500');
+    tabWest.querySelector('.active-line').classList.add('hidden');
+    
+    tabEast.classList.add('active', 'text-white');
+    tabEast.classList.remove('text-slate-500');
+    tabEast.querySelector('.active-line').classList.remove('hidden');
+
+    gridWest.classList.remove('translate-x-0', 'opacity-100', 'z-10');
+    gridWest.classList.add('translate-x-full', 'opacity-0', 'pointer-events-none', 'z-0');
+
+    gridEast.classList.remove('-translate-x-full', 'opacity-0', 'pointer-events-none', 'z-0');
+    gridEast.classList.add('translate-x-0', 'opacity-100', 'z-10');
+});
+
+// --- Search Logic ---
 const searchInput = document.getElementById('teamSearch');
 const suggestionsBox = document.getElementById('searchSuggestions');
 let debounceTimer;
@@ -109,13 +136,16 @@ if (searchInput) {
             } catch (err) { console.error("Enter search error:", err); }
         }
     });
+    
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.trim();
         clearTimeout(debounceTimer);
+        
         if (query.length < 2) {
-            if (suggestionsBox) suggestionsBox.classList.add('card-hidden');
+            if (suggestionsBox) suggestionsBox.classList.add('hidden');
             return;
         }
+        
         debounceTimer = setTimeout(async () => {
             try {
                 const response = await fetch(`/api/players/suggestions?q=${encodeURIComponent(query)}`);
@@ -126,9 +156,10 @@ if (searchInput) {
             } catch (error) { console.error("Search error:", error); }
         }, 250);
     });
+    
     document.addEventListener('click', (e) => {
         if (suggestionsBox && !searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-            suggestionsBox.classList.add('card-hidden');
+            suggestionsBox.classList.add('hidden');
         }
     });
 }
@@ -136,24 +167,31 @@ if (searchInput) {
 function renderSuggestions(players) {
     if (!suggestionsBox) return;
     suggestionsBox.innerHTML = '';
+    
     if (!players || !Array.isArray(players) || players.length === 0) {
-        suggestionsBox.classList.add('card-hidden');
+        suggestionsBox.classList.add('hidden');
         return;
     }
-    suggestionsBox.classList.remove('card-hidden');
+    
+    suggestionsBox.classList.remove('hidden');
+    
     players.forEach(player => {
         const ppg = (player.ppg !== undefined) ? player.ppg : '0.0';
         const team = player.team_abbr || "NBA";
+        
         const div = document.createElement('div');
-        div.className = 'suggestion-item';
+        div.className = 'flex items-center justify-between p-4 cursor-pointer hover:bg-slate-800 transition-colors border-b border-slate-700 last:border-0';
         div.innerHTML = `
-            <div class="player-circle-abbr">${team}</div>
-            <div class="suggestion-info">
-                <span class="suggestion-name">${player.full_name}</span>
-                <span class="suggestion-team">${team}</span>
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white">${team}</div>
+                <div>
+                    <span class="block text-sm font-bold text-white">${player.full_name}</span>
+                    <span class="block text-xs text-slate-400">${team}</span>
+                </div>
             </div>
-            <div class="suggestion-stats">${ppg} PPG</div>
+            <span class="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded-full">${ppg} PPG</span>
         `;
+        
         div.onclick = () => {
             window.location.href = `../player/index.html?id=${player.id}`;
         };
@@ -161,19 +199,25 @@ function renderSuggestions(players) {
     });
 }
 
+// --- User Display & Navigation Logic (UPDATED) ---
 function initUserDisplay() {
     const userNameDisplay = document.getElementById('userNameDisplay');
     const logoutBtn = document.querySelector('.logout-btn');
     const storedName = localStorage.getItem('userName');
+    
+    // 1. Display Username (Not clickable)
     if (storedName && userNameDisplay) {
-        userNameDisplay.textContent = storedName.toUpperCase();
+        userNameDisplay.textContent = storedName.toLowerCase(); // Lowercase as shown in image
     } else if (userNameDisplay) {
-        userNameDisplay.textContent = "GUEST";
+        userNameDisplay.textContent = "guest";
     }
+    
+    // 2. Handle Logout -> Go to Login Screen
     if (logoutBtn) {
-        logoutBtn.onclick = () => {
+        logoutBtn.onclick = (e) => {
+            e.preventDefault();
             localStorage.clear();
-            window.location.href = '../auth/index.html';
+            window.location.href = '../auth/index.html'; // Redirect to login
         };
     }
 }
