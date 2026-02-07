@@ -32,6 +32,8 @@ services:
       - "3000:80"
     depends_on:
       - backend
+    volumes:
+      - ./frontend/pages:/usr/share/nginx/html/pages
     restart: always
 
 
