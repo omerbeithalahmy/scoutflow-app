@@ -1,56 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archive - My Players | ScoutFlow</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&display=swap"
-        rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ScoutFlow | My Watchlist</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#101922",
+                        "surface-dark": "#192633",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "sans": ["Lexend", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css?v=1.0" />
 </head>
 
-<body>
-    <nav class="main-nav">
-        <div class="nav-left">
-            <span class="logo-text">Scout<span class="red-text">Flow</span></span>
-        </div>
-        <div class="nav-center">
-            <a href="../homepage/index.html" class="nav-link">TEAMS</a>
-            <a href="../myplayers/index.html" class="nav-link active">MY PLAYERS</a>
-        </div>
-        <div class="nav-right">
-            <div class="user-wrapper">
-                <span id="userNameDisplay" class="user-badge">GUEST</span>
-                <button class="logout-btn" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
+<body class="bg-background-dark text-white min-h-screen flex flex-col overflow-x-hidden font-sans">
+
+    <!-- Navbar: Global Standard -->
+    <nav
+        class="sticky top-0 z-50 bg-background-dark/95 backdrop-blur-md border-b border-slate-800 px-8 py-4 flex justify-between items-center transition-all">
+        <div class="flex items-center gap-3">
+            <div class="size-9 text-primary">
+                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
+                        fill="currentColor"></path>
+                </svg>
             </div>
+            <span class="text-2xl font-black uppercase tracking-tighter text-white">ScoutFlow</span>
+        </div>
+
+        <div class="flex items-center gap-8">
+            <a href="../homepage/index.html"
+                class="text-base font-medium text-slate-300 hover:text-white transition-colors">Teams</a>
+            <a href="../myplayers/index.html"
+                class="flex items-center gap-2 text-base font-medium text-white transition-colors">
+                <span class="material-symbols-outlined text-[22px] text-primary">group</span>
+                My Players
+            </a>
+            <div class="flex items-center gap-2 select-none">
+                <span class="material-symbols-outlined text-primary text-[24px]">person</span>
+                <span id="userNameDisplay" class="text-base font-medium text-white uppercase">guest</span>
+            </div>
+            <button class="logout-btn flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-[22px]">logout</span>
+                <span class="text-base font-medium">Sign Out</span>
+            </button>
         </div>
     </nav>
-    <div class="page-content">
-        <header class="archive-header">
-            <div class="header-icon-wrapper">
-                <i class="fa-solid fa-heart"></i>
-            </div>
-            <div class="header-text">
-                <span class="header-subtitle">YOUR WATCHLIST</span>
-                <h1 class="header-title">MY PLAYERS</h1>
-                <span class="player-count" id="playerCount">0 PLAYERS FOLLOWED</span>
+
+    <main class="flex-1 container mx-auto px-4 py-12 max-w-7xl">
+
+        <!-- Header -->
+        <header
+            class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div>
+                <div class="flex items-center gap-3 mb-3">
+                    <span
+                        class="px-3 py-1 rounded bg-primary/10 border border-primary/20 text-primary font-bold tracking-[0.2em] text-[10px] uppercase">Personal
+                        Collection</span>
+                    <span class="text-slate-600 font-bold tracking-widest text-xs uppercase" id="playerCount">0 PLAYERS
+                        FOLLOWED</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black tracking-tighter uppercase text-white leading-none">My <span
+                        class="text-primary italic">Watchlist</span></h1>
             </div>
         </header>
-        <div class="empty-state" id="emptyState">
-            <i class="fa-solid fa-inbox empty-icon"></i>
-            <h2 class="empty-title">NO PLAYERS FOLLOWED</h2>
-            <p class="empty-subtitle">Start following players to add them to your archive. Click the<br>heart icon on
-                any player card to follow them.</p>
+
+        <!-- Empty State -->
+        <div id="emptyState"
+            class="hidden flex-col items-center justify-center py-32 border-2 border-dashed border-slate-800 rounded-3xl animate-in zoom-in-95 duration-500">
+            <div class="size-20 bg-slate-800/30 rounded-full flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-5xl text-slate-600">inbox</span>
+            </div>
+            <h2 class="text-2xl font-black uppercase text-slate-400 mb-2">Watchlist is Empty</h2>
+            <p class="text-slate-600 max-w-md text-center font-medium leading-relaxed">
+                Connect with elite talent. Follow players from any team roster to track their progress and analytics
+                here.
+            </p>
+            <a href="../homepage/index.html"
+                class="mt-8 px-6 py-3 bg-primary text-white rounded-xl font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl shadow-primary/20">Explore
+                Teams</a>
         </div>
-        <div class="watchlist-container" id="watchlistContainer" style="display: none;">
+
+        <!-- Watchlist Container -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="watchlistContainer">
+            <!-- Dynamically populated with elite rectangular cards -->
+            <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
+            <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
+            <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
         </div>
-    </div>
-    <script src="script.js"></script>
+
+    </main>
+
+    <script src="script.js?v=1.0"></script>
 </body>
 
 </html>

@@ -1,3 +1,4 @@
+// --- Team Data Configuration (Global Standard) ---
 const teamExtraData = {
     "ATL": { nbaId: 1610612737, color: "#E03A3E" },
     "BOS": { nbaId: 1610612738, color: "#007A33" },
@@ -31,158 +32,166 @@ const teamExtraData = {
     "WAS": { nbaId: 1610612764, color: "#002B5C" }
 };
 
-async function initArchivePage() {
+// --- Initialization ---
+async function initWatchlistPage() {
     initUserDisplay();
     const userId = localStorage.getItem('userId');
     if (!userId) {
-        console.error('No user ID found in localStorage');
         showEmptyState();
         return;
     }
     await fetchFollowedPlayers(userId);
 }
 
+// --- Data Management ---
 async function fetchFollowedPlayers(userId) {
     try {
         const res = await fetch(`/api/users/${userId}/followed-players`);
-        if (!res.ok) {
-            throw new Error('Failed to fetch followed players');
-        }
+        if (!res.ok) throw new Error('Failed to fetch');
         const players = await res.json();
+
         if (players.length === 0) {
             showEmptyState();
         } else {
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('watchlistContainer').classList.remove('hidden');
             renderWatchlist(players);
         }
         updatePlayerCount(players.length);
     } catch (err) {
-        console.error('Error fetching followed players:', err);
+        console.error(err);
         showEmptyState();
     }
 }
 
-function showEmptyState() {
-    const emptyState = document.getElementById('emptyState');
-    const watchlistContainer = document.getElementById('watchlistContainer');
-    if (emptyState) emptyState.style.display = 'flex';
-    if (watchlistContainer) watchlistContainer.style.display = 'none';
-}
-
 function renderWatchlist(players) {
-    const emptyState = document.getElementById('emptyState');
-    const watchlistContainer = document.getElementById('watchlistContainer');
-    if (emptyState) emptyState.style.display = 'none';
-    if (watchlistContainer) {
-        watchlistContainer.style.display = 'flex';
-        watchlistContainer.innerHTML = '';
-        players.forEach(player => {
-            const playerRow = createPlayerRow(player);
-            watchlistContainer.appendChild(playerRow);
-        });
-    }
+    const container = document.getElementById('watchlistContainer');
+    container.innerHTML = '';
+
+    players.forEach(player => {
+        const card = createElitePlayerCard(player);
+        container.appendChild(card);
+    });
 }
 
-function createPlayerRow(player) {
-    const row = document.createElement('div');
-    row.className = 'player-row';
-    const teamAbbr = player.team_abbreviation || 'NBA';
-    const teamData = teamExtraData[teamAbbr] || { nbaId: 0, color: '#111' };
-    const teamLogoUrl = `https://cdn.nba.com/logos/nba/${teamData.nbaId}/primary/L/logo.svg`;
-    const teamName = player.team_name || 'NBA';
-    const stats = player.latest_stats || {};
-    const ppg = stats.avg_points !== undefined && stats.avg_points !== null ? stats.avg_points.toFixed(1) : '0.0';
-    const rpg = stats.avg_rebounds !== undefined && stats.avg_rebounds !== null ? stats.avg_rebounds.toFixed(1) : '0.0';
-    const apg = stats.avg_assists !== undefined && stats.avg_assists !== null ? stats.avg_assists.toFixed(1) : '0.0';
-    const jerseyDisplay = extractJerseyNumber(player.full_name);
-    row.innerHTML = `
-        <div class="player-jersey">
-            <span>${jerseyDisplay}</span>
-        </div>
-        <div class="player-info">
-            <span class="player-position-team">${teamName.toUpperCase()} | ${player.position} | AGE: ${player.age || 'N/A'}</span>
-            <h3 class="player-name">${player.full_name}</h3>
-        </div>
-        <div class="player-stats">
-            <div class="stat-item">
-                <span class="stat-value">${ppg}</span>
-                <span class="stat-label">PPG</span>
+// --- Component Factory: Elite Card (Rectangular) ---
+function createElitePlayerCard(p) {
+    const card = document.createElement('div');
+    card.className = "group relative bg-surface-dark border-2 border-slate-800 rounded-3xl p-6 transition-all hover:border-primary hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/60 cursor-pointer overflow-hidden";
+
+    const teamData = teamExtraData[p.team_abbreviation] || { nbaId: 0, color: "#137fec" };
+    const stats = p.latest_stats || {};
+
+    card.innerHTML = `
+        <!-- High-End Background Accent -->
+        <div class="absolute top-0 right-0 size-32 bg-gradient-to-bl from-primary/10 to-transparent -mr-16 -mt-16 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        
+        <div class="flex items-center gap-6 relative z-10">
+            <!-- Team Circle -->
+            <div class="size-16 rounded-2xl bg-background-dark/80 border border-slate-800 flex items-center justify-center p-2.5 transition-transform group-hover:scale-110">
+                <img src="https://cdn.nba.com/logos/nba/${teamData.nbaId}/primary/L/logo.svg" 
+                     alt="${p.team_abbreviation}" 
+                     class="w-full h-full object-contain">
             </div>
-            <div class="stat-item">
-                <span class="stat-value">${rpg}</span>
-                <span class="stat-label">RPG</span>
+
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 font-bold tracking-widest text-[8px] uppercase">${p.position}</span>
+                    <span class="text-slate-500 font-bold tracking-widest text-[8px] uppercase">${p.team_name}</span>
+                </div>
+                <h3 class="text-xl font-black text-white truncate uppercase tracking-tight leading-tight mb-2">${p.full_name}</h3>
+                
+                <div class="flex items-center gap-4 text-slate-400">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-black uppercase text-slate-600 tracking-tighter">PPG</span>
+                        <span class="text-base font-black text-white">${formatVal(stats.avg_points)}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-black uppercase text-slate-600 tracking-tighter">RPG</span>
+                        <span class="text-base font-black text-white">${formatVal(stats.avg_rebounds)}</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-black uppercase text-slate-600 tracking-tighter">APG</span>
+                        <span class="text-base font-black text-white">${formatVal(stats.avg_assists)}</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat-item">
-                <span class="stat-value">${apg}</span>
-                <span class="stat-label">APG</span>
-            </div>
-        </div>
-        <div class="player-actions">
-            <button class="unfollow-btn" onclick="unfollowPlayer(event, ${player.id})" title="Unfollow">
-                <i class="fa-solid fa-heart"></i>
+
+            <!-- Unfollow Action -->
+            <button class="unfollow-btn size-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-lg shadow-emerald-500/10">
+                <span class="material-symbols-outlined text-xl">verified</span>
             </button>
-            <i class="fa-solid fa-arrow-right-long arrow-icon"></i>
         </div>
     `;
-    row.addEventListener('click', (e) => {
+
+    card.onclick = (e) => {
         if (!e.target.closest('.unfollow-btn')) {
-            window.location.href = `../player/index.html?id=${player.id}`;
+            window.location.href = `../player/index.html?id=${p.id}`;
         }
-    });
-    return row;
+    };
+
+    const unsubBtn = card.querySelector('.unfollow-btn');
+    unsubBtn.onclick = async (e) => {
+        e.stopPropagation();
+        await handleUnfollow(p.id, card);
+    };
+
+    return card;
 }
 
-function extractJerseyNumber(fullName) {
-    const nameParts = fullName.trim().split(/\s+/);
-    if (nameParts.length >= 2) {
-        return nameParts[0][0] + nameParts[nameParts.length - 1][0];
-    } else if (nameParts.length === 1) {
-        return nameParts[0].substring(0, 2).toUpperCase();
-    }
-    return 'XX';
-}
-
-async function unfollowPlayer(event, playerId) {
-    event.stopPropagation();
+// --- Utils & Interactions ---
+async function handleUnfollow(playerId, cardElement) {
     const userId = localStorage.getItem('userId');
-    if (!userId) {
-        console.error('No user ID found');
-        return;
-    }
+    if (!userId) return;
+
     try {
-        const res = await fetch(`/api/users/${userId}/followed-players/${playerId}`, {
-            method: 'DELETE'
-        });
-        if (!res.ok) {
-            throw new Error('Failed to unfollow player');
+        const res = await fetch(`/api/users/${userId}/followed-players/${playerId}`, { method: 'DELETE' });
+        if (res.ok) {
+            cardElement.style.opacity = '0';
+            cardElement.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                cardElement.remove();
+                checkRemainingPlayers();
+            }, 300);
         }
-        await fetchFollowedPlayers(userId);
-    } catch (err) {
-        console.error('Error unfollowing player:', err);
-        alert('Failed to unfollow player. Please try again.');
-    }
+    } catch (err) { console.error(err); }
+}
+
+function checkRemainingPlayers() {
+    const container = document.getElementById('watchlistContainer');
+    const count = container.children.length;
+    updatePlayerCount(count);
+    if (count === 0) showEmptyState();
 }
 
 function updatePlayerCount(count) {
-    const countElement = document.getElementById('playerCount');
-    if (countElement) {
-        const plural = count === 1 ? 'PLAYER' : 'PLAYERS';
-        countElement.textContent = `${count} ${plural} FOLLOWED`;
-    }
+    const el = document.getElementById('playerCount');
+    if (el) el.textContent = `${count} PLAYER${count === 1 ? '' : 'S'} FOLLOWED`;
+}
+
+function formatVal(v) {
+    return (v !== undefined && v !== null) ? v.toFixed(1) : "0.0";
+}
+
+function showEmptyState() {
+    document.getElementById('emptyState').classList.remove('hidden');
+    document.getElementById('watchlistContainer').classList.add('hidden');
 }
 
 function initUserDisplay() {
     const userNameDisplay = document.getElementById('userNameDisplay');
     const storedName = localStorage.getItem('userName');
-    if (storedName && userNameDisplay) {
-        userNameDisplay.textContent = storedName.toUpperCase();
+    if (userNameDisplay) {
+        userNameDisplay.textContent = storedName ? storedName.toUpperCase() : "GUEST";
     }
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
-        logoutBtn.onclick = () => {
+        logoutBtn.onclick = (e) => {
+            e.preventDefault();
             localStorage.clear();
             window.location.href = '../auth/index.html';
         };
     }
 }
 
-document.addEventListener('DOMContentLoaded', initArchivePage);
+document.addEventListener('DOMContentLoaded', initWatchlistPage);
