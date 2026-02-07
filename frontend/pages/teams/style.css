@@ -1,9 +1,341 @@
 :root {
-    --nba-red: #C9301E;
-    --nba-black: #0F0F0F;
-    --muted-gray: #888;
-    --border-light: #eeeeee;
-    --team-color: #111;
+    --primary: #ec131e;
+    --bg-dark: #121212;
+    --card-dark: #1e1e1e;
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-dark: #333;
+    --team-color: #ec131e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lexend', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Navigation */
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-dark);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo-text {
+    font-family: 'Oswald', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.red-text {
+    color: var(--primary);
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin: 0 15px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--primary);
+}
+
+.user-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--border-dark);
+}
+
+.user-badge {
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.logout-btn:hover {
+    color: var(--primary);
+}
+
+/* Hero Section */
+.team-hero {
+    padding: 40px;
+    background: radial-gradient(circle at top right, rgba(236, 19, 30, 0.1), transparent 40%);
+    border-bottom: 1px solid var(--border-dark);
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.team-hero-logo {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+}
+
+.hero-meta {
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: inline-block;
+    background: rgba(236, 19, 30, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.hero-city {
+    font-family: 'Oswald', sans-serif;
+    font-size: 40px;
+    color: var(--text-muted);
+    line-height: 1;
+}
+
+.hero-brand {
+    font-family: 'Oswald', sans-serif;
+    font-size: 80px;
+    line-height: 0.9;
+    text-transform: uppercase;
+    background: linear-gradient(to right, #fff, #888);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Roster Section */
+.roster-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.roster-count {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.group-header {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    color: var(--text-muted);
+    margin: 40px 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-dark);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+}
+
+.group-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-dark);
+    margin-left: 20px;
+}
+
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Player Card (Stitch Inspired) */
+.player-card {
+    background: var(--card-dark);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-dark);
+    border-top: 3px solid var(--team-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: #444;
+}
+
+.card-top {
+    height: 160px;
+    background: linear-gradient(to bottom, #2a2a2a, #1e1e1e);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-num-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--team-color);
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.player-img-placeholder {
+    font-family: 'Oswald', sans-serif;
+    font-size: 60px;
+    color: rgba(255, 255, 255, 0.1);
+    font-weight: 700;
+}
+
+.card-content {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.p-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.1;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.p-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-box {
+    text-align: center;
+    flex: 1;
+}
+
+.stat-val {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.stat-lbl {
+    display: block;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.btn-follow {
+    flex: 1;
+    background: var(--team-color);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: filter 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-follow:hover {
+    filter: brightness(1.2);
+}
+
+.btn-follow.following {
+    background: transparent;
+    border: 1px solid var(--team-color);
+    color: var(--team-color);
 }
 
 * {
@@ -289,4 +621,15 @@ body {
 
 .card-icons i.followed {
     color: var(--nba-red);
+}
+
+.group-header {
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    margin: 30px 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--team-color);
+    width: fit-content;
+    color: var(--team-color);
+    letter-spacing: 1px;
 }

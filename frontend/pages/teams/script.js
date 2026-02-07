@@ -90,38 +90,79 @@ async function renderPlayers(players) {
             console.error("Error fetching follow statuses:", err);
         }
     }
-    let html = '<div class="players-grid">';
+    const groupedPlayers = {
+        'GUARDS': [],
+        'FORWARDS': [],
+        'CENTERS': []
+    };
+
     players.forEach(p => {
-        const nameParts = p.full_name.trim().split(/\s+/);
-        const initials = nameParts.length >= 2
-            ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
-            : nameParts[0][0].toUpperCase();
-        const stats = p.latest_stats;
-        const formatStat = (val) => (val === null || val === undefined || val === 0) ? "N/A" : val.toFixed(1);
-        const isFollowed = followStatusMap[p.id] || false;
-        const heartClass = isFollowed ? 'fa-solid fa-heart followed' : 'fa-regular fa-heart';
-        html += `
-            <div class="player-card" onclick="navigateToPlayer(${p.id})">
-              <div class="card-left">
-                <div class="player-num-box">${initials}</div>
-                <div class="player-info-text">
-                  <span class="p-pos">NBA PLAYER</span>
-                  <h3 class="p-name">${p.full_name.toUpperCase()}</h3>
-                  <span class="p-phys">2025-26 SEASON</span>
-                </div>
-              </div>
-              <div class="card-right">
-                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_points)}</span><span class="stat-lbl">PPG</span></div>
-                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_rebounds)}</span><span class="stat-lbl">RPG</span></div>
-                <div class="stat-item"><span class="stat-val">${formatStat(stats?.avg_assists)}</span><span class="stat-lbl">APG</span></div>
-                <div class="card-icons">
-                  <i class="${heartClass}" data-player-id="${p.id}" onclick="handleFollow(event, ${p.id})"></i>
-                  <i class="fa-solid fa-arrow-right"></i>
-                </div>
-              </div>
-            </div>`;
+        const pos = (p.position || '').toUpperCase();
+        // Use primary position (first letter) for grouping
+        if (pos.startsWith('G')) groupedPlayers['GUARDS'].push(p);
+        else if (pos.startsWith('F')) groupedPlayers['FORWARDS'].push(p);
+        else if (pos.startsWith('C')) groupedPlayers['CENTERS'].push(p);
+        else groupedPlayers['GUARDS'].push(p); // Fallback to Guards
     });
-    html += '</div>';
+
+    let html = '';
+    const order = ['GUARDS', 'FORWARDS', 'CENTERS'];
+    order.forEach(groupName => {
+        const groupPlayers = groupedPlayers[groupName];
+        if (!groupPlayers || groupPlayers.length === 0) return;
+
+        html += `<h2 class="group-header">${groupName}</h2>`;
+        html += '<div class="players-grid">';
+
+        groupPlayers.forEach(p => {
+            const nameParts = p.full_name.trim().split(/\s+/);
+            const initials = nameParts.length >= 2
+                ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+                : nameParts[0][0].toUpperCase();
+            const stats = p.latest_stats;
+            const formatStat = (val) => (val === null || val === undefined || val === 0) ? "N/A" : val.toFixed(1);
+            const isFollowed = followStatusMap[p.id] || false;
+            const followText = isFollowed ? 'FOLLOWING' : 'FOLLOW';
+            const followClass = isFollowed ? 'btn-follow following' : 'btn-follow';
+            const heartIcon = isFollowed ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-plus"></i>';
+
+            html += `
+                <div class="player-card" onclick="navigateToPlayer(${p.id})">
+                  <div class="card-top">
+                    <div class="player-num-badge">#${p.jersey_number || '00'}</div>
+                    <div class="player-img-placeholder">${initials}</div>
+                  </div>
+                  <div class="card-content">
+                    <div>
+                      <h3 class="p-name">${p.full_name}</h3>
+                      <span class="p-meta">${p.position} | ${p.age ? p.age + ' YRS' : 'N/A'}</span>
+                    </div>
+                    
+                    <div class="stats-row">
+                      <div class="stat-box">
+                        <span class="stat-val">${formatStat(stats?.avg_points)}</span>
+                        <span class="stat-lbl">PPG</span>
+                      </div>
+                      <div class="stat-box">
+                        <span class="stat-val">${formatStat(stats?.avg_rebounds)}</span>
+                        <span class="stat-lbl">RPG</span>
+                      </div>
+                      <div class="stat-box">
+                        <span class="stat-val">${formatStat(stats?.avg_assists)}</span>
+                        <span class="stat-lbl">APG</span>
+                      </div>
+                    </div>
+
+                    <div class="card-actions">
+                      <button class="${followClass}" onclick="handleFollow(event, ${p.id}, this)">
+                        ${heartIcon} ${followText}
+                      </button>
+                    </div>
+                  </div>
+                </div>`;
+        });
+        html += '</div>';
+    });
     container.innerHTML = html;
     const rosterCountEl = document.getElementById('rosterCount');
     if (rosterCountEl) rosterCountEl.innerText = `(${players.length} PLAYERS)`;
@@ -131,24 +172,29 @@ function navigateToPlayer(playerId) {
     window.location.href = `../player/index.html?id=${playerId}`;
 }
 
-async function handleFollow(event, playerId) {
+async function handleFollow(event, playerId, btnElement) {
     event.stopPropagation();
     const userId = localStorage.getItem('userId');
     if (!userId) {
         alert('Please log in to follow players');
         return;
     }
-    const heartIcon = event.target;
-    const isCurrentlyFollowed = heartIcon.classList.contains('followed');
+
+    // btnElement is passed directly now
+    const isCurrentlyFollowed = btnElement.classList.contains('following');
+
     try {
+        let success = false;
         if (isCurrentlyFollowed) {
             const response = await fetch(`/api/users/${userId}/followed-players/${playerId}`, {
                 method: 'DELETE'
             });
             if (response.ok) {
-                heartIcon.classList.remove('fa-solid', 'followed');
-                heartIcon.classList.add('fa-regular');
+                // Update UI to Unfollowed state
+                btnElement.classList.remove('following');
+                btnElement.innerHTML = '<i class="fa-solid fa-plus"></i> FOLLOW';
                 console.log(`Unfollowed player ${playerId}`);
+                success = true;
             } else {
                 throw new Error('Failed to unfollow player');
             }
@@ -157,17 +203,21 @@ async function handleFollow(event, playerId) {
                 method: 'POST'
             });
             if (response.ok) {
-                heartIcon.classList.remove('fa-regular');
-                heartIcon.classList.add('fa-solid', 'followed');
-                console.log(`Followed player ${playerId}`);
+                success = true;
             } else {
                 const errorData = await response.json();
                 if (errorData.detail === 'Already following this player') {
-                    heartIcon.classList.remove('fa-regular');
-                    heartIcon.classList.add('fa-solid', 'followed');
+                    success = true; // Treat as success
                 } else {
                     throw new Error('Failed to follow player');
                 }
+            }
+
+            if (success) {
+                // Update UI to Followed state
+                btnElement.classList.add('following');
+                btnElement.innerHTML = '<i class="fa-solid fa-check"></i> FOLLOWING';
+                console.log(`Followed player ${playerId}`);
             }
         }
     } catch (error) {

@@ -99,7 +99,7 @@ function createPlayerRow(player) {
             <span>${jerseyDisplay}</span>
         </div>
         <div class="player-info">
-            <span class="player-position-team">${teamName.toUpperCase()}</span>
+            <span class="player-position-team">${teamName.toUpperCase()} | ${player.position} | AGE: ${player.age || 'N/A'}</span>
             <h3 class="player-name">${player.full_name}</h3>
         </div>
         <div class="player-stats">

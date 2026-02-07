@@ -11,6 +11,7 @@ CREATE TABLE players (
   nba_id INTEGER UNIQUE NOT NULL,
   full_name TEXT NOT NULL,
   position TEXT,
+  age FLOAT,
   team_id INTEGER REFERENCES teams(id),
   is_active BOOLEAN
 );
@@ -36,6 +37,22 @@ CREATE TABLE player_season_stats (
   avg_steals FLOAT,
   avg_blocks FLOAT,
   avg_turnovers FLOAT,
+  usage_pct FLOAT,
+  turnover_pct FLOAT,
+  fta INTEGER,
+  ft_pct FLOAT,
+  two_pa INTEGER,
+  two_p_pct FLOAT,
+  three_pa INTEGER,
+  three_p_pct FLOAT,
+  efg_pct FLOAT,
+  ts_pct FLOAT,
+  points_rebounds FLOAT,
+  points_assists FLOAT,
+  points_rebounds_assists FLOAT,
+  vi FLOAT,
+  ortg FLOAT,
+  drtg FLOAT,
   UNIQUE(player_id, season)
 );
 
