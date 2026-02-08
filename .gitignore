@@ -31,3 +31,6 @@ logs/
 *.cache
 .pytest_cache/
 Thumbs.db
+# DB Data (Managed via bootstrap script)
+db/init/seed.sql
+db/ingest/
