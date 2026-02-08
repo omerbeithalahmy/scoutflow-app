@@ -12,7 +12,6 @@ This repository contains the application source code for the ScoutFlow platform,
 
 - **Frontend** - Responsive web interface (Nginx + HTML/JS)
 - **Backend** - High-performance API server (FastAPI)
-- **Ingest** - Data processing pipeline (Python + Pandas)
 - **Helm Charts** - Kubernetes deployment manifests
 
 **Key Technologies:**
@@ -39,12 +38,10 @@ This repository contains the application source code for the ScoutFlow platform,
 │         │              ┌──────▼───────┐             │
 │         │              │  PostgreSQL  │             │
 │         │              │  (Database)  │             │
-│         │              └──────▲───────┘             │
-│         │                     │                     │
-│  ┌──────▼───────┐      ┌──────┴───────┐             │
-│  │   User       │      │   Ingest     │             │
-│  │ (Browser)    │      │  (Service)   │             │
-│  └──────────────┘      └──────────────┘             │
+│  ┌──────▼───────┐      └──────────────┘             │
+│  │   User       │                                   │
+│  │ (Browser)    │                                   │
+│  └──────────────┘                                   │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -58,7 +55,6 @@ scoutflow-app/
 │   └── workflows/                # CI/CD pipelines
 │       ├── backend-ci.yaml       # Backend tests & linting
 │       ├── frontend-ci.yaml      # Frontend linting
-│       ├── ingest-ci.yaml        # Ingest pipeline tests
 │       └── helm-ci.yaml          # Helm chart linting
 ├── backend/                      # FastAPI application
 │   ├── app/                      # API routes and models
@@ -66,12 +62,11 @@ scoutflow-app/
 ├── frontend/                     # Web interface
 │   ├── pages/                    # HTML/JS views
 │   └── nginx.conf                # Nginx configuration
-├── ingest/                       # Data ingestion service
-│   ├── ingest_nba.py             # NBA API integration
-│   └── games.py                  # Game logic processing
 ├── helm/                         # Kubernetes charts
 │   └── scoutflow/                # Main application chart
-└── db/                           # Database schemas
+└── db/                           # Database schemas & Bootstrap
+    ├── init/                     # Schema definitions
+    └── setup-db.sh               # Professional data fetching script
 ```
 
 ---
@@ -80,7 +75,7 @@ scoutflow-app/
 
 ### Prerequisites
 
-1. **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop))
+### 1. **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop))
 
 ### 🐳 Run Locally (Docker Compose)
 
@@ -91,7 +86,12 @@ The easiest way to run the full stack locally:
 git clone https://github.com/omerbh7/scoutflow-app
 cd scoutflow-app
 
-# 2. Build and start services
+# 2. ⚡️ Bootstrap the Database (Required)
+# This fetches the professional seed data from our external repository.
+# You MUST run this before starting Docker.
+bash db/init/setup-db.sh
+
+# 3. 🐳 Build and start services
 docker-compose up --build
 ```
 
@@ -116,13 +116,11 @@ Separate workflows run for each microservice on Pull Requests:
 
 - **Backend CI**: Runs `pytest` and `flake8`
 - **Frontend CI**: Runs `eslint`
-- **Ingest CI**: Runs parameter validation tests
 - **Helm CI**: Runs `helm lint` on the charts
 
 **Workflows:**
 - [backend-ci.yaml](.github/workflows/backend-ci.yaml)
 - [frontend-ci.yaml](.github/workflows/frontend-ci.yaml)
-- [ingest-ci.yaml](.github/workflows/ingest-ci.yaml)
 
 ### 2. Build & Push
 
@@ -148,7 +146,7 @@ The application is packaged as a Helm chart for deployment to EKS.
 ### 1. Structure
 
 The chart in `helm/scoutflow` manages:
-- Deployments for Backend, Frontend, Ingest
+- Deployments for Backend, Frontend
 - Network Services and Ingress
 - Secrets (via External Secrets)
 - ConfigMaps
@@ -216,10 +214,10 @@ In production (EKS), secrets are NOT stored in Git. We use the **External Secret
 > - In local Docker Compose, data persists in the `postgres_data` volume.
 > - To reset: `docker-compose down -v`
 
-> [!NOTE]
-> **Ingest Service**
-> - The ingest service runs once on deployment/startup to fetch initial NBA data.
-> - To refresh data, manually trigger the job or restart the container.
+> [!IMPORTANT]
+> **Data Infrastructure & Best Practices**
+> - **Externalized Seeding**: The large 2025-26 Season dataset (1MB+) is hosted as a GitHub Gist instead of being committed to Git. This follows industry best practices for reducing repository bloat and managing large static assets.
+> - **Automated Retrieval**: The `db/init/setup-db.sh` script handles the secure "just-in-time" fetching of this data. This architecture demonstrates a professional, infrastructure-aware approach to data lifecycle management.
 
 ---
 
