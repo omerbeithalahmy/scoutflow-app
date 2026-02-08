@@ -106,7 +106,7 @@ async function renderPlayers(players) {
             <div class="h-[2px] w-full bg-slate-800/50"></div>
         </div>`;
 
-        html += '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">';
+        html += '<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">';
 
         groupPlayers.forEach(p => {
             const nameParts = p.full_name.trim().split(/\s+/);
@@ -118,31 +118,35 @@ async function renderPlayers(players) {
             const formatStat = (val) => (val === null || val === undefined || val === 0) ? "0.0" : val.toFixed(1);
 
             html += `
-                <div class="group p-6 bg-surface-dark border-2 border-slate-800 rounded-3xl hover:border-primary transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-black/60 flex flex-col cursor-pointer" onclick="navigateToPlayer(${p.id})">
+                <div class="group p-5 bg-surface-dark border-2 border-slate-800 rounded-2xl hover:border-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/60 flex items-center gap-6 cursor-pointer" onclick="navigateToPlayer(${p.id})">
                     
-                    <div class="flex items-center gap-5 mb-6">
-                        <div class="size-16 rounded-full bg-slate-800/80 flex items-center justify-center text-xl font-black text-white border-2 border-slate-700 group-hover:border-primary group-hover:scale-105 transition-all flex-shrink-0">
-                            ${initials}
-                        </div>
-                        <div class="overflow-hidden">
-                            <h3 class="text-2xl font-black text-white leading-tight uppercase truncate group-hover:text-primary transition-colors tracking-tighter">${p.full_name}</h3>
-                            <span class="text-[10px] text-slate-500 font-black uppercase tracking-widest italic">${p.position}</span>
-                        </div>
+                    <!-- Squared Initials Box -->
+                    <div class="size-20 rounded-xl bg-slate-800/80 flex items-center justify-center text-2xl font-black text-white border-2 border-slate-700 group-hover:border-primary transition-all flex-shrink-0">
+                        ${initials}
                     </div>
 
-                    <div class="grid grid-cols-3 gap-2 py-4 border-t border-slate-800/80 bg-black/10 rounded-2xl px-3 mt-auto">
-                        <div class="text-center">
-                            <span class="block text-2xl font-black text-white">${formatStat(stats?.avg_points)}</span>
-                            <span class="block text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mt-1">PPG</span>
+                    <!-- Player Info -->
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[10px] text-slate-500 font-black uppercase tracking-widest italic">${p.position}</span>
+                        <h3 class="text-xl font-black text-white leading-tight uppercase line-clamp-2 group-hover:text-primary transition-colors tracking-tighter">${p.full_name}</h3>
+                        <p class="text-slate-600 font-bold tracking-widest text-[9px] uppercase mt-1">CLICK FOR PROFILE</p>
+                    </div>
+
+                    <!-- Stats Section (Aligned Right) -->
+                    <div class="flex items-center gap-6 pr-2">
+                        <div class="text-right">
+                            <span class="block text-xl font-black text-white">${formatStat(stats?.avg_points)}</span>
+                            <span class="block text-[8px] text-slate-500 font-black uppercase tracking-widest mt-0.5">PPG</span>
                         </div>
-                        <div class="text-center border-x border-slate-800/50">
-                            <span class="block text-2xl font-black text-white">${formatStat(stats?.avg_rebounds)}</span>
-                            <span class="block text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mt-1">RPG</span>
+                        <div class="text-right">
+                            <span class="block text-xl font-black text-white">${formatStat(stats?.avg_rebounds)}</span>
+                            <span class="block text-[8px] text-slate-500 font-black uppercase tracking-widest mt-0.5">RPG</span>
                         </div>
-                        <div class="text-center">
-                            <span class="block text-2xl font-black text-white">${formatStat(stats?.avg_assists)}</span>
-                            <span class="block text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mt-1">APG</span>
+                        <div class="text-right">
+                            <span class="block text-xl font-black text-white">${formatStat(stats?.avg_assists)}</span>
+                            <span class="block text-[8px] text-slate-500 font-black uppercase tracking-widest mt-0.5">APG</span>
                         </div>
+                        <span class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-colors ml-2">arrow_forward</span>
                     </div>
                 </div>`;
         });

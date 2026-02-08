@@ -89,18 +89,29 @@
 
         <!-- Empty State -->
         <div id="emptyState"
-            class="hidden flex-col items-center justify-center py-32 border-2 border-dashed border-slate-800 rounded-3xl animate-in zoom-in-95 duration-500">
-            <div class="size-20 bg-slate-800/30 rounded-full flex items-center justify-center mb-6">
-                <span class="material-symbols-outlined text-5xl text-slate-600">inbox</span>
+            class="hidden flex flex-col items-center justify-center text-center py-20 px-8 border-2 border-dashed border-slate-800/60 rounded-[3rem] bg-slate-900/10 group hover:border-primary/20 transition-all duration-500 animate-in zoom-in-95">
+
+            <div class="relative mb-8">
+                <!-- Decorative Rings -->
+                <div class="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-20 size-20 -m-0"></div>
+                <div
+                    class="size-20 rounded-2xl bg-slate-800/80 border-2 border-slate-700 flex items-center justify-center relative z-10 shadow-xl group-hover:border-primary/40 transition-colors">
+                    <span
+                        class="material-symbols-outlined text-4xl text-slate-500 group-hover:text-primary transition-colors">monitoring</span>
+                </div>
             </div>
-            <h2 class="text-2xl font-black uppercase text-slate-400 mb-2">Watchlist is Empty</h2>
-            <p class="text-slate-600 max-w-md text-center font-medium leading-relaxed">
-                Connect with elite talent. Follow players from any team roster to track their progress and analytics
-                here.
+
+            <h2 class="text-3xl font-black uppercase text-white mb-3 tracking-tighter">Your Watchlist is Empty</h2>
+            <p class="text-slate-500 max-w-sm font-medium leading-relaxed mb-10 italic">
+                Connect with the industry's elite. Follow players from team rosters to begin tracking professional
+                performance and analytics in real-time.
             </p>
+
             <a href="../homepage/index.html"
-                class="mt-8 px-6 py-3 bg-primary text-white rounded-xl font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl shadow-primary/20">Explore
-                Teams</a>
+                class="w-fit mx-auto px-8 py-3.5 bg-primary text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">search</span>
+                Explore Elite Talent
+            </a>
         </div>
 
         <!-- Watchlist Container -->

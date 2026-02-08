@@ -136,7 +136,7 @@ function renderPlayerProfile(p) {
     if (p.season_stats && p.season_stats.length > 0) {
         const s = p.season_stats[0];
         document.getElementById('gamesPlayed').innerText = `${s.games_played || 0} GAMES PLAYED`;
-        renderPrimaryStats(s);
+        renderPrimaryStats(s, extra.color);
         renderAdvancedStats(s);
     } else {
         noStatsFound();
@@ -144,52 +144,112 @@ function renderPlayerProfile(p) {
 }
 
 // --- Stats Rendering (The Dashboard) ---
-function renderPrimaryStats(s) {
+function renderPrimaryStats(s, teamColor) {
     const container = document.getElementById('primaryStats');
     const stats = [
-        { label: 'PPG', val: s.avg_points, icon: 'bolt' },
-        { label: 'RPG', val: s.avg_rebounds, icon: 'height' },
-        { label: 'APG', val: s.avg_assists, icon: 'alt_route' },
-        { label: 'SPG', val: s.avg_steals, icon: 'stadium' },
-        { label: 'BPG', val: s.avg_blocks, icon: 'shield' },
-        { label: 'TOV', val: s.avg_turnovers, icon: 'priority_high' },
-        { label: 'MPG', val: s.avg_minutes, icon: 'timer' }
+        { label: 'PPG', val: s.avg_points, max: 35, icon: 'bolt' },
+        { label: 'RPG', val: s.avg_rebounds, max: 15, icon: 'height' },
+        { label: 'APG', val: s.avg_assists, max: 12, icon: 'alt_route' },
+        { label: 'SPG', val: s.avg_steals, max: 3, icon: 'stadium' },
+        { label: 'BPG', val: s.avg_blocks, max: 4, icon: 'shield' },
+        { label: 'TOV', val: s.avg_turnovers, max: 6, icon: 'priority_high' },
+        { label: 'MPG', val: s.avg_minutes, max: 48, icon: 'timer' }
     ];
 
-    container.innerHTML = stats.map(st => `
-        <div class="group p-5 bg-surface-dark border-2 border-slate-800 rounded-2xl flex flex-col items-center justify-center transition-all hover:border-primary hover:-translate-y-1 hover:shadow-lg hover:shadow-black/40">
-            <span class="block text-3xl font-black text-white mb-2 tracking-tighter">${formatVal(st.val)}</span>
-            <div class="flex items-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
-                <span class="material-symbols-outlined text-xs">${st.icon}</span>
-                <span class="text-[9px] font-black uppercase tracking-[0.2em]">${st.label}</span>
+    container.className = "col-span-full bg-surface-dark border-2 border-slate-800 rounded-[2.5rem] p-10 mt-6 overflow-hidden relative";
+
+    container.innerHTML = `
+        <div class="relative h-80 w-full mb-4">
+            <!-- Technical Grid Lines -->
+            <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
+                <div class="w-full h-px bg-slate-700"></div>
+                <div class="w-full h-px bg-slate-700"></div>
+                <div class="w-full h-px bg-slate-700"></div>
+                <div class="w-full h-px bg-slate-700"></div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-7 gap-4 md:gap-8 h-full items-end relative z-10">
+                ${stats.map(st => {
+        // Ensure a minimum height of 4% for visibility of low stats
+        const actualPercentage = (st.val / st.max) * 100;
+        const displayPercentage = Math.max(actualPercentage, 4);
+
+        return `
+                        <div class="flex flex-col items-center h-full group">
+                            <!-- Value -->
+                            <span class="text-xl md:text-2xl font-black text-white mb-4 tracking-tighter transition-transform group-hover:scale-110">${formatVal(st.val)}</span>
+                            
+                            <!-- Bar Container -->
+                            <div class="flex-1 w-full bg-slate-800/10 rounded-2xl relative overflow-hidden border border-slate-800/40 flex items-end">
+                                <!-- The Bar with High-End Highlight -->
+                                <div class="stat-bar w-full transition-all duration-1000 ease-out relative" 
+                                     style="height: 0%; background-color: ${teamColor}"
+                                     data-target="${displayPercentage}%">
+                                    <!-- Bar Cap / Shine -->
+                                    <div class="absolute top-0 left-0 w-full h-2 bg-white/20"></div>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                                </div>
+                                
+                                <!-- Hover Overlay -->
+                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors"></div>
+                            </div>
+
+                            <!-- Labels -->
+                            <div class="mt-6 flex flex-col items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px] text-slate-500 group-hover:text-white transition-colors">${st.icon}</span>
+                                <h4 class="text-[10px] font-black uppercase text-slate-600 group-hover:text-slate-400 tracking-[0.2em] transition-colors">${st.label}</h4>
+                            </div>
+                        </div>
+                    `;
+    }).join('')}
             </div>
         </div>
-    `).join('');
+    `;
+
+    // Trigger fill-up animation
+    setTimeout(() => {
+        const bars = container.querySelectorAll('.stat-bar');
+        bars.forEach(bar => {
+            bar.style.height = bar.dataset.target;
+        });
+    }, 100);
 }
 
 function renderAdvancedStats(s) {
     const container = document.getElementById('advancedStats');
     const adv = [
         { label: 'Usage Percentage', val: s.usage_pct, suffix: '%', icon: 'speed', desc: 'Efficiency of player possessions' },
-        { label: 'True Shooting', val: s.ts_pct, isPct: true, icon: 'crosshairs', desc: 'Shooting efficiency (FT, 2P, 3P)' },
-        { label: 'Eff. FG Percentage', val: s.efg_pct, isPct: true, icon: 'target', desc: 'Value of 3PT field goals' },
+        { label: 'True Shooting', val: s.ts_pct, isPct: true, icon: 'track_changes', desc: 'Shooting efficiency (FT, 2P, 3P)' },
+        { label: 'Eff. FG Percentage', val: s.efg_pct, isPct: true, icon: 'adjust', desc: 'Value of 3PT field goals' },
         { label: 'Offensive Rating', val: s.ortg, icon: 'trending_up', desc: 'Points per 100 possessions' },
         { label: 'Defensive Rating', val: s.drtg, icon: 'trending_down', desc: 'Points allowed per 100' },
         { label: 'Versatility Index', val: s.vi, icon: 'extension', desc: 'Overall statistical density' }
     ];
 
     container.innerHTML = adv.map(st => `
-        <div class="group p-8 bg-surface-dark border-2 border-slate-800 rounded-3xl transition-all hover:border-primary hover:shadow-2xl hover:shadow-black/60">
-            <div class="flex justify-between items-start mb-6">
-                <div class="size-12 rounded-xl bg-slate-800/50 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <span class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">${st.icon}</span>
+        <div class="group p-8 bg-surface-dark border-2 border-slate-800 rounded-3xl transition-all hover:border-primary hover:shadow-2xl hover:shadow-black/60 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
+                <span class="material-symbols-outlined text-5xl">${st.icon}</span>
+            </div>
+            
+            <div class="flex items-start gap-8 relative z-10 mb-8">
+                <div class="size-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center group-hover:border-primary group-hover:bg-primary/10 transition-all flex-shrink-0 shadow-inner">
+                    <span class="material-symbols-outlined text-3xl text-slate-500 group-hover:text-primary transition-colors">${st.icon}</span>
                 </div>
-                <div class="text-right">
-                    <span class="block text-4xl font-black text-white leading-none">${st.isPct ? (st.val * 100).toFixed(1) + '%' : formatVal(st.val)}</span>
-                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-2 block">${st.label}</span>
+                <div>
+                    <span class="block text-4xl font-black text-white leading-none mb-2 tracking-tighter">
+                        ${st.isPct ? (st.val * 100).toFixed(1) + '%' : formatVal(st.val)}
+                    </span>
+                    <span class="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] block">${st.label}</span>
                 </div>
             </div>
-            <p class="text-slate-500 text-xs font-medium leading-relaxed group-hover:text-slate-300 transition-colors">${st.desc}</p>
+            
+            <div class="h-[2px] w-full bg-slate-800 mb-6 group-hover:bg-primary/20 transition-colors"></div>
+            
+            <p class="text-slate-500 text-xs font-bold uppercase tracking-wide leading-relaxed group-hover:text-slate-300 transition-colors italic">
+                ${st.desc}
+            </p>
         </div>
     `).join('');
 }
