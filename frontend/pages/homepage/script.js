@@ -207,7 +207,7 @@ function initUserDisplay() {
     
     // 1. Display Username (Not clickable)
     if (storedName && userNameDisplay) {
-        userNameDisplay.textContent = storedName.toLowerCase(); // Lowercase as shown in image
+        userNameDisplay.textContent = storedName.toUpperCase(); // Force Uppercase for premium look
     } else if (userNameDisplay) {
         userNameDisplay.textContent = "guest";
     }
