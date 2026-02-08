@@ -1,160 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA SCOUT | Player Profile</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Oswald:wght@500;700&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ScoutFlow | Player Profile</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-dark": "#101922",
+                        "surface-dark": "#192633",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "sans": ["Lexend", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link rel="stylesheet" href="style.css?v=1.0" />
 </head>
 
-<body>
-    <nav class="main-nav">
-        <div class="nav-left">
-            <span class="logo-text">Scout<span class="red-text">Flow</span></span>
-        </div>
-        <div class="nav-center">
-            <a href="../homepage/index.html" class="nav-link">TEAMS</a>
-            <a href="../myplayers/index.html" class="nav-link">MY PLAYERS</a>
-        </div>
-        <div class="nav-right">
-            <div class="user-wrapper">
-                <span id="userNameDisplay" class="user-badge">GUEST</span>
-                <button class="logout-btn" title="Logout">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
+<body class="bg-background-dark text-white min-h-screen flex flex-col overflow-x-hidden font-sans">
+
+    <!-- Navbar: EXACT MATCH with Homepage/Teams -->
+    <nav
+        class="sticky top-0 z-50 bg-background-dark/95 backdrop-blur-md border-b border-slate-800 px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="size-9 text-primary">
+                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
+                        fill="currentColor"></path>
+                </svg>
             </div>
+            <span class="text-2xl font-black uppercase tracking-tighter text-white">ScoutFlow</span>
+        </div>
+
+        <div class="flex items-center gap-8">
+            <a href="../homepage/index.html"
+                class="text-base font-medium text-slate-300 hover:text-white transition-colors">Teams</a>
+            <a href="../myplayers/index.html"
+                class="flex items-center gap-2 text-base font-medium text-slate-300 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-[22px]">group</span>
+                My Players
+            </a>
+            <div class="flex items-center gap-2 select-none">
+                <span class="material-symbols-outlined text-primary text-[24px]">person</span>
+                <span id="userNameDisplay" class="text-base font-medium text-white uppercase">guest</span>
+            </div>
+            <button class="logout-btn flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-[22px]">logout</span>
+                <span class="text-base font-medium">Sign Out</span>
+            </button>
         </div>
     </nav>
-    <div class="page-content">
-        <a href="javascript:history.back()" class="back-link">
-            <i class="fa-solid fa-arrow-left"></i> BACK TO TEAM
+
+    <main class="flex-1 container mx-auto px-4 py-12 max-w-7xl">
+
+        <!-- Breadcrumb -->
+        <a href="#" id="backLink"
+            class="inline-flex items-center gap-2 text-slate-500 hover:text-white transition-colors mb-10 text-xs font-bold tracking-[0.15em] uppercase">
+            <span class="material-symbols-outlined text-lg">arrow_back</span> BACK TO TEAM
         </a>
-        <header class="player-hero">
-            <div class="hero-left">
-                <div class="player-logo-container">
-                    <img src="" alt="" id="playerTeamLogo" class="player-team-logo" style="display:none;">
-                </div>
-                <div class="player-title">
-                    <span class="p-meta-top" id="playerSubTitle">NBA PLAYER</span>
-                    <h1 class="p-first-name" id="firstName">PLAYER</h1>
-                    <h1 class="p-last-name" id="lastName">NAME</h1>
+
+        <!-- Player Hero -->
+        <header
+            class="flex flex-col lg:flex-row items-center lg:items-end gap-10 mb-16 border-b border-slate-800 pb-12">
+            <div
+                class="relative size-40 md:size-52 flex-shrink-0 bg-surface-dark rounded-3xl flex items-center justify-center border border-slate-800 shadow-2xl group overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+                <img src="" alt="" class="w-28 h-28 object-contain relative z-10" id="playerTeamLogo"
+                    style="display:none;">
+                <div id="logoPlaceholder"
+                    class="size-24 bg-slate-800/50 rounded-full animate-pulse flex items-center justify-center relative z-10">
+                    <span class="material-symbols-outlined text-slate-700 text-5xl">person</span>
                 </div>
             </div>
-            <button class="follow-btn">
-                <i class="fa-regular fa-heart"></i> FOLLOW
+
+            <div class="text-center lg:text-left pt-2 flex-1">
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-4">
+
+                    <span
+                        class="px-3 py-1 rounded bg-slate-800 text-slate-400 font-bold tracking-[0.2em] text-[10px] uppercase"
+                        id="playerAge">-- YEARS OLD</span>
+                    <span
+                        class="px-3 py-1 rounded bg-slate-800 text-slate-400 font-bold tracking-[0.2em] text-[10px] uppercase"
+                        id="playerPosition">--</span>
+                </div>
+                <h1 class="uppercase font-black tracking-tighter leading-none mb-2" id="nameContainer">
+                    <span id="firstName" class="text-white">PLAYER</span>
+                    <span id="lastName" class="text-primary">NAME</span>
+                </h1>
+                <p class="text-slate-400 text-xl font-black tracking-wide uppercase italic" id="teamName">NBA PROFILE
+                </p>
+            </div>
+
+            <!-- Follow Button: Now Visible and Styled -->
+            <button
+                class="follow-btn px-8 py-4 bg-primary text-white rounded-xl font-black uppercase tracking-widest text-xs hover:scale-105 transition-all shadow-xl shadow-primary/20 flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">add_circle</span>
+                <span class="btn-text">FOLLOW</span>
             </button>
         </header>
-        <section class="stats-section">
-            <h2 class="section-title">
-                <i class="fa-solid fa-chart-column"></i> SEASON AVERAGES <span id="gamesPlayed">(0 GP)</span>
-            </h2>
-            <div class="stats-chart-container">
-                <div class="chart-column">
-                    <div class="bar-wrapper">
-                        <div class="bar" id="bar-ppg"></div>
-                        <span class="bar-value" id="val-ppg">--</span>
-                    </div>
-                    <span class="bar-label">PTS</span>
+
+        <!-- Stats Dashboard -->
+        <section class="space-y-16">
+
+            <!-- Primary Stats Grid -->
+            <div>
+                <div class="flex items-center gap-4 mb-8">
+                    <span class="material-symbols-outlined text-primary text-3xl">analytics</span>
+                    <h2 class="text-3xl font-black tracking-tighter uppercase italic">Season Stats Dashboard</h2>
+                    <span class="text-slate-600 font-bold tracking-widest text-sm pt-1" id="gamesPlayed">-- GP</span>
                 </div>
-                <div class="chart-column">
-                    <div class="bar-wrapper">
-                        <div class="bar" id="bar-rpg"></div>
-                        <span class="bar-value" id="val-rpg">--</span>
-                    </div>
-                    <span class="bar-label">REB</span>
-                </div>
-                <div class="chart-column">
-                    <div class="bar-wrapper">
-                        <div class="bar" id="bar-apg"></div>
-                        <span class="bar-value" id="val-apg">--</span>
-                    </div>
-                    <span class="bar-label">AST</span>
-                </div>
-                <div class="chart-column">
-                    <div class="bar-wrapper">
-                        <div class="bar" id="bar-spg"></div>
-                        <span class="bar-value" id="val-spg">--</span>
-                    </div>
-                    <span class="bar-label">STL</span>
-                </div>
-                <div class="chart-column">
-                    <div class="bar-wrapper">
-                        <div class="bar" id="bar-bpg"></div>
-                        <span class="bar-value" id="val-bpg">--</span>
-                    </div>
-                    <span class="bar-label">BLK</span>
-                </div>
-                <div class="chart-column">
-                    <div class="bar-wrapper">
-                        <div class="bar" id="bar-tov"></div>
-                        <span class="bar-value" id="val-tov">--</span>
-                    </div>
-                    <span class="bar-label">TOV</span>
-                </div>
-                <div class="chart-column">
-                    <div class="bar-wrapper">
-                        <div class="bar" id="bar-mpg"></div>
-                        <span class="bar-value" id="val-mpg">--</span>
-                    </div>
-                    <span class="bar-label">MIN</span>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4" id="primaryStats">
+                    <!-- Dynamically filled: PPG, RPG, APG, SPG, BPG, TOV, MPG -->
+                    <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
+                    <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
+                    <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
+                    <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
+                    <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
+                    <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
+                    <div class="animate-pulse bg-surface-dark h-32 rounded-2xl border border-slate-800"></div>
                 </div>
             </div>
-            <section class="advanced-stats-section">
-                <h2 class="section-title">
-                    <i class="fa-solid fa-microchip"></i> ADVANCED ANALYTICS
-                </h2>
-                <div class="advanced-grid">
-                    <div class="adv-card">
-                        <div class="adv-icon"><i class="fa-solid fa-bolt"></i></div>
-                        <div class="adv-info">
-                            <span class="adv-label">USAGE %</span>
-                            <span class="adv-val" id="val-usg">--</span>
-                        </div>
-                    </div>
-                    <div class="adv-card">
-                        <div class="adv-icon"><i class="fa-solid fa-crosshairs"></i></div>
-                        <div class="adv-info">
-                            <span class="adv-label">TRUE SHOOTING %</span>
-                            <span class="adv-val" id="val-ts">--</span>
-                        </div>
-                    </div>
-                    <div class="adv-card">
-                        <div class="adv-icon"><i class="fa-solid fa-bullseye"></i></div>
-                        <div class="adv-info">
-                            <span class="adv-label">EFF. FG %</span>
-                            <span class="adv-val" id="val-efg">--</span>
-                        </div>
-                    </div>
-                    <div class="adv-card">
-                        <div class="adv-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                        <div class="adv-info">
-                            <span class="adv-label">OFF. RATING</span>
-                            <span class="adv-val" id="val-ortg">--</span>
-                        </div>
-                    </div>
-                    <div class="adv-card">
-                        <div class="adv-icon"><i class="fa-solid fa-shield"></i></div>
-                        <div class="adv-info">
-                            <span class="adv-label">DEF. RATING</span>
-                            <span class="adv-val" id="val-drtg">--</span>
-                        </div>
-                    </div>
-                    <div class="adv-card">
-                        <div class="adv-icon"><i class="fa-solid fa-gauge-high"></i></div>
-                        <div class="adv-info">
-                            <span class="adv-label">VERSATILITY INDEX</span>
-                            <span class="adv-val" id="val-vi">--</span>
-                        </div>
-                    </div>
+
+            <!-- Advanced Analytics Grid -->
+            <div>
+                <div class="flex items-center gap-4 mb-8">
+                    <span class="material-symbols-outlined text-primary text-3xl">psychology</span>
+                    <h2 class="text-3xl font-black tracking-tighter uppercase italic">Advanced Efficiency Metrics</h2>
+                    <div class="h-[2px] flex-1 bg-slate-800/50"></div>
                 </div>
-            </section>
-    </div>
-    <script src="script.js"></script>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="advancedStats">
+                    <!-- Dynamically filled: USG, TS%, eFG%, ORTG, DRTG, VI -->
+                    <div class="animate-pulse bg-surface-dark h-40 rounded-3xl border border-slate-800"></div>
+                    <div class="animate-pulse bg-surface-dark h-40 rounded-3xl border border-slate-800"></div>
+                    <div class="animate-pulse bg-surface-dark h-40 rounded-3xl border border-slate-800"></div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js?v=1.0"></script>
 </body>
 
 </html>

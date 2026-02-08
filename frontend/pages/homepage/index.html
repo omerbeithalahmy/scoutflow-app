@@ -1,57 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ScoutFlow - NBA Teams</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>ScoutFlow | NBA Teams</title>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+            "surface-dark": "#192633",
+          },
+          fontFamily: { "display": ["Lexend", "sans-serif"] },
+        },
+      },
+    }
+  </script>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;500;700&display=swap"
-    rel="stylesheet">
 </head>
 
-<body class="light-bg">
-  <nav class="main-nav">
-    <div class="nav-left">
-      <span class="logo-text">Scout<span class="red-text">Flow</span></span>
-    </div>
-    <div class="nav-center">
-      <a href="#" class="nav-link active">TEAMS</a>
-      <a href="../myplayers/index.html" class="nav-link">MY PLAYERS</a>
-    </div>
-    <div class="nav-right">
-      <div class="user-wrapper">
-        <span id="userNameDisplay" class="user-badge">GUEST</span>
-        <button class="logout-btn" title="Logout">
-          <i class="fa-solid fa-right-from-bracket"></i>
-        </button>
+<body class="bg-background-dark text-white min-h-screen flex flex-col overflow-x-hidden">
+
+  <nav
+    class="sticky top-0 z-50 bg-background-dark/95 backdrop-blur-md border-b border-slate-800 px-8 py-4 flex justify-between items-center">
+
+    <div class="flex items-center gap-3">
+      <div class="size-9 text-primary">
+        <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"
+            fill="currentColor"></path>
+        </svg>
       </div>
+      <span class="text-2xl font-black uppercase tracking-tighter text-white">ScoutFlow</span>
+    </div>
+
+    <div class="flex items-center gap-8">
+
+      <a href="../homepage/index.html" class="text-base font-medium text-white transition-colors">
+        Teams
+      </a>
+
+      <a href="../myplayers/index.html"
+        class="flex items-center gap-2 text-base font-medium text-slate-300 hover:text-white transition-colors">
+        <span class="material-symbols-outlined text-[22px]">group</span>
+        My Players
+      </a>
+
+      <div class="flex items-center gap-2 select-none">
+        <span class="material-symbols-outlined text-primary text-[24px]">person</span>
+        <span id="userNameDisplay" class="text-base font-medium text-white uppercase">guest</span>
+      </div>
+
+      <button class="logout-btn flex items-center gap-2 text-slate-300 hover:text-white transition-colors group">
+        <span class="material-symbols-outlined text-[22px]">logout</span>
+        <span class="text-base font-medium">Sign Out</span>
+      </button>
+
     </div>
   </nav>
-  <main class="container">
-    <header class="page-header">
-      <p class="season-label">2025-26 SEASON</p>
-      <h1 class="main-title">NBA TEAMS</h1>
-      <p class="subtitle">Select a team to explore their roster</p>
-      <div class="search-bar">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="teamSearch" placeholder="Search for a player to explore their profile..."
-          autocomplete="off">
-        <div id="searchSuggestions" class="suggestions-dropdown card-hidden"></div>
+
+  <main class="flex-1 container mx-auto px-4 py-12 max-w-7xl">
+
+    <header class="text-center mb-12">
+      <p class="text-primary font-bold tracking-[0.2em] text-xs mb-4">2025-26 SEASON</p>
+      <h1 class="text-5xl md:text-6xl font-black mb-4 tracking-tight">NBA TEAMS</h1>
+      <p class="text-slate-400 text-lg font-light">Select a team to explore their roster & analytics</p>
+
+      <div class="relative max-w-2xl mx-auto mt-10 z-30">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+          <span class="material-symbols-outlined">search</span>
+        </div>
+        <input type="text" id="teamSearch"
+          class="block w-full h-14 pl-12 rounded-xl border border-slate-800 bg-surface-dark text-white placeholder-slate-500 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-base"
+          placeholder="Search for a player to explore their profile..." autocomplete="off">
+        <div id="searchSuggestions"
+          class="hidden absolute top-full left-0 right-0 mt-2 bg-surface-dark border border-slate-700 rounded-xl shadow-2xl overflow-hidden max-h-96 overflow-y-auto z-50">
+        </div>
       </div>
     </header>
-    <div class="filter-tabs">
-      <button class="filter-tab active" data-filter="east" data-index="0">EASTERN CONF</button>
-      <button class="filter-tab" data-filter="west" data-index="1">WESTERN CONF</button>
+
+    <div class="flex justify-center border-b border-slate-800 mb-8 filter-tabs">
+      <button class="filter-tab active relative px-8 py-4 text-sm font-bold tracking-widest transition-all text-white"
+        id="tabEast">
+        EASTERN CONF
+        <div class="active-line absolute bottom-0 left-0 w-full h-0.5 bg-primary"></div>
+      </button>
+      <button
+        class="filter-tab relative px-8 py-4 text-sm font-bold tracking-widest transition-all text-slate-500 hover:text-white"
+        id="tabWest">
+        WESTERN CONF
+        <div class="active-line absolute bottom-0 left-0 w-full h-0.5 bg-primary hidden"></div>
+      </button>
     </div>
-    <div class="teams-viewport">
-      <div class="teams-slider" id="teamsSlider">
-        <div class="teams-grid" id="grid-east"></div>
-        <div class="teams-grid" id="grid-west"></div>
+
+    <div class="relative w-full min-h-[600px] overflow-hidden">
+      <div class="grid grid-cols-1 grid-rows-1 items-start">
+
+        <div id="grid-east"
+          class="col-start-1 row-start-1 slider-transition opacity-100 translate-x-0 z-10 w-full flex flex-wrap justify-center gap-5 p-2 pb-20">
+        </div>
+
+        <div id="grid-west"
+          class="col-start-1 row-start-1 slider-transition opacity-0 translate-x-full pointer-events-none z-0 w-full flex flex-wrap justify-center gap-5 p-2 pb-20">
+        </div>
+
       </div>
     </div>
+
   </main>
+
   <script src="script.js"></script>
 </body>
 
