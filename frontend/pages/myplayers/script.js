@@ -99,7 +99,7 @@ function createElitePlayerCard(p) {
                     <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-500 font-bold tracking-widest text-[8px] uppercase">${p.position}</span>
                     <span class="text-slate-500 font-bold tracking-widest text-[8px] uppercase">${p.team_name}</span>
                 </div>
-                <h3 class="text-xl font-black text-white truncate uppercase tracking-tight leading-tight mb-2">${p.full_name}</h3>
+                <h3 class="${p.full_name.length > 24 ? 'text-xs' : p.full_name.length > 20 ? 'text-sm' : p.full_name.length > 16 ? 'text-base' : p.full_name.length > 12 ? 'text-lg' : 'text-xl'} font-black text-white whitespace-nowrap uppercase tracking-tight leading-tight mb-2">${p.full_name}</h3>
                 
                 <div class="flex items-center gap-4 text-slate-400">
                     <div class="flex flex-col">

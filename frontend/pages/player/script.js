@@ -115,10 +115,27 @@ function renderPlayerProfile(p) {
         if (placeholder) placeholder.style.display = 'none';
     }
 
-    // Name Split for Design
-    const nameParts = p.full_name.trim().split(/\s+/);
-    document.getElementById('firstName').innerText = nameParts[0].toUpperCase();
-    document.getElementById('lastName').innerText = nameParts.slice(1).join(" ").toUpperCase();
+    // Name Handling (Responsive & Dynamic)
+    const fullName = p.full_name.trim().toUpperCase();
+    const nameParts = fullName.split(/\s+/);
+    const firstNameEl = document.getElementById('firstName');
+    const lastNameEl = document.getElementById('lastName');
+    const nameContainer = document.getElementById('nameContainer');
+
+    if (firstNameEl && lastNameEl) {
+        firstNameEl.innerText = nameParts[0];
+        lastNameEl.innerText = ' ' + nameParts.slice(1).join(" ");
+
+        // Dynamic Font Sizing for long names
+        const totalLength = fullName.length;
+        if (totalLength > 20) {
+            nameContainer.className = "uppercase font-black tracking-tighter leading-[0.9] text-3xl md:text-5xl mb-2 transition-all";
+        } else if (totalLength > 15) {
+            nameContainer.className = "uppercase font-black tracking-tighter leading-[0.9] text-4xl md:text-6xl mb-2 transition-all";
+        } else {
+            nameContainer.className = "uppercase font-black tracking-tighter leading-[0.9] text-5xl md:text-7xl mb-2 transition-all";
+        }
+    }
 
     // Bio Data
     document.getElementById('teamName').innerText = p.team_name.toUpperCase();

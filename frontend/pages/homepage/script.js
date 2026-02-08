@@ -54,13 +54,13 @@ function renderTeams(teams) {
     if (!gridEast || !gridWest) return;
     gridEast.innerHTML = '';
     gridWest.innerHTML = '';
-    
+
     teams.forEach(team => {
         const extra = teamExtraData[team.abbreviation] || { conf: "east", div: "N/A", nbaId: 0 };
         const logoUrl = `https://cdn.nba.com/logos/nba/${extra.nbaId}/primary/L/logo.svg`;
-        
+
         const cardHTML = `
-            <div class="group flex items-center justify-between p-5 bg-[#192633] border border-slate-800 rounded-xl hover:border-primary cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-black/20" onclick="handleTeamClick(${team.id})">
+            <div class="group flex items-center justify-between p-5 bg-[#192633] border border-slate-800 rounded-xl hover:border-primary cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-black/20 w-full md:w-[calc(50%-1.25rem)] lg:w-[calc(33.333%-1.25rem)] xl:w-[calc(25%-1.25rem)]" onclick="handleTeamClick(${team.id})">
                 <div class="flex items-center gap-4">
                     <img src="${logoUrl}" alt="${team.name}" class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300">
                     <div>
@@ -74,7 +74,7 @@ function renderTeams(teams) {
                 </div>
                 <span class="material-symbols-outlined text-slate-600 group-hover:text-primary transition-colors">arrow_forward</span>
             </div>`;
-            
+
         if (extra.conf === 'east') gridEast.innerHTML += cardHTML;
         else gridWest.innerHTML += cardHTML;
     });
@@ -89,7 +89,7 @@ tabWest.addEventListener('click', () => {
     tabEast.classList.remove('active', 'text-white');
     tabEast.classList.add('text-slate-500');
     tabEast.querySelector('.active-line').classList.add('hidden');
-    
+
     tabWest.classList.add('active', 'text-white');
     tabWest.classList.remove('text-slate-500');
     tabWest.querySelector('.active-line').classList.remove('hidden');
@@ -105,7 +105,7 @@ tabEast.addEventListener('click', () => {
     tabWest.classList.remove('active', 'text-white');
     tabWest.classList.add('text-slate-500');
     tabWest.querySelector('.active-line').classList.add('hidden');
-    
+
     tabEast.classList.add('active', 'text-white');
     tabEast.classList.remove('text-slate-500');
     tabEast.querySelector('.active-line').classList.remove('hidden');
@@ -136,16 +136,16 @@ if (searchInput) {
             } catch (err) { console.error("Enter search error:", err); }
         }
     });
-    
+
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.trim();
         clearTimeout(debounceTimer);
-        
+
         if (query.length < 2) {
             if (suggestionsBox) suggestionsBox.classList.add('hidden');
             return;
         }
-        
+
         debounceTimer = setTimeout(async () => {
             try {
                 const response = await fetch(`/api/players/suggestions?q=${encodeURIComponent(query)}`);
@@ -156,7 +156,7 @@ if (searchInput) {
             } catch (error) { console.error("Search error:", error); }
         }, 250);
     });
-    
+
     document.addEventListener('click', (e) => {
         if (suggestionsBox && !searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
             suggestionsBox.classList.add('hidden');
@@ -167,20 +167,20 @@ if (searchInput) {
 function renderSuggestions(players) {
     if (!suggestionsBox) return;
     suggestionsBox.innerHTML = '';
-    
+
     if (!players || !Array.isArray(players) || players.length === 0) {
         suggestionsBox.classList.add('hidden');
         return;
     }
-    
+
     suggestionsBox.classList.remove('hidden');
-    
+
     players.forEach(player => {
         const ppg = (player.ppg !== undefined) ? player.ppg : '0.0';
         const team = player.team_abbr || "NBA";
-        
+
         const div = document.createElement('div');
-        div.className = 'flex items-center justify-between p-4 cursor-pointer hover:bg-slate-800 transition-colors border-b border-slate-700 last:border-0';
+        div.className = 'flex items-center justify-between p-4 cursor-pointer hover:bg-slate-800 transition-colors border-b border-slate-700 last:border-0 text-left';
         div.innerHTML = `
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-bold text-white">${team}</div>
@@ -191,7 +191,7 @@ function renderSuggestions(players) {
             </div>
             <span class="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded-full">${ppg} PPG</span>
         `;
-        
+
         div.onclick = () => {
             window.location.href = `../player/index.html?id=${player.id}`;
         };
@@ -204,14 +204,14 @@ function initUserDisplay() {
     const userNameDisplay = document.getElementById('userNameDisplay');
     const logoutBtn = document.querySelector('.logout-btn');
     const storedName = localStorage.getItem('userName');
-    
+
     // 1. Display Username (Not clickable)
     if (storedName && userNameDisplay) {
         userNameDisplay.textContent = storedName.toUpperCase(); // Force Uppercase for premium look
     } else if (userNameDisplay) {
         userNameDisplay.textContent = "guest";
     }
-    
+
     // 2. Handle Logout -> Go to Login Screen
     if (logoutBtn) {
         logoutBtn.onclick = (e) => {
