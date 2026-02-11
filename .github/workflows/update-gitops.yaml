@@ -1,0 +1,61 @@
+name: Update GitOps Repository
+on:
+  workflow_run:
+    workflows: ["Backend CI", "Frontend CI", "Database CI"]
+    types:
+      - completed
+    branches: [main]
+
+env:
+  GITOPS_REPO: omerbh7/scoutflow-gitops
+  GITOPS_BRANCH: main
+
+jobs:
+  update-gitops:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout scoutflow-app repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Checkout GitOps repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GITOPS_REPO }}
+          token: ${{ secrets.GITOPS_PAT }}
+          path: gitops-repo
+          ref: ${{ env.GITOPS_BRANCH }}
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Update image tags
+        env:
+          IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          cd gitops-repo
+          yq eval -i '.global.imageTag = env(IMAGE_TAG)' environments/dev/values.yaml
+          yq eval -i '.global.imageTag = env(IMAGE_TAG)' environments/stage/values.yaml
+
+      - name: Commit and push changes
+        env:
+          IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          cd gitops-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          git add environments/dev/values.yaml environments/stage/values.yaml
+          git commit -m "Update dev/stage to image $IMAGE_TAG"
+          git push origin ${{ env.GITOPS_BRANCH }}
