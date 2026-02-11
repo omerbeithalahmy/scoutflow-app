@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  GITOPS_REPO: omerbh7/scoutflow-gitops
+  GITOPS_REPO: omerbeithalahmy/scoutflow-gitops
   GITOPS_BRANCH: main
 
 jobs:
