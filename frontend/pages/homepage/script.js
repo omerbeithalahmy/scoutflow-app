@@ -205,19 +205,17 @@ function initUserDisplay() {
     const logoutBtn = document.querySelector('.logout-btn');
     const storedName = localStorage.getItem('userName');
 
-    // 1. Display Username (Not clickable)
     if (storedName && userNameDisplay) {
-        userNameDisplay.textContent = storedName.toUpperCase(); // Force Uppercase for premium look
+        userNameDisplay.textContent = storedName.toUpperCase();
     } else if (userNameDisplay) {
         userNameDisplay.textContent = "guest";
     }
 
-    // 2. Handle Logout -> Go to Login Screen
     if (logoutBtn) {
         logoutBtn.onclick = (e) => {
             e.preventDefault();
             localStorage.clear();
-            window.location.href = '../auth/index.html'; // Redirect to login
+            window.location.href = '../auth/index.html';
         };
     }
 }

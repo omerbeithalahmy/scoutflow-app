@@ -17,7 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Root route for ALB health check
 @app.get("/")
 def home():
     return {"status": "ok", "message": "ScoutFlow API"}
@@ -26,7 +25,6 @@ def home():
 def health():
     return {"status": "ok"}
 
-# Create a sub-app for the /api prefix to handle cloud routing correctly
 api_app = FastAPI(title="ScoutFlow API")
 
 api_app.include_router(users.router)

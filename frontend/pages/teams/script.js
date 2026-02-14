@@ -62,7 +62,6 @@ async function initDynamicPage() {
 function updateUIHeader(team) {
     const extra = teamExtraData[team.abbreviation] || { nbaId: 0, conf: "NBA", div: "N/A" };
 
-    // Logo
     const logoImg = document.getElementById('teamLogo');
     const placeholder = document.getElementById('logoPlaceholder');
     if (logoImg && extra.nbaId !== 0) {
@@ -71,7 +70,6 @@ function updateUIHeader(team) {
         if (placeholder) placeholder.style.display = 'none';
     }
 
-    // Text Data
     document.getElementById('teamCity').innerText = team.city;
     document.getElementById('teamName').innerText = team.name;
     document.getElementById('teamMeta').innerText = `${extra.conf}ERN CONFERENCE • ${extra.div}`;
@@ -82,7 +80,6 @@ async function renderPlayers(players) {
     const container = document.getElementById('dynamicRoster');
     if (!container) return;
 
-    // Grouping
     const groupedPlayers = { 'GUARDS': [], 'FORWARDS': [], 'CENTERS': [] };
     players.forEach(p => {
         const pos = (p.position || '').toUpperCase();
@@ -99,7 +96,6 @@ async function renderPlayers(players) {
         const groupPlayers = groupedPlayers[groupName];
         if (!groupPlayers || groupPlayers.length === 0) return;
 
-        // Group Title (Prominent Elite Style)
         html += `
         <div class="mt-16 mb-8 flex items-center gap-6">
             <h3 class="text-base font-black text-primary tracking-[0.4em] uppercase italic whitespace-nowrap">${groupName}</h3>
@@ -120,19 +116,16 @@ async function renderPlayers(players) {
             html += `
                 <div class="group p-5 bg-surface-dark border-2 border-slate-800 rounded-2xl hover:border-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/60 flex items-center gap-6 cursor-pointer" onclick="navigateToPlayer(${p.id})">
                     
-                    <!-- Squared Initials Box -->
                     <div class="size-20 rounded-xl bg-slate-800/80 flex items-center justify-center text-2xl font-black text-white border-2 border-slate-700 group-hover:border-primary transition-all flex-shrink-0">
                         ${initials}
                     </div>
 
-                    <!-- Player Info -->
                     <div class="flex-1 min-w-0">
                         <span class="text-[10px] text-slate-500 font-black uppercase tracking-widest italic">${p.position}</span>
                         <h3 class="text-xl font-black text-white leading-tight uppercase line-clamp-2 group-hover:text-primary transition-colors tracking-tighter">${p.full_name}</h3>
                         <p class="text-slate-600 font-bold tracking-widest text-[9px] uppercase mt-1">CLICK FOR PROFILE</p>
                     </div>
 
-                    <!-- Stats Section (Aligned Right) -->
                     <div class="flex items-center gap-6 pr-2">
                         <div class="text-right">
                             <span class="block text-xl font-black text-white">${formatStat(stats?.avg_points)}</span>
@@ -172,7 +165,7 @@ function initUserDisplay() {
 
     if (userNameDisplay) {
         if (storedName) {
-            userNameDisplay.textContent = storedName.toUpperCase(); // Force Uppercase for premium look
+            userNameDisplay.textContent = storedName.toUpperCase();
         } else {
             userNameDisplay.textContent = "GUEST";
         }

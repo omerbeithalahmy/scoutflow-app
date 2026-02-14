@@ -83,11 +83,9 @@ function createElitePlayerCard(p) {
     const stats = p.latest_stats || {};
 
     card.innerHTML = `
-        <!-- High-End Background Accent -->
         <div class="absolute top-0 right-0 size-32 bg-gradient-to-bl from-primary/10 to-transparent -mr-16 -mt-16 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
         
         <div class="flex items-center gap-6 relative z-10">
-            <!-- Team Circle -->
             <div class="size-16 rounded-2xl bg-background-dark/80 border border-slate-800 flex items-center justify-center p-2.5 transition-transform group-hover:scale-110">
                 <img src="https://cdn.nba.com/logos/nba/${teamData.nbaId}/primary/L/logo.svg" 
                      alt="${p.team_abbreviation}" 
@@ -117,7 +115,6 @@ function createElitePlayerCard(p) {
                 </div>
             </div>
 
-            <!-- Unfollow Action -->
             <button class="unfollow-btn size-10 rounded-xl bg-slate-800/50 flex items-center justify-center text-emerald-500 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all shadow-lg shadow-emerald-500/10">
                 <span class="material-symbols-outlined text-xl">verified</span>
             </button>

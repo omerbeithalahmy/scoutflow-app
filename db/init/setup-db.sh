@@ -4,7 +4,6 @@
 # This script fetches the seed data from an external secure source (Gist)
 # demonstrating professional data handling practices for DevOps portfolios.
 
-# Get the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 GIST_URL="https://gist.githubusercontent.com/omerbeithalahmy/661196baff216d3f9150fb4161752690/raw/984f5d85ace46eaa963acf9a6181ecffe9ef91b8/scoutflow_seed.sql"
 TARGET_DIR="$SCRIPT_DIR"
@@ -12,10 +11,8 @@ TARGET_FILE="$TARGET_DIR/seed.sql"
 
 echo "Bootstrapping ScoutFlow Database..."
 
-# Ensure target directory exists
 mkdir -p "$TARGET_DIR"
 
-# Download the seed file
 echo "Fetching 2025-26 Season Data from GitHub Gist..."
 curl -L "$GIST_URL" -o "$TARGET_FILE"
 

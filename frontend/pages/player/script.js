@@ -106,7 +106,6 @@ function updateFollowButtonState(button, isFollowing) {
 function renderPlayerProfile(p) {
     const extra = teamExtraData[p.team_abbreviation] || { nbaId: 0, color: "#137fec" };
 
-    // Team Logo & Name Casing
     const logoImg = document.getElementById('playerTeamLogo');
     const placeholder = document.getElementById('logoPlaceholder');
     if (logoImg && extra.nbaId !== 0) {
@@ -115,7 +114,6 @@ function renderPlayerProfile(p) {
         if (placeholder) placeholder.style.display = 'none';
     }
 
-    // Name Handling (Responsive & Dynamic)
     const fullName = p.full_name.trim().toUpperCase();
     const nameParts = fullName.split(/\s+/);
     const firstNameEl = document.getElementById('firstName');
@@ -126,7 +124,6 @@ function renderPlayerProfile(p) {
         firstNameEl.innerText = nameParts[0];
         lastNameEl.innerText = ' ' + nameParts.slice(1).join(" ");
 
-        // Dynamic Font Sizing for long names
         const totalLength = fullName.length;
         if (totalLength > 20) {
             nameContainer.className = "uppercase font-black tracking-tighter leading-[0.9] text-3xl md:text-5xl mb-2 transition-all";
@@ -137,19 +134,16 @@ function renderPlayerProfile(p) {
         }
     }
 
-    // Bio Data
     document.getElementById('teamName').innerText = p.team_name.toUpperCase();
     document.getElementById('playerAge').innerText = `${p.age || '--'} YEARS OLD`;
     document.getElementById('playerPosition').innerText = p.position || 'NBA';
 
-    // Back Link
     const backBtn = document.getElementById('backLink');
     if (backBtn) {
         backBtn.href = `../teams/index.html?id=${p.team_id}`;
         backBtn.innerHTML = `<span class="material-symbols-outlined text-lg">arrow_back</span> BACK TO ${p.team_name.toUpperCase()}`;
     }
 
-    // Stats
     if (p.season_stats && p.season_stats.length > 0) {
         const s = p.season_stats[0];
         document.getElementById('gamesPlayed').innerText = `${s.games_played || 0} GAMES PLAYED`;
@@ -177,7 +171,6 @@ function renderPrimaryStats(s, teamColor) {
 
     container.innerHTML = `
         <div class="relative h-80 w-full mb-4">
-            <!-- Technical Grid Lines -->
             <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20">
                 <div class="w-full h-px bg-slate-700"></div>
                 <div class="w-full h-px bg-slate-700"></div>
@@ -185,34 +178,27 @@ function renderPrimaryStats(s, teamColor) {
                 <div class="w-full h-px bg-slate-700"></div>
             </div>
 
-            <!-- Stats Grid -->
             <div class="grid grid-cols-7 gap-4 md:gap-8 h-full items-end relative z-10">
                 ${stats.map(st => {
-        // Ensure a minimum height of 4% for visibility of low stats
         const actualPercentage = (st.val / st.max) * 100;
         const displayPercentage = Math.max(actualPercentage, 4);
 
         return `
                         <div class="flex flex-col items-center h-full group">
-                            <!-- Value -->
                             <span class="text-xl md:text-2xl font-black text-white mb-4 tracking-tighter transition-transform group-hover:scale-110">${formatVal(st.val)}</span>
                             
-                            <!-- Bar Container -->
                             <div class="flex-1 w-full bg-slate-800/10 rounded-2xl relative overflow-hidden border border-slate-800/40 flex items-end">
-                                <!-- The Bar with High-End Highlight -->
                                 <div class="stat-bar w-full transition-all duration-1000 ease-out relative" 
                                      style="height: 0%; background-color: ${teamColor}"
                                      data-target="${displayPercentage}%">
-                                    <!-- Bar Cap / Shine -->
                                     <div class="absolute top-0 left-0 w-full h-2 bg-white/20"></div>
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                                 </div>
                                 
-                                <!-- Hover Overlay -->
+                                
                                 <div class="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors"></div>
                             </div>
 
-                            <!-- Labels -->
                             <div class="mt-6 flex flex-col items-center gap-1.5">
                                 <span class="material-symbols-outlined text-[16px] text-slate-500 group-hover:text-white transition-colors">${st.icon}</span>
                                 <h4 class="text-[10px] font-black uppercase text-slate-600 group-hover:text-slate-400 tracking-[0.2em] transition-colors">${st.label}</h4>
@@ -224,7 +210,7 @@ function renderPrimaryStats(s, teamColor) {
         </div>
     `;
 
-    // Trigger fill-up animation
+
     setTimeout(() => {
         const bars = container.querySelectorAll('.stat-bar');
         bars.forEach(bar => {

@@ -26,13 +26,10 @@
   <style>
     body { font-family: 'Lexend', sans-serif; }
     
-    /* אנימציית החלקה חלקה (Slider Effect) */
     .slider-transition { transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.4s ease-in-out; }
     .smooth-slide { transition: transform 0.5s ease-in-out, opacity 0.3s ease; }
 
-    /* --- SAFARI & CHROME AUTOFILL FIXES (CRITICAL) --- */
 
-    /* 1. העלמת האייקון של המפתח/איש קשר בתוך השדה בספארי */
     input::-webkit-contacts-auto-fill-button,
     input::-webkit-credentials-auto-fill-button {
       display: none !important;
@@ -45,25 +42,22 @@
       opacity: 0 !important;
     }
 
-    /* 2. ביטול המסגרת הכחולה של ספארי (Focus Ring) */
     input:focus {
       outline: none !important;
       outline-width: 0 !important;
       outline-style: none !important;
-      box-shadow: none !important; /* מבטל צללים של הדפדפן */
-      /* משאיר את ה-Ring של Tailwind אם תרצה (focus:ring-2) */
+      box-shadow: none !important; 
     }
 
-    /* 3. תיקון צבע הרקע כשיש מילוי אוטומטי (Autofill) - מכריח רקע כהה */
     input:-webkit-autofill,
     input:-webkit-autofill:hover, 
     input:-webkit-autofill:focus, 
     input:-webkit-autofill:active {
-      -webkit-box-shadow: 0 0 0 1000px #192633 inset !important; /* צבע הרקע של השדה */
+      -webkit-box-shadow: 0 0 0 1000px #192633 inset !important; 
       -webkit-text-fill-color: white !important;
       transition: background-color 5000s ease-in-out 0s;
       background-color: #192633 !important;
-      caret-color: white !important; /* צבע הסמן */
+      caret-color: white !important; 
     }
   </style>
 </head>
